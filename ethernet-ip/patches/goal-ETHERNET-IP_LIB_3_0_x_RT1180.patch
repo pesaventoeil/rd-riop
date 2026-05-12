@@ -1,0 +1,474 @@
+diff --git a/plat/arch/freertos/goal_target.c b/plat/arch/freertos/goal_target.c
+index 5098e52..28148b8 100644
+--- a/plat/arch/freertos/goal_target.c
++++ b/plat/arch/freertos/goal_target.c
+@@ -72,9 +72,9 @@
+ /****************************************************************************/
+ /* Local Defines */
+ /****************************************************************************/
+-#define GOAL_TARGET_INIT_TASK_PRIO              0 /**< FreeRTOS priority of init task */
++#define GOAL_TARGET_INIT_TASK_PRIO              (configMAX_PRIORITIES - 1) /**< FreeRTOS priority of init task */
+ #define GOAL_TARGET_INIT_TASK_STACK_SIZE        (0x1000 / sizeof(StackType_t)) /**< stack size of init task (x * sizeof(StackType_t) bytes) */
+-#define GOAL_TARGET_MAIN_TASK_PRIO              0 /**< (GOAL) priority of main task */
++#define GOAL_TARGET_MAIN_TASK_PRIO              1 /**< (GOAL) priority of main task */
+ #ifndef GOAL_TARGET_MAIN_TASK_STACK_SIZE
+ # define GOAL_TARGET_MAIN_TASK_STACK_SIZE       (0x2000 / sizeof(StackType_t)) /**< stack size of main task (x * sizeof(StackType_t) bytes) */
+ #endif
+diff --git a/plat/board/nxp/evkmimxrt1180/goal_target_board.c b/plat/board/nxp/evkmimxrt1180/goal_target_board.c
+index 2422d1d..5546689 100644
+--- a/plat/board/nxp/evkmimxrt1180/goal_target_board.c
++++ b/plat/board/nxp/evkmimxrt1180/goal_target_board.c
+@@ -49,8 +49,18 @@
+ # include <plat/drv/net/lwip/goal_target_net.h>
+ #endif /* GOAL_CONFIG_TCPIP_STACK */
+ # include <plat/drv/bus/mdio/netc/mdio.h>
++#if RIOP && GOAL_CONFIG_MCTC_CC == 1
++GOAL_STATUS_T goal_targetPhyVsc8541Open(
++    GOAL_ETH_IFACE_T *pIface                    /**< interface data */
++);
++#ifndef PHY_PAGE_SELECT_REG
++#define PHY_PAGE_SELECT_REG   0x1FU /*!< The PHY page select register. */
++#endif
++# include "fsl_netc_ierb.h"
++#else
+ # include <plat/drv/phy/realtek_rtl8201/phy_rtl8201.h>
+ # include <plat/drv/phy/realtek_rtl8211/phy_rtl8211.h>
++#endif
+ # include <plat/drv/switch/nxp_netc/nxp_netc.h>
+ # if GOAL_CONFIG_ECAT == 1
+ #  include <plat/drv/eoe/goal_drv_eoe.h>
+@@ -97,11 +107,19 @@
+ #define BOARD_USER_LED_GPIO_PINR (26U)          /**< red user LED */
+ 
+ /* supported Ethernet ports (enabled: 1, disabled: 0) */
++#if RIOP
++#define GOAL_BOARD_ETH_PORT_0                 0 /**< Ethernet port ENET0: Switch Port 0 (J28) */
++#define GOAL_BOARD_ETH_PORT_1                 0 /**< Ethernet port ENET1: Switch Port 1 (J29) */
++#define GOAL_BOARD_ETH_PORT_2                 0 /**< Ethernet port ENET2: Switch Port 2 (J30, not connected by default) */
++#define GOAL_BOARD_ETH_PORT_3                 0 /**< Ethernet port ENET3: Switch Port 3 (J31, not connected by default) */
++#define GOAL_BOARD_ETH_PORT_4                 1 /**< Ethernet port ENET4: MAC Controller (J32) */
++#else
+ #define GOAL_BOARD_ETH_PORT_0                 0 /**< Ethernet port ENET0: Switch Port 0 (J28) */
+ #define GOAL_BOARD_ETH_PORT_1                 0 /**< Ethernet port ENET1: Switch Port 1 (J29) */
+ #define GOAL_BOARD_ETH_PORT_2                 1 /**< Ethernet port ENET2: Switch Port 2 (J30, not connected by default) */
+ #define GOAL_BOARD_ETH_PORT_3                 1 /**< Ethernet port ENET3: Switch Port 3 (J31, not connected by default) */
+ #define GOAL_BOARD_ETH_PORT_4                 0 /**< Ethernet port ENET4: MAC Controller (J32) */
++#endif
+ 
+ #if GOAL_CONFIG_TLS == 1
+ # if (1 == GOAL_CONFIG_TLS_WOLFSSL)
+@@ -188,7 +206,11 @@ unsigned char rpmsg_sh_mem[GOAL_BOARD_SHM_SIZE] __attribute__((section(".noinit.
+ /****************************************************************************/
+ #if GOAL_CONFIG_MEDIA_MI_NVS == 1
+ static GOAL_MA_NVS_INFO_T mInfoNvs = {          /**< NVS chip description */
++#if RIOP
++    GOAL_DRV_NVS_CHIP_MACRONIX_MX25UW6345GXDI00
++#else
+     GOAL_DRV_NVS_CHIP_WINBOND_W25Q128JWSIQ
++#endif
+ };
+ static GOAL_MI_NVS_REGION_T *pNvsRegionCm = NULL; /**< NVS region handle */
+ static GOAL_MI_NVS_REGION_LIST_T region_list[] = { /**< NVS region list */
+@@ -212,6 +234,11 @@ static GOAL_STAGE_HANDLER_T mStageCtcPre;       /**< stage CTC pre handle */
+ static volatile uint16_t mMulticoreEventData;   /**< multicore event data */
+ #endif
+ 
++#define EXAMPLE_NETC_LINK_PORT 4
++#define NETC_MII_SPEED kNETC_MiiSpeed1000M
++#define NETC_MII_MODE kNETC_RgmiiMode
++#define EXAMPLE_MII_MODE       NETC_MII_MODE
++#define EXAMPLE_PHY_ADDRESS    BOARD_EP0_PHY_ADDR
+ 
+ /****************************************************************************/
+ /* Ethernet driver data */
+@@ -221,6 +248,7 @@ static GOAL_BOOL_T mEthInitFlag = GOAL_FALSE;   /**< Ethernet initialization fla
+ 
+ /** Ethernet Port Configuration */
+ static GOAL_DRV_ETH_NETC_PORT_INFO_T ethPortInfo[] = {
++
+ #if GOAL_BOARD_ETH_PORT_0 == 1
+     {
+         .portId = kNETC_SWITCH0EthPort0,
+@@ -263,12 +291,21 @@ static GOAL_DRV_ETH_NETC_PORT_INFO_T ethPortInfo[] = {
+ #endif /* GOAL_BOARD_ETH_PORT_3 */
+ #if GOAL_BOARD_ETH_PORT_4 == 1 && GOAL_CONFIG_NUM_INTERFACES == 1
+     {
++#if RIOP
++        .portId = kNETC_ENETC0EthPort,
++        .miiType = NETC_MII_MODE,
++        .phyAddr = 3,
++        .maxSpeed = GOAL_ETH_SPEED_1000,
++        .pPhyResetGpioBase = RGPIO3,
++        .phyResetPin = 13,
++#else
+         .portId = kNETC_ENETC0EthPort,
+         .miiType = kNETC_RmiiMode,
+         .phyAddr = 3,
+         .maxSpeed = GOAL_ETH_SPEED_100,
+         .pPhyResetGpioBase = RGPIO4,
+         .phyResetPin = 13,
++#endif	
+     },
+ #endif /* GOAL_BOARD_ETH_PORT_4  && GOAL_CONFIG_NUM_INTERFACES == 1 */
+ };
+@@ -449,6 +486,9 @@ GOAL_STATUS_T goal_targetBoardInit(
+ #endif /* GOAL_CONFIG_TASK */
+ 
+ #if GOAL_CONFIG_TARGET_FREERTOS_TARGET_MAIN == 1
++#else
++#if RIOP /* Already done in External Main Function. */
++    BOARD_InitHardware();
+ #else
+     /* Hardware Initialization. */
+     BOARD_ConfigMPU();
+@@ -458,6 +498,7 @@ GOAL_STATUS_T goal_targetBoardInit(
+ # if GOAL_CONFIG_LOGGING == 1 && GOAL_CONFIG_LOGGING_TARGET_RAW == 1 && GOAL_CONFIG_MCTC_CC == 1
+     BOARD_InitDEBUG_UARTPins();
+ # endif
++#endif
+ #endif /* GOAL_CONFIG_TARGET_FREERTOS_TARGET_MAIN */
+ 
+ #if GOAL_CONFIG_TGT_RT1180_TRACE == 1
+@@ -1057,12 +1098,12 @@ uint32_t goal_targetGetButtons(
+ )
+ {
+     uint32_t button = 0;                        /* enabled buttons */
+-
++#if !RIOP
+     /* Check if button is active */
+     if (0 == RGPIO_PinRead(BOARD_INITPINS_USER_BUTTON_1_PERIPHERAL, BOARD_INITPINS_USER_BUTTON_1_CHANNEL)) {
+         button = GOAL_TARGET_BUTTON;
+     }
+-
++#endif
+     /* Return button bit field */
+     return button;
+ }
+@@ -1079,6 +1120,7 @@ GOAL_STATUS_T goal_targetBoardEthInit(
+     uint32_t numEntries                         /**< entries in port info data table */
+ )
+ {
++#if !RIOP
+     rgpio_pin_config_t pinConfig;               /* pin configuration data */
+     uint32_t cnt;                               /* loop counter */
+     GOAL_STATUS_T res = GOAL_OK;                /* result */
+@@ -1152,6 +1194,62 @@ GOAL_STATUS_T goal_targetBoardEthInit(
+     }
+ 
+     return res;
++
++#else
++   if (EXAMPLE_NETC_LINK_PORT < BLK_CTRL_WAKEUPMIX_NETC_LINK_CFG_COUNT)
++    {
++        /* Set RMII or RGMII mode*/
++        status_t status = NETC_SocSetMiiMode(EXAMPLE_NETC_LINK_PORT, EXAMPLE_MII_MODE);
++        if (status != kStatus_Success)
++        {
++            PRINTF("ERROR: Cannot set the MII mode, returned %d\n", status);
++        }
++
++        /* Output reference clock for RMII */
++        status = NETC_SocSetRmiiRefClk((netc_soc_link_t)EXAMPLE_NETC_LINK_PORT, true);
++        if (status != kStatus_Success)
++        {
++            PRINTF("ERROR: Cannot set RMII clock reference, returned %d\n", status);
++        }
++
++        /* Unlock the IERB. It will warm reset whole NETC. */
++        if (!NETC_IERBIsLockOver())
++        {
++            status = NETC_IERBUnlock();
++            if (status != kStatus_Success)
++            {
++                PRINTF("ERROR: Cannot unlock the IERB, returned %d\n", status);
++            }
++        }
++
++        /* Set link port PHY address */
++        status = NETC_SocSetLinkAddr((netc_soc_link_t)EXAMPLE_NETC_LINK_PORT, EXAMPLE_PHY_ADDRESS);
++        if (status != kStatus_Success)
++        {
++            PRINTF("ERROR: Cannot set link address, returned %d\n", status);
++        }
++
++        /* Set the access attribute, otherwise MSIX access will be blocked. */
++        NETC_IERB->ARRAY_NUM_RC[0].RCMSIAMQR &= ~(7U << 27);
++        NETC_IERB->ARRAY_NUM_RC[0].RCMSIAMQR |= (1U << 27);
++
++        /* Lock the IERB. */
++        status = NETC_IERBLock();
++        if (status != kStatus_Success)
++        {
++            PRINTF("ERROR: Cannot lock the IERB, returned %d\n", status);
++        }
++        /* The RGPIO_PinInit and PinWrite is taken care in BOARD_InitBootPins() */
++
++		SDK_DelayAtLeastUs(150000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
++
++		if (status == kStatus_Success) 
++		{
++			mEthInitFlag = GOAL_TRUE;
++		}
++    }
++    return GOAL_OK;
++#endif
+ }
+ 
+ 
+@@ -1195,10 +1293,18 @@ GOAL_STATUS_T goal_targetBoardEthPostInit(
+ 
+         /* register PHY driver */
+         if (GOAL_ETH_SPEED_1000 == pPortInfo[cnt].maxSpeed) {
++#if RIOP
++            res = goal_targetPhyVsc8541Open(&pIfacePhys[cnt]);
++#else
+             res = goal_targetPhyRtl8211Open(&pIfacePhys[cnt]);
++#endif
+         }
+         else {
++#if RIOP
++            res = goal_targetPhyVsc8541Open(&pIfacePhys[cnt]);
++#else
+             res = goal_targetPhyRtl8201Open(&pIfacePhys[cnt]);
++#endif
+         }
+         if (GOAL_RES_ERR(res)) {
+             goal_logErr("failed to open Phy driver for port %"FMT_u32, cnt);
+@@ -1216,11 +1322,16 @@ GOAL_STATUS_T goal_targetBoardEthPostInit(
+ 
+             /* set page 7 */
+             regData = 7;
++#if RIOP
++            res = pIfacePhys[cnt].bus.write(&pIfacePhys[cnt].bus, pIfacePhys[cnt].addr, PHY_PAGE_SELECT_REG, (char *) &regData, 2);
++#else
+             res = pIfacePhys[cnt].bus.write(&pIfacePhys[cnt].bus, pIfacePhys[cnt].addr, GOAL_PHY_RTL8201_REG_PAGE_SELECT, (char *) &regData, 2);
++#endif
+             if (GOAL_RES_ERR(res)) {
+                 goal_logErr("failed to set Phy page to 7, port %"FMT_u32, cnt);
+             }
+ 
++#if !RIOP
+             if (GOAL_RES_OK(res)) {
+                 /* get RMII Mode Setting Register value */
+                 res = pIfacePhys[cnt].bus.read(&pIfacePhys[cnt].bus, pIfacePhys[cnt].addr, GOAL_PHY_RTL8201_REG_RMSR, (char *) &regData, 2);
+@@ -1246,11 +1357,16 @@ GOAL_STATUS_T goal_targetBoardEthPostInit(
+                     goal_logErr("failed to set Phy RMSR register, port %"FMT_u32, cnt);
+                 }
+             }
++#endif /* !RIOP */
+ 
+             if (GOAL_RES_OK(res)) {
+                 /* set page 0 */
+                 regData = 0;
++#if RIOP
++                res = pIfacePhys[cnt].bus.write(&pIfacePhys[cnt].bus, pIfacePhys[cnt].addr, PHY_PAGE_SELECT_REG, (char *) &regData, 2);
++#else
+                 res = pIfacePhys[cnt].bus.write(&pIfacePhys[cnt].bus, pIfacePhys[cnt].addr, GOAL_PHY_RTL8201_REG_PAGE_SELECT, (char *) &regData, 2);
++#endif
+                 if (GOAL_RES_ERR(res)) {
+                     goal_logErr("failed to set Phy page to 0, port %"FMT_u32, cnt);
+                 }
+@@ -1299,6 +1415,9 @@ GOAL_STATUS_T goal_targetMainPreOsCb(
+     GOAL_STATUS_T res;                          /* result */
+ # endif
+ 
++#if RIOP
++    BOARD_InitHardware();
++#else
+     /* Hardware Initialization. */
+     BOARD_ConfigMPU();
+     BOARD_InitBootPins();
+@@ -1312,6 +1431,7 @@ GOAL_STATUS_T goal_targetMainPreOsCb(
+     BOARD_InitDEBUG_UARTPins();
+ #  endif /* GOAL_CONFIG_LOGGING == 1 && GOAL_CONFIG_LOGGING_TARGET_RAW == 1 */
+ # endif
++#endif
+ 
+     goal_logInfo("executed HardwareInit");
+ 
+@@ -1430,6 +1550,10 @@ static GOAL_STATUS_T goal_targetBoardMcInit(
+     }
+ #  endif
+ 
++#if RIOP
++    PRINTF("Secondary Core Started...\r\n");
++#endif
++
+ # elif GOAL_CONFIG_MCTC_AC == 1
+     UNUSEDARG(startupData);
+ #  if GOAL_BOARD_MCMGR_SYNC == 1
+diff --git a/plat/drv/bus/mdio/netc/mdio.c b/plat/drv/bus/mdio/netc/mdio.c
+index b15d708..68206ad 100644
+--- a/plat/drv/bus/mdio/netc/mdio.c
++++ b/plat/drv/bus/mdio/netc/mdio.c
+@@ -71,6 +71,9 @@ GOAL_STATUS_T goal_drvBusMdioNetcOpen(
+         mdioConfig.isNegativeDriven = false;
+         mdioConfig.srcClockHz = CLOCK_GetRootClockFreq(kCLOCK_Root_Netc);
+         mdioConfig.mdio.type = kNETC_EMdio;
++#ifdef RIOP
++    	mdioConfig.mdio.port = (netc_hw_eth_port_idx_t)kNETC_ENETC0EthPort;
++#endif
+ 
+         resSdk = NETC_MDIOInit((netc_mdio_handle_t *) pBus->pData, &mdioConfig);
+         if (kStatus_Success != resSdk) {
+diff --git a/plat/drv/dlr/nxp_netc/dlr_netc.c b/plat/drv/dlr/nxp_netc/dlr_netc.c
+index f0babc1..74bb804 100644
+--- a/plat/drv/dlr/nxp_netc/dlr_netc.c
++++ b/plat/drv/dlr/nxp_netc/dlr_netc.c
+@@ -491,6 +491,10 @@ GOAL_STATUS_T goal_targetDlrInit(
+     GOAL_DRV_ETH_NETC_DATA_T *pDrvData;         /* private driver data */
+     GOAL_ETH_CMD_DATA_T cmd;                    /* command data */
+ 
++#if RIOP //Work around to disable DLR Init for RIOP
++    return GOAL_OK;
++#endif
++
+     res = goal_maEthGetById(&pMaEthHdl, GOAL_MA_ID_ETH);
+     if (GOAL_RES_ERR(res)) {
+         goal_logErr("failed to get ETH MA handle");
+diff --git a/plat/drv/eth/nxp/netc/goal_target_eth.c b/plat/drv/eth/nxp/netc/goal_target_eth.c
+index 1596397..5c490ff 100644
+--- a/plat/drv/eth/nxp/netc/goal_target_eth.c
++++ b/plat/drv/eth/nxp/netc/goal_target_eth.c
+@@ -775,6 +775,11 @@ static GOAL_STATUS_T goal_drvEthNetcOpen(
+         epConfig.port.common.parser.l4PayloadCount = 0;
+         epConfig.port.common.parser.enableL4Parser = false;
+ 
++#ifdef RIOP
++        /* Enable Tx buffer cache maintain in driver */
++        epConfig.txCacheMaintain = true;
++#endif
++
+         /* apply endpoint settings */
+         resSdk = EP_Init(&pDrvData->epHandle, pMaHdl->cfg.macAddr, &epConfig, &bdrConfig);
+         if (kStatus_Success != resSdk) {
+diff --git a/plat/drv/nvs/goal_drv_nvs.h b/plat/drv/nvs/goal_drv_nvs.h
+index 8af385a..c296c8d 100644
+--- a/plat/drv/nvs/goal_drv_nvs.h
++++ b/plat/drv/nvs/goal_drv_nvs.h
+@@ -129,6 +129,16 @@
+     0x00000100,                                 /**< page size: 256 Byte */ \
+     GOAL_TRUE                                   /**< memory mapped read: yes */
+ 
++#if RIOP
++/**< Macronix - MX25UW6345GXDI00 */
++#define GOAL_DRV_NVS_CHIP_MACRONIX_MX25UW6345GXDI00 \
++    "Macronix - Octal 8MB",                   /**< flash name */ \
++    0x00800000,                                 /**< memory size: 8 MB */ \
++    0x00001000,                                 /**< sector size: 4 kB */ \
++    0x00000100,                                 /**< page size: 256 Byte */ \
++    GOAL_TRUE                                   /**< memory mapped read: yes */
++#endif
++
+ /**< Renesas - R5F572MNDxBD (internal data flash) */
+ #define GOAL_DRV_NVS_CHIP_RENESAS_R5F572MNDXBD_DF \
+     "Renesas - R5F572MNDxBD - DF",              /**< NVS name */ \
+diff --git a/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c b/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c
+index 1301e56..69576a8 100644
+--- a/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c
++++ b/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c
+@@ -46,6 +46,9 @@ typedef struct {
+ /****************************************************************************/
+ spi_flash_instance_t fsl_instance;
+ 
++#if RIOP /* External configuration */
++#define FLASH_OFFSET 0
++#else
+ /* 1 config, 2 chips of same type on board */
+ flexspi_device_config_t deviceconfig = {
+     .flexspiRootClk = 12000000,
+@@ -120,7 +123,7 @@ uint32_t customLUT[CUSTOM_LUT_LENGTH] = {
+     [4 * NOR_CMD_LUT_SEQ_IDX_ERASECHIP] =
+         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_SDR, kFLEXSPI_1PAD, 0xC7, kFLEXSPI_Command_STOP, kFLEXSPI_1PAD, 0),
+ };
+-
++#endif
+ 
+ /****************************************************************************/
+ /* Local prototypes */
+@@ -218,9 +221,15 @@ GOAL_STATUS_T goal_drvNvsSflashFslReg(
+         pMaNvs->infoFlash.sizeErase = pInfoNvs->sizeErase;
+ 
+         /* compare the available memory according to GOAL and FSL NVS */
++#if RIOP
++        if (pInfoNvs->sizeFlash != (pHdlDrv->pSflash->deviceconfig->flashSize*1024)) {
++            goal_logWarn("configuration of GOAL and FSL sflash differs");
++        }
++#else
+         if (pInfoNvs->sizeProgram != pHdlDrv->pSflash->deviceconfig->flashSize) {
+             goal_logWarn("configuration of GOAL and FSL sflash differs");
+         }
++#endif
+         pMaNvs->infoFlash.sizeProgram = pInfoNvs->sizeProgram;
+         pMaNvs->infoFlash.flags = pInfoNvs->flags | GOAL_MA_NVS_FLAG_ERASE_REQUIRED | GOAL_MA_NVS_FLAG_MEM_READ;
+     }
+@@ -243,6 +252,8 @@ static GOAL_STATUS_T goal_drvNvsSflashFslOpen(
+ )
+ {
+     GOAL_STATUS_T res = GOAL_OK;                /* result */
++
++#if !RIOP /* External flash initialization is done as part of HW_Init() */
+     GOAL_NVS_SFLASH_FSL_T *pHdlDrv;             /* driver handle */
+     uint8_t vendorID = 0;                       /* Vendor ID */
+     status_t status;                            /* NXP return value */
+@@ -278,6 +289,7 @@ static GOAL_STATUS_T goal_drvNvsSflashFslOpen(
+         return GOAL_ERROR;
+     }
+     goal_logInfo("flash entered quad mode");
++#endif
+ 
+     return res;
+ }
+@@ -416,7 +428,11 @@ static GOAL_STATUS_T goal_drvNvsSflashFslErase(
+     /* Disable interrupts */
+     __disable_irq();
+ 
++#if RIOP
++    err = flexspi_erase_sector(pHdlDrv->pSflash->pBase, FLASH_OFFSET + offset);
++#else
+     err = flexspi_nor_flash_erase_sector(pHdlDrv->pSflash->pBase, FLASH_OFFSET + offset);
++#endif
+ 
+     /* Enable interrupts back */
+     if (!prim) {
+diff --git a/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.h b/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.h
+index 43e4bdf..512675e 100644
+--- a/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.h
++++ b/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.h
+@@ -25,7 +25,11 @@
+ #include <goal_media/goal_ma_nvs.h>
+ #include "plat/drv/nvs/goal_drv_nvs.h"
+ 
++#if RIOP
++#include "flexspi_ops.h"
++#else
+ #include "flexspi_defaults.h"
++#endif
+ #include "fsl_flexspi.h"
+ 
+ 
+@@ -37,7 +41,11 @@
+ typedef struct {
+     FLEXSPI_Type *pBase;
+     flexspi_device_config_t *deviceconfig;
++#if RIOP
++    const uint32_t *customLUT;
++#else
+     uint32_t *customLUT;
++#endif
+ } spi_flash_instance_t;
+ 
+ 
+diff --git a/projects/goal_eip_rpc_lib/00_cc/vsc/nxp/mimxrt1180_evk_cm33_rtos/sysbuild.cmake b/projects/goal_eip_rpc_lib/00_cc/vsc/nxp/mimxrt1180_evk_cm33_rtos/sysbuild.cmake
+index 24c3c1e..6001396 100644
+--- a/projects/goal_eip_rpc_lib/00_cc/vsc/nxp/mimxrt1180_evk_cm33_rtos/sysbuild.cmake
++++ b/projects/goal_eip_rpc_lib/00_cc/vsc/nxp/mimxrt1180_evk_cm33_rtos/sysbuild.cmake
+@@ -7,7 +7,7 @@
+ 
+ ExternalZephyrProject_Add(
+     APPLICATION RT1180_CM7
+-    SOURCE_DIR ${APP_DIR}/../../../../../../
++    SOURCE_DIR ${APP_DIR}/../../../../../../projects/goal_eip_rpc/opener/10_led_button/vsc/nxp/mimxrt1180_evk_cm7_rtos
+     board ${SB_CONFIG_secondary_board}
+     core_id ${SB_CONFIG_secondary_core_id}
+     config ${SB_CONFIG_secondary_config}

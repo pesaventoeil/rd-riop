@@ -1,0 +1,17 @@
+PROGRAM PLC_PRG
+VAR
+	Delay: TON;
+	LedIn AT %IB32 : BOOL;
+	LedOut AT %QB32 : BOOL;
+	// mode: 2 - AFE current input
+	a1o_mode AT %QD9 : UDINT;
+	// current #ai3, differential, 100R shunt, +2/J17,-3/J17
+	a8i AT %ID16 : REAL;
+END_VAR
+
+Delay(IN:=TRUE, PT:=T#1S);
+IF Delay.Q THEN
+	a1o_mode := 2;
+	LedOut:= NOT LedIn;
+	Delay(IN:=FALSE);
+END_IF;

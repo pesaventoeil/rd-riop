@@ -1,0 +1,22 @@
+PROGRAM PLC_PRG
+VAR
+	Delay: TON;
+	
+	LedIn AT %IB67 : BYTE;
+	LedOut AT %QB32 : BYTE;
+	// mode: 1 - AFE voltage measurement
+	a1o_mode AT %QD9 : UDINT;
+	// voltage #ai1, single end, 2/J18
+	a5i AT %ID26: REAL;
+	// voltage #ai2, single end, 3/J18
+	a6i AT %ID28: REAL;
+END_VAR
+
+
+
+Delay(IN:=TRUE, PT:=T#1S);
+IF Delay.Q THEN
+	a1o_mode := 1;
+	LedOut:= NOT LedIn;
+	Delay(IN:=FALSE);
+END_IF;

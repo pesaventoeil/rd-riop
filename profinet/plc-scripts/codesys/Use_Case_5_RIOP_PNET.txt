@@ -1,0 +1,56 @@
+PROGRAM PLC_PRG
+VAR
+	Delay: TON;
+	LedIn AT %IB67 : BOOL;
+	LedOut AT %QB32 : BOOL;
+	// mode: 5 - MCU digital I/O's
+	a1o_mode AT %QD9 : UDINT;
+	// digital input mcu#1,9/J11
+	d9i AT %IB19 : BOOL;
+	// digital input mcu#2,8/J11
+	d10i AT %IB21  : BOOL;
+	// digital input mcu#3,7/J11
+	d11i AT %IB23  : BOOL;
+	// digital input mcu#4,6/J11
+	d12i AT %IB25 : BOOL;
+	// digital input mcu#5,5/J11
+	d13i AT %IB27 : BOOL;
+	// digital input mcu#6,4/J11
+	d14i AT %IB29 : BOOL;
+	// digital input mcu#7,3/J11
+	d15i AT %IB31 : BOOL;
+	d17i AT %IB35 : BOOL;
+	// digital output mcu#1,9/J12
+	d17o AT %QB16 : BOOL;
+	d18i AT %IB37 : BOOL;
+	// digital output mcu#2,8/J12
+	d18o AT %QB17 : BOOL;
+	d19i AT %IB39: BOOL;
+	// digital output mcu#3,7/J12
+	d19o AT %QB18 : BOOL;
+	d20i AT %IB41 : BOOL;
+	// digital output mcu#4,6/J12
+	d20o AT %QB19 : BOOL;
+	d21i AT %IB43: BOOL;
+	// digital output mcu#5,5/J12
+	d21o AT %QB20: BOOL;
+	d22i AT %IB45: BOOL;
+	// digital output mcu#6,4/J12
+	d22o AT %QB21 : BOOL;
+	d23i AT %IB47 : BOOL;
+	// digital output mcu#7,3/J12
+	d23o AT %QB22 : BOOL;
+	d24i AT %IB49: BOOL;
+	// digital output mcu#8,2/J12
+	d24o AT %QB23 : BOOL;
+END_VAR
+
+
+
+Delay(IN:=TRUE, PT:=T#1S);
+IF Delay.Q THEN
+	a1o_mode := 5;
+	LedOut:= NOT LedIn;
+	//d24o:= NOT d24i;
+	Delay(IN:=FALSE);
+END_IF;

@@ -1,0 +1,25 @@
+PROGRAM PLC_PRG
+VAR
+	Delay: TON;
+	LedIn AT %IB67 : BYTE;
+	LedOut AT %QB32 : BYTE;
+	// mode: 3 - AFE internal measurement
+	a1o_mode AT %QD9 : UDINT;
+	// internal reference1.25V
+	a10i AT %ID36: REAL;
+	// power voltage 3.3V
+	a11i AT %ID38: REAL;
+	// power voltage +15V
+	a12i AT %ID40: REAL;
+	// power voltage -15V
+	a13i AT %ID42: REAL;
+END_VAR
+
+
+
+Delay(IN:=TRUE, PT:=T#1S);
+IF Delay.Q THEN
+	a1o_mode := 3;
+	LedOut:= NOT LedIn;
+	Delay(IN:=FALSE);
+END_IF;

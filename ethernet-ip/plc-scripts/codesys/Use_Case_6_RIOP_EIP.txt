@@ -1,0 +1,17 @@
+PROGRAM PLC_PRG
+VAR
+	Delay: TON;
+	LedIn AT %IB32 : BOOL;
+	LedOut AT %QB32 : BOOL;
+	// mode: 6 - AFE temperature input (PT100)
+	a1o_mode AT %QD9 : UDINT;
+	// temperature #ai4, differential, PT100, +5/J17,-6/J17, see doc.
+	a14i AT %ID22 : REAL;
+END_VAR
+
+Delay(IN:=TRUE, PT:=T#1S);
+IF Delay.Q THEN
+	a1o_mode := 6;
+	LedOut:= NOT LedIn;
+	Delay(IN:=FALSE);
+END_IF;
