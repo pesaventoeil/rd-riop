@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/CMakeFiles/M33LEADER"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/CMakeFiles/M33LEADER.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/CMakeFiles/M33LEADER-complete.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-build.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-configure.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-download.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-install.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-patch.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/src/M33LEADER-stamp/M33LEADER-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"M33LEADER"
+		],
+		"name" : "M33LEADER"
+	}
+}

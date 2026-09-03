@@ -1,0 +1,260 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "c:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/logging.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "c:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/python.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/FindPython3.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/FindPython/Support.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "c:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/ruby.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/function.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/mcux_module.cmake"
+		},
+		{
+			"path" : "cmake/extensions.cmake"
+		},
+		{
+			"path" : "cmake/modules/sysbuild_extensions.cmake"
+		},
+		{
+			"path" : "cmake/modules/sysbuild_kconfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "c:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/kconfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeDetermineSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/toolchain/armgcc.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeSystem.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/CMakeFiles/4.3.3/CMakeSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/toolchain/armgcc.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeNinjaFindMake.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows-Initialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/WindowsPaths.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/sysbuild.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/mkdirs.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/tmp/riop_EIP_M7FOLLOWER-mkdirs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/RepositoryInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/UpdateInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/PatchInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/cfgcmd.txt.in"
+		},
+		{
+			"path" : "cmake/build_order.cmake"
+		},
+		{
+			"path" : "image_configurations/ALL_image_default.cmake"
+		},
+		{
+			"path" : "image_configurations/MAIN_image_default.cmake"
+		},
+		{
+			"path" : "image_configurations/ALL_image_default.cmake"
+		},
+		{
+			"path" : "cmake/domains.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/empty.conf"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/empty.conf"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/.config"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:\\NXP_MCUxpresso_SDK\\mcuxsdk\\mcuxsdk\\examples\\_boards\\evkmimxrt1180\\Kconfig.sysbuild"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:\\NXP_MCUxpresso_SDK\\mcuxsdk\\mcuxsdk\\examples\\multicore_examples\\Kconfig.sysbuild"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:\\Users\\dpesavento.EIL\\Documents\\GitHub\\daniel-sandbox\\rd-riop-EIP-demo\\ethernet-ip\\M33LEADER\\Kconfig.sysbuild"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:\\Users\\dpesavento.EIL\\Documents\\GitHub\\daniel-sandbox\\rd-riop-EIP-demo\\ethernet-ip\\M33LEADER\\flexspi_nor_release\\mcux_config.h"
+		},
+		{
+			"path" : "images/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/shared_internal_commands.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/mkdirs.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/M33LEADER-prefix/tmp/M33LEADER-mkdirs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/RepositoryInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/UpdateInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/PatchInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.3/Modules/ExternalProject/cfgcmd.txt.in"
+		},
+		{
+			"path" : "images/bootloader/CMakeLists.txt"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release",
+		"source" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/sysbuild"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}

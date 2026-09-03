@@ -1,0 +1,13 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/common/fsl_common_arm.h:944:24:DisableGlobalIRQ	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/common/fsl_common_arm.h:970:20:EnableGlobalIRQ	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:15:10:flexspi_nor_write_enable_spi	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:32:10:flexspi_nor_write_enable_oct	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:50:10:flexspi_nor_wait_bus_busy	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:93:10:flexspi_erase_sector	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:132:10:flexspi_nor_flash_read	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:167:10:flexspi_nor_flash_program	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:209:10:flexspi_page_program	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:260:10:flexspi_nor_erase_chip	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:291:10:flexspi_nor_enable_octal_mode	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:326:12:__flexspi_init	96	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_nor_flash_ops.c:368:5:flexspi_init	16	static

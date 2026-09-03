@@ -1,0 +1,982 @@
+$ EZ-EDS Version 3.11.1.20151008 Generated Electronic Data Sheet
+
+[File]
+    DescText = "Sample application for EtherNet/IP Adapter";
+    CreateDate = 02-02-2026;
+    CreateTime = 11:19:01;
+    ModDate = 02-02-2026;
+    ModTime = 11:19:01;
+    Revision = 1.0;
+    HomeURL = "www.port.de";
+
+[Device]
+    VendCode = 1114;
+    VendName = "port GmbH";
+    ProdType = 43;
+    ProdTypeStr = "Generic Device";
+    ProdCode = 10;
+    MajRev = 1;
+    MinRev = 1;
+    ProdName = "EtherNet/IP Adapter";
+
+[Device Classification]
+    Class1 = EtherNetIP;
+
+[Params]
+    Param1 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di1", $ name
+        "",                     $ units
+        "Digital Input 1", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param2 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di2", $ name
+        "",                     $ units
+        "Digital IO 2", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param3 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di3", $ name
+        "",                     $ units
+        "Digital IO 2", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param4 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di4", $ name
+        "",                     $ units
+        "Digital IO 4", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param5 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di5", $ name
+        "",                     $ units
+        "Digital IO 5", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param6 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di6", $ name
+        "",                     $ units
+        "Digital IO 6", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param7 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di7", $ name
+        "",                     $ units
+        "Digital IO 7", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param8 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di8", $ name
+        "",                     $ units
+        "Digital IO 8", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param9 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di9", $ name
+        "",                     $ units
+        "", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param10 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di10", $ name
+        "",                     $ units
+        "Digital IO 10", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param11 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di11", $ name
+        "",                     $ units
+        "Digital IO 11", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param12 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di12", $ name
+        "",                     $ units
+        "Digital IO 12", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param13 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di13", $ name
+        "",                     $ units
+        "Digital IO 13", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param14 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di14", $ name
+        "",                     $ units
+        "Digital IO 14", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param15 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di15", $ name
+        "",                     $ units
+        "Digital IO 15", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param16 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di16", $ name
+        "",                     $ units
+        "Digital IO 16", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param17 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di17", $ name
+        "",                     $ units
+        "Digital IO 17", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param18 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di18", $ name
+        "",                     $ units
+        "Digital IO 18", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param19 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di19", $ name
+        "",                     $ units
+        "Digital IO 19", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param20 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di20", $ name
+        "",                     $ units
+        "Digital IO 20", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param21 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di21", $ name
+        "",                     $ units
+        "Digital IO 21", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param22 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di22", $ name
+        "",                     $ units
+        "Digital IO 22", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param23 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di23", $ name
+        "",                     $ units
+        "Digital IO 23", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param24 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di24", $ name
+        "",                     $ units
+        "Digital IO 24", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param25 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di25", $ name
+        "",                     $ units
+        "Digital IO 25", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param26 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di26", $ name
+        "",                     $ units
+        "Digital IO 26", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param27 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di27", $ name
+        "",                     $ units
+        "Digital IO 27", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param28 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di28", $ name
+        "",                     $ units
+        "Digital IO 28", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param29 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di29", $ name
+        "",                     $ units
+        "Digital IO 29", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param30 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di30", $ name
+        "",                     $ units
+        "Digital IO 30", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param31 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di31", $ name
+        "",                     $ units
+        "Digital IO 31", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param32 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "di32", $ name
+        "",                     $ units
+        "Digital IO 32", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param33 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC6,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "led", $ name
+        "",                     $ units
+        "", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param34 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC8,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc1", $ name
+        "",                     $ units
+        "ADC1", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param35 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC8,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc2", $ name
+        "",                     $ units
+        "ADC2", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param36 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC4,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc3", $ name
+        "",                     $ units
+        "ADC3", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param37 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC4,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc4", $ name
+        "",                     $ units
+        "ADC4", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param38 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc5", $ name
+        "",                     $ units
+        "ADC5", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param39 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc6", $ name
+        "",                     $ units
+        "ADC6", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param40 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc7", $ name
+        "",                     $ units
+        "ADC7", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param41 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc8", $ name
+        "",                     $ units
+        "ADC8", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param42 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc9", $ name
+        "",                     $ units
+        "ADC9", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param43 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc10", $ name
+        "",                     $ units
+        "ADC10", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param44 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc11", $ name
+        "",                     $ units
+        "ADC11", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param45 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc12", $ name
+        "",                     $ units
+        "ADC12", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param46 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc13", $ name
+        "",                     $ units
+        "ADC13", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param47 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc14", $ name
+        "",                     $ units
+        "ADC47", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param48 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc15", $ name
+        "",                     $ units
+        "ADC48", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param49 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xCA,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "adc16", $ name
+        "",                     $ units
+        "ADC49", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param50 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xD1,                   $ Data Type
+        1,                      $ Data Size in bytes
+        "Config Data", $ name
+        "",                     $ units
+        "Config Data Element", $ help string
+        ,,0,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+    Param51 =
+        0,                      $ reserved, shall equal 0
+        ,,                      $ Link Path Size, Link Path
+        0x0800,                 $ Descriptor
+        0xC8,                   $ Data Type
+        4,                      $ Data Size in bytes
+        "RPI", $ name
+        "",                     $ units
+        "Requested Packet Intervall", $ help string
+        10000,,100000,               $ min, max, default data values
+        ,,,,                    $ mult, div, base, offset scaling
+        ,,,,                    $ mult, div, base, offset links
+        ;                       $ decimal places
+
+[Assembly]
+    Object_Name = "Assembly Object";
+    Object_Class_Code = 0x04;
+    Number_Of_Static_Instances = 3;
+    Assem100 =
+        "Input Assembly",
+        "",
+        97,
+        0x0000,
+        ,,
+        8,Param1,
+        8,Param2,
+        8,Param3,
+        8,Param4,
+        8,Param5,
+        8,Param6,
+        8,Param7,
+        8,Param8,
+        8,Param9,
+        8,Param10,
+        8,Param11,
+        8,Param12,
+        8,Param13,
+        8,Param14,
+        8,Param15,
+        8,Param16,
+        8,Param17,
+        8,Param18,
+        8,Param19,
+        8,Param20,
+        8,Param21,
+        8,Param22,
+        8,Param23,
+        8,Param24,
+        8,Param25,
+        8,Param26,
+        8,Param27,
+        8,Param28,
+        8,Param29,
+        8,Param30,
+        8,Param31,
+        8,Param32,
+        8,Param33,
+        32,Param34,
+        32,Param35,
+        32,Param36,
+        32,Param37,
+        32,Param38,
+        32,Param39,
+        32,Param40,
+        32,Param41,
+        32,Param42,
+        32,Param43,
+        32,Param44,
+        32,Param45,
+        32,Param46,
+        32,Param47,
+        32,Param48,
+        32,Param49;
+    Assem150 =
+        "Output Assembly",
+        "",
+        97,
+        0x0000,
+        ,,
+        8,Param1,
+        8,Param2,
+        8,Param3,
+        8,Param4,
+        8,Param5,
+        8,Param6,
+        8,Param7,
+        8,Param8,
+        8,Param9,
+        8,Param10,
+        8,Param11,
+        8,Param12,
+        8,Param13,
+        8,Param14,
+        8,Param15,
+        8,Param16,
+        8,Param17,
+        8,Param18,
+        8,Param19,
+        8,Param20,
+        8,Param21,
+        8,Param22,
+        8,Param23,
+        8,Param24,
+        8,Param25,
+        8,Param26,
+        8,Param27,
+        8,Param28,
+        8,Param29,
+        8,Param30,
+        8,Param31,
+        8,Param32,
+        8,Param33,
+        32,Param34,
+        32,Param35,
+        32,Param36,
+        32,Param37,
+        32,Param38,
+        32,Param39,
+        32,Param40,
+        32,Param41,
+        32,Param42,
+        32,Param43,
+        32,Param44,
+        32,Param45,
+        32,Param46,
+        32,Param47,
+        32,Param48,
+        32,Param49;
+    Assem151 =
+        "Config Assembly",
+        "",
+        10,
+        0x0000,
+        ,,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50,
+        8,Param50;
+
+[Connection Manager]
+    Object_Name = "Connection Manager Object";
+    Object_Class_Code = 0x06;
+    Connection1 =
+        0x84010002,			$ 0-15    = supported transport classes
+                                   $ 16      = trigger: cyclic
+                                   $ 17      = trigger: change of state
+                                   $ 18      = trigger: application
+                                   $ 19-23   = trigger: reserved
+                                   $ 24      = transport type: listen-only
+                                   $ 25      = transport type: input-only
+                                   $ 26      = transport type: exclusive-owner
+                                   $ 27      = transport type: redundant-owner
+                                   $ 28-30   = reserved
+                                   $ 31      = Client = 0 / Server = 1
+        0x44640405,			$ 0       = O->T fixed size supported
+                                   $ 1       = O->T variable size supported
+                                   $ 2       = T->O fixed size supported
+                                   $ 3       = T->O variable size supported
+                                   $ 4-5     = O->T number of bytes per slot (obsolete)
+                                   $ 6-7     = T->O number of bytes per slot (obsolete)
+                                   $ 8-10    = O->T Real time transfer format
+                                   $ 11      = reserved
+                                   $ 12-14   = T->O Real time transfer format
+                                   $ 15      = reserved
+                                   $ 16      = O->T connection type: NULL
+                                   $ 17      = O->T connection type: MULTICAST
+                                   $ 18      = O->T connection type: POINT2POINT
+                                   $ 19      = O->T connection type: reserved
+                                   $ 20      = T->O connection type: NULL
+                                   $ 21      = T->O connection type: MULTICAST
+                                   $ 22      = T->O connection type: POINT2POINT
+                                   $ 23      = T->O connection type: reserved
+                                   $ 24      = O->T priority: LOW
+                                   $ 25      = O->T priority: HIGH
+                                   $ 26      = O->T priority: SCHEDULED
+                                   $ 27      = O->T priority: URGENT
+                                   $ 28      = T->O priority: LOW
+                                   $ 29      = T->O priority: HIGH
+                                   $ 30      = T->O priority: SCHEDULED
+                                   $ 31      = T->O priority: URGENT
+        Param51,,Assem150,				$ O->T RPI, size, format
+        Param51,,Assem100,				$ T->O RPI, size, format
+        ,,					$ config #1 size, format
+        ,Assem151,				$ config #2 size, format
+        "Exclusive Owner",		$ Connection Name
+        "",	$ help string
+        "20 04 24 97 2C 96 2C 64";		$ Path
+    Connection2 =
+        0x82010002,			$ 0-15    = supported transport classes
+                                   $ 16      = trigger: cyclic
+                                   $ 17      = trigger: change of state
+                                   $ 18      = trigger: application
+                                   $ 19-23   = trigger: reserved
+                                   $ 24      = transport type: listen-only
+                                   $ 25      = transport type: input-only
+                                   $ 26      = transport type: exclusive-owner
+                                   $ 27      = transport type: redundant-owner
+                                   $ 28-30   = reserved
+                                   $ 31      = Client = 0 / Server = 1
+        0x44640005,			$ 0       = O->T fixed size supported
+                                   $ 1       = O->T variable size supported
+                                   $ 2       = T->O fixed size supported
+                                   $ 3       = T->O variable size supported
+                                   $ 4-5     = O->T number of bytes per slot (obsolete)
+                                   $ 6-7     = T->O number of bytes per slot (obsolete)
+                                   $ 8-10    = O->T Real time transfer format
+                                   $ 11      = reserved
+                                   $ 12-14   = T->O Real time transfer format
+                                   $ 15      = reserved
+                                   $ 16      = O->T connection type: NULL
+                                   $ 17      = O->T connection type: MULTICAST
+                                   $ 18      = O->T connection type: POINT2POINT
+                                   $ 19      = O->T connection type: reserved
+                                   $ 20      = T->O connection type: NULL
+                                   $ 21      = T->O connection type: MULTICAST
+                                   $ 22      = T->O connection type: POINT2POINT
+                                   $ 23      = T->O connection type: reserved
+                                   $ 24      = O->T priority: LOW
+                                   $ 25      = O->T priority: HIGH
+                                   $ 26      = O->T priority: SCHEDULED
+                                   $ 27      = O->T priority: URGENT
+                                   $ 28      = T->O priority: LOW
+                                   $ 29      = T->O priority: HIGH
+                                   $ 30      = T->O priority: SCHEDULED
+                                   $ 31      = T->O priority: URGENT
+        Param51,0,,				$ O->T RPI, size, format
+        Param51,,Assem100,				$ T->O RPI, size, format
+        ,,					$ config #1 size, format
+        ,Assem151,				$ config #2 size, format
+        "Input Only",		$ Connection Name
+        "",	$ help string
+        "20 04 24 97 2C 98 2C 64";		$ Path
+    Connection3 =
+        0x81010002,			$ 0-15    = supported transport classes
+                                   $ 16      = trigger: cyclic
+                                   $ 17      = trigger: change of state
+                                   $ 18      = trigger: application
+                                   $ 19-23   = trigger: reserved
+                                   $ 24      = transport type: listen-only
+                                   $ 25      = transport type: input-only
+                                   $ 26      = transport type: exclusive-owner
+                                   $ 27      = transport type: redundant-owner
+                                   $ 28-30   = reserved
+                                   $ 31      = Client = 0 / Server = 1
+        0x44640305,			$ 0       = O->T fixed size supported
+                                   $ 1       = O->T variable size supported
+                                   $ 2       = T->O fixed size supported
+                                   $ 3       = T->O variable size supported
+                                   $ 4-5     = O->T number of bytes per slot (obsolete)
+                                   $ 6-7     = T->O number of bytes per slot (obsolete)
+                                   $ 8-10    = O->T Real time transfer format
+                                   $ 11      = reserved
+                                   $ 12-14   = T->O Real time transfer format
+                                   $ 15      = reserved
+                                   $ 16      = O->T connection type: NULL
+                                   $ 17      = O->T connection type: MULTICAST
+                                   $ 18      = O->T connection type: POINT2POINT
+                                   $ 19      = O->T connection type: reserved
+                                   $ 20      = T->O connection type: NULL
+                                   $ 21      = T->O connection type: MULTICAST
+                                   $ 22      = T->O connection type: POINT2POINT
+                                   $ 23      = T->O connection type: reserved
+                                   $ 24      = O->T priority: LOW
+                                   $ 25      = O->T priority: HIGH
+                                   $ 26      = O->T priority: SCHEDULED
+                                   $ 27      = O->T priority: URGENT
+                                   $ 28      = T->O priority: LOW
+                                   $ 29      = T->O priority: HIGH
+                                   $ 30      = T->O priority: SCHEDULED
+                                   $ 31      = T->O priority: URGENT
+        Param4,0,,				$ O->T RPI, size, format
+        Param51,,Assem100,				$ T->O RPI, size, format
+        ,,					$ config #1 size, format
+        ,Assem151,				$ config #2 size, format
+        "Listen Only",		$ Connection Name
+        "",	$ help string
+        "20 04 24 97 2C 99 2C 64";		$ Path
+
+[Capacity]
+    MaxMsgConnections = 6;
+    MaxIOConnections = 13;
+    MaxConsumersPerMcast = 6;
+    TSpec1 = TxRx, 97, 100000;
+
+[DLR Class]
+    Revision = 3;
+    Object_Name = "Device Level Ring Object";
+    Object_Class_Code = 0x47;
+    MaxInst = 1;
+    Number_Of_Static_Instances = 1;
+    Max_Number_Of_Dynamic_Instances = 0;
+    Ring_Supervisor_Capable = No;
+
+[Ethernet Link Class]
+    Revision = 3;
+    Object_Name = "Ethernet Link Object";
+    Object_Class_Code = 0xF6;
+    MaxInst = 1;
+    Number_Of_Static_Instances = 1;
+    Max_Number_Of_Dynamic_Instances = 0;
+    InterfaceLabel1 = "Port 1";

@@ -1,0 +1,573 @@
+# Changelog OpENer
+
+## Changes introduced by port GmbH
+
+### V2.20.0 (2019-05-07)
+  * improved randomness of delayed Encapsulation messages
+  * still enable DLR Beacon Forwarding even if DLR is disabled to protect device
+  * fixed handling of empty or invalid encapsulation requests
+
+### V2.19.0 (2019-03-19)
+  * fixed old timeout state still active after reset
+  * fixed management of Ethernet link states
+  * fixed LED behavior if dynamic IP was lost due to Phy reconfiguration
+  * fixed buffer leak for NOP commands
+  * changed error logs regarding external data to warnings
+  * reset volatile attributes on Reset service
+
+### V2.18.0 (2019-02-18)
+  * fixed cleanup of encapsulation session if closed remotely
+  * avoid unnecessary Phy configuration during startup
+  * removed Time tick variable, stack uses timestamps instead
+  * reworked CIP object model to reduce footprint and increase flexibility
+
+### V2.17.0 (2019-01-30)
+  * improved handling of encapsulation sessions
+  * added General Status Code to API for requests handling of Virtual Classes
+  * support NULL ForwardOpen requests
+  * improved management of CIP classes (less memory required)
+
+### V2.16.0 (2019-01-08)
+  * fixed allocation of encapsulation session resources
+  * fixed calculation of ProductionTriggerTimeout for cyclic connections
+  * reduced size of internal connection management data
+  * use correct error code if ProductionInhibitTime > RPI
+  * increased resolution of cyclic transmission trigger timer
+
+### V2.15.0 (2018-12-06)
+  * USer MAnual: added introduction to EtherNEt/IP
+
+### V2.14.0 (2018-11-22)
+  * fixed check of disabling Admin State of last active port
+  * fixed LED behavior for Class 3 timeouts
+  * fixed LED behavior after loosing dynamic IP address by all links down
+  * release CLass 3 retransmission buffer after connection is closed
+  * improved handling of fragmented encapsulation requests
+  * fixed takover of mew producing multicast connection if old one is closed
+  * extended API: goal_eipAssemblyObjectWrite() and goal_eipAssemblyObjectRead()
+  * set default tick to 1 ms
+
+### V2.13.0 (2018-10-01)
+  * version number now follows GOAL version number
+  * updated GOAL EIP wrapper for uC2C
+  * added LED handler for NS & MS LEDs
+  * support consuming multicast connections
+  * fixed sending of multicast messages on multihoming devices
+  * removed hard target reset, reset is now always simulated
+
+### V2.3.1 (2018-05-22)
+  * fixed handling of default IP address if no DHCP is enabled
+
+### V2.3.0 (2018-05-05)
+  * several bug fixes for Conformance Test CT-15
+  * global Variables replaced by instance data
+    (multiple instances of EIP stack possible)
+  * dynamic configuration of stack during startup
+  * made TCP/IP attributes TTL & Mcast Config settable
+  * fixed responses to LargeForwardOpen Service requests
+  * 
+
+### V2.2.0 (2017-10-24)
+  * implemented new NET API of GOAL
+  * replaced IApp_SendUDPData() by opener_NWHsend()
+  * added new config macro OPENER_CIP_NUM_IMPLICIT_CONNS for reserving UDP sockets
+  * removed obsolete config macro OPENER_CIP_NUM_TCP_CONNS
+  * support data types REAL (float) and LREAL (double)
+
+### V2.1.0 (2017-05-02)
+  * added API function CIP_CM_initConnectionId() to feed connection Id to Connection Manager
+  * added API function CIP_TCPIP_updateIP() to update IP addresses of TCP/IP interface
+  * improved check of incoming IO data if it belongs to an active connection
+  * added API isConnectionActive() to check for any active connection
+  * only set TCP/IP Interface attributes 3 or 5 if no connection is active
+  * support multiple CIP Requests in one TCP data chunk
+  * added processing of special requests after response was sent
+    * IP address configuration update
+    * Phy configuration update
+    * device reset
+  * change to IP address configuration takes now effect without a reset
+  * TCP/IP Interface: o not check for active connections when changing IP configuration
+  * GOAL: reissue DHCP requests after all links went down
+  * API function IApp_RunIdleChanged() now indicates connection points to identify connection
+  * added Ethernet Interface attribute 9 "Admin State"
+  * changed behavior of IApp_getEthAttributes() to indicate requested attribute
+  * added Ethernet Link attributes 12 "HC Interface Counters" & 13 "HC Media Counters"
+  * fixed endian conversion functions for 64 bit integers
+  * Ethernet Link objects support Gbit Phys
+  * fixed response of Ethernet Link service "GetAttributeAll"
+  * GOAL: updated platform files to newest API
+  * added Connection Manager attributes 1 to 8
+  * allocate connection lists dynamically during start up
+  * new API functions for Creating CIP connections during start up:
+    * addExclusiveOwnerConnection()
+    * addInputOnlyConnection()
+    * addListenOnlyConnection()
+  * use same socket for producing and consuming IO data
+  * fixed checking & error responses for mismatching ForwardOpen requests that
+    contain an already opened producing multicast connection
+  * added wrapper functions for accessing OpENer with the unified GOAL API for EtherNet/IP
+  * added support for Virtual CIP classes
+    * Virtual CIP classes are registered by application via registerVirtualClass()
+    * OpENer passes all requests for a virtual class to application
+    * application must generate CIP response
+  * added API functions getFirstExclusiveOwnerEndpoint() & setFirstExclusiveOwnerEndpoint()
+    to manipulate connection endpoints (Assembly IDs) of first Exclusive Owner connection
+  * removed API function IApp_HandleApplication()
+  * GOAL: updated to newest version
+
+### V2.0.0 (2016-03-01)
+  * added Ethernet Link attribute 11 "Interface Capability"
+  * simplified API for accessing TCP/IP interface attributes: IApp_getTCPIPAttributes()
+  * use own socket address structs and macros instead of BSD socket API
+    (increases platform independence)
+  * added support for for reading/writing big endian integers from/to buffer
+  * created common include header "opener_includes.h"
+  * close socket if all its connections timed out
+  * fixed check of Encapsulation sequence Id of first received IO packet
+  * fixed responses to Message Router services "GetAttributeSingle" & "GetAttributeAll"
+  * GOAL: updated API to newest version
+
+
+### V1.4.0 (2016-02-24)
+  * Identity object service "Reset" supports parameter 2
+    (Factory Reset without reset of communication configuration)
+  * use Originator's IP address to determine connection owner
+  * only use new DSCP values of QoS Object after reset for priorities
+  * TCP/IP Interface attribute 5 is only settable, if Configuration Method is static
+  * added Ethernet Link attribute 6 "Interface Control"
+  * GOAL: initialize Phys before obtaining IP address
+  * GOAL: save dynamically assigned IP address when switching to static
+  * limit maxResponseDelay for ListIdentity Requests to 2000 ms
+  * added API function opener_getVersion() to retrieve current version
+  * added API functions CIP_getIdentity() & CIP_setIdentity() to manipulate Identity attributes
+    (replaces  setDeviceSerialNumber())
+  * GOAL: updated API to newest version
+
+### V1.3.0 (2015-08-20)
+  * GOAL: added platform files for GOAL
+  * added DLR Object dor DLR Ring Nodes
+  * added Ethernet Link attributes 4 "Interface Counters" & 5 "Media Counters"
+  * added Ethernet Link service "Get_and_Clear"
+  * added QoS object (attributes 4, 5, 6, 7, 8)
+  * apply configured priories to all connections
+  * fixed response of Ethernet Link service "GetAttibuteAll"
+  * added TCP/IP Interface attribute 13 "Encapulation Timeout"
+  * added Encapsulation Inactivity Watchdog to check all TCP connections
+  * made TCP/IP Interface attributes 5 "Interface Configuration" & 6 "Host Name" settable
+  * fixed response of Connection Manager class service "GetAttributeAll"
+  * fixed check of Sequence Id for Sequenced Address Items
+
+### V1.2.0 (2014-08-26)
+  * added Connection Manager service "Large Forward Open"
+  * RIN32M3: updated platform to support new BSP
+
+### V1.1.0 (2014-03-13)
+  * send out Response to Identity Object service "Reset" before resetting
+  * added Ethernet Link attribute 10 "Interface Lable"
+  * added support for multiple instances of Ethernet Link class
+    (needed for devices with multiple interfaces)
+  * RIN32M3: added platform files for Renesas RIN32M3
+
+### V1.0.0 (2013-11-20)
+  * TCP/IP Interface attribute 3 "Configuration Control" is settable
+    (choice of IP address assignment)
+  * fixed O2T Connection size check for connections with Run/Idle Header
+  * use correct Connection Manager  errors for wrong connection sizes
+  * fixed checking of Electronic Key in compatibility mode
+  * removed unimplemented Connection Manager service "GetConnectionOwner"
+    (Redundant Owner Connections are not supported)
+  * Encap: Fixed error word for multiple Register Session Request on the same socket
+
+
+## Changes introduced by original authors
+
+2011-11-22  alil
+
+	* src/cip/cipclass3connection.c, src/cip/cipconnectionmanager.c,
+	  src/cip/cipconnectionmanager.h, src/cip/cipioconnection.c: fixed
+	  issue in handling connection class trigger
+
+2011-11-21  alil
+
+	* ChangeLog.txt, src/cip/cipconnectionmanager.c,
+	  src/cip/cipconnectionmanager.h, src/cip/cipioconnection.c: added
+	  support for production inhibit time network segment
+	* ChangeLog.txt, README: updated ChangeLog.txt and README for 1.1.
+	  release
+	* .:
+	* : updated documentation for upcoming release
+
+2011-11-18  alil
+
+	* : fixed issue with latest changes to connection path handling
+	* : updated stc file
+	* : updated some parameters
+	* : first version of application triggered connection support
+
+2011-11-17  alil
+
+	* : added IApp_HandleApplication as starting point for application
+	  triggered connections
+	* : fixed issue in close socket
+	* : improved forward open infrastructure non assembly object I/O
+	  connections
+
+2011-09-13  alil
+
+	* : reworked the structure CIP_Class in order to make its
+	  maintenance easier.
+
+2011-08-25  alil
+
+	* : reworked connection handling mechanisms in a way that any CIP
+	  object can be a connection target
+
+2011-05-18  alil
+
+	* : added support for compilation on win32
+	* : fixed bug# 3285739: config assembly return value wrong
+
+2011-02-17  alil
+
+	* : fixed issue with 64Bit datatype support
+
+2011-01-04  alil
+
+	* : merged changes from 1.0.3 release branch
+
+2010-12-17  alil
+
+	* : fixed wrong endless loop in isConnectedOutputAssembly
+
+2010-12-16  alil
+
+	* : added check in setAttributeSingle of assembly objects if they
+	  are the write target in any open connection
+	* : fixed handling of configuration data
+	* : added more than 1 simultaneous connections for listen only and
+	  input only
+	* : fixed wrong initialization of listen only connections
+
+2010-12-09  alil
+
+	* : moved checking of correct originator address for connected
+	  messages into the handleReceivedConnectedData function in order
+	  to correctly check even if data is presented from wrong socket.
+	* : fixed an issue in forward open of listen and input only
+	  connections
+
+2010-12-01  alil
+
+	* : Fixed Bug# 3124374: faulty if in getListenOnlyConnection()
+	  thanks csar
+
+2010-10-21  alil
+
+	* : added config flag for enabling/disabling the support of 64Bit
+	  datatypes
+	* : Added support for 64Bit integers, implemented a basic data type
+	  decoding infrastructure that simplifies the implementation of
+	  services like SetAttributeSingle, moved encodeData and decodeData
+	  into the public interface of opener in order to allow device
+	  implementers to use them for implementing setting and getting of
+	  special attributes like structs.
+	* : Refactored the names of the encapsulation message handling
+	  functions to better show that these are the functions for
+	  handling received messages.
+
+2010-09-24  alil
+
+	* : Fixed wrong reply connection ID in connected explicit messages
+
+2010-08-11  alil
+
+	* : fixed bug# 3042699: Network handler should close sockets
+	  consistently
+
+2010-07-27  alil
+
+	* : Fixed Bug# 3034698: alignment
+
+2010-06-23  alil
+
+	* : fixed Bug# 3020064: error in tcpip object attr. 4
+
+2010-06-22  alil
+
+	* : Fixed Bug# 3019069: socket close
+
+2010-06-21  alil
+
+	* : worked to improve handling of to large packets
+
+2010-06-16  alil
+
+	* : reworked outputAttribute function to be more flexible and
+	  better usable for encoding not only certain attributes but also
+	  for arrays and structures.
+
+2010-06-14  alil
+
+	* : Fixed Bug# 3015757: endianess bug in cipcommon.c
+
+2010-06-04  alil
+
+	* : Fixed Bug# 3011151: Bug in notifyConnectedCPF (== should be =)
+
+2010-05-27  alil
+
+	* : Fixed Bug# 3007819: T_to_O_RPI
+	* : consolidated connection manager extended error defintions
+
+2010-05-25  alil
+
+	* : fixed issue when explicit messages should not return a value
+	* : fixed issues in returning the correct messages.
+	* : Fixed Bug# 3006795: unconnected send
+
+2010-05-21  alil
+
+	* : changed attrib type back to 16Bit
+
+2010-05-20  alil
+
+	* : Fixed Bug# 2996649: Identity object mixes Status (#5) with
+	  State (#8)
+	* : Fixed Bug# 3004678: attribute id bug: 8/16/32-bit?
+	* : Fixed Bug 3004683: Message Router: 16-bit attribute id
+
+2010-05-14  alil
+
+	* : added stc file for example application
+
+2010-05-12  alil
+
+	* : Fixed Bug #3000134: connection failures can put stack in
+	  unrecoverable state
+
+2010-05-11  alil
+
+	* : Applied Patch #3000005: trivial: mark correct socket closed
+
+2010-05-07  alil
+
+	* : fixed Bug 2997845: if CIP Item Id is bad, need to return
+	  encapsulation error
+
+2010-05-05  alil
+
+	* : improved reset handling in demo app
+	* : changed assembly object to do not have getAttributeAll per
+	  default
+	* : fixed explicit messaging handling regarding the return vars of
+	  the involved functions; allow that objects do not have
+	  getAttributeAll per default (e.g., needed for assembly object)
+	* : corrected setAssemblyAttributeSingle to return the right error
+	  values
+	* : changed revision of assembly class to 2 as required by the cip
+	  spec
+
+2010-05-03  alil
+
+	* : merged changes from 1.0.1 release
+
+2010-04-28  alil
+
+	* : changed assembly ids to the vendor specific range, updated
+	  opener_sample_app.eds, move ChangeLog to ChangeLog.txt
+	* : fixed bug that dissallowed using 16bit class instance ids
+
+2010-04-27  alil
+
+	* : updated ChangeLog
+
+2010-04-21  alil
+
+	* : Applied patch ID: 2989571 (explicit message access
+	  get/setattribute single) for assembly objects
+
+2010-04-15  alil
+
+	* : changed file headers to make them easier to maintain
+
+2010-04-07  alil
+
+	* : fixed bug 2983235
+
+2010-03-16  alil
+
+	* : fixed assert error thanks to csar
+
+2010-03-13  alil
+
+	* : applied custom assertion patch, thanks to bumpp
+
+2010-03-08  alil
+
+	* : applied domain name patch
+
+2010-03-05  alil
+
+	* : moved the encapsulate data to one central plaze
+	* : improved buffer usage in the encapsulation layer. this uses
+	  global vars makes opener easier to read and is the basis for
+	  multiple requests at the same time. This request is based on the
+	  patch submitted by bumpp. Thanks.
+
+2010-02-24  alil
+
+	* : made some changes reported by splint
+
+2010-02-23  alil
+
+	* : fixed wrong asserts in cip startup. Thanks to Mr. Kaiser for
+	  reporting this issue.
+
+2010-02-20  alil
+
+	* : added patch for incarnation id based connection id generation.
+	  Thanks to bumpp
+	* : fixed some pointer checks in ciptcpipinterface.c string
+	  handling
+
+2010-02-11  alil
+
+	* : fixed issue in api declaration; fixed issue for compiling
+	  networkhandler under linux
+	* : first quick fix for the "hijacked" port problem
+
+2010-02-04  alil
+
+	* : finished work on shutdown and clean up code. If opener is now
+	  shutdown it should free all allocated resources.
+	* : added support for connection shutdown on opener close
+
+2010-02-03  alil
+
+	* : Applied patch from bumpp:
+	  This patch adds value definitions for the List Identity Object's
+	  State
+	  attribute, and adds use of the "operational" define in
+	  ListIdentity()
+	  function.
+	  Changed in ListIdentity() to use the status value of the identity
+	  object instead of a constant.
+
+2010-01-24  alil
+
+	* : applied EIP_INVALID_SOCKET patch
+
+2010-01-15  alil
+
+	* : added new api for freeing allocated memory
+
+2010-01-13  alil
+
+	* : fixed wrong IO connection event on application establishment.
+	* : fixed wrong if statement in manageConnections handling
+	  connection timeouts
+
+2009-11-04  alil
+
+	* : fixed issue in an return value of ForwardOpen
+
+2009-11-03  alil
+
+	* : changed sample app to mirror outputs to the inputs
+	* : added first simple eds file with just the connections
+	* : reworked documentation
+
+2009-10-29  alil
+
+	* : added coding rules, and eclipse project settings for the code
+	  formatting
+
+2009-10-27  alil
+
+	* : fully implemented the correct behavior of exclusive owner,
+	  input only, and listen only connections.
+
+2009-10-22  alil
+
+	* : added callback for informing the application on connection
+	  state changes
+	* : starting point for new IO connection handling supporting
+	  application connection types, Attention not finished
+	  implementation!!!
+	  However exclusive owner and input only should work. Please check
+	  for the new application interface.
+
+2009-10-15  alil
+
+	* : fixed wrong handling of timeout multiplier
+
+2009-10-14  alil
+
+	* : updated connection id choosing to conform to the EIP specs
+	* : changed watchdogtimeout behavior to be per default timed out as
+	  it is required on EIP
+
+2009-10-07  alil
+
+	* : fixed issue with wrong usage of connectionIDs when given by the
+	  originator
+
+2009-09-24  alil
+
+	* : implemented support for heartbeat connections; fixed some
+	  issues with peer-to-peer connections
+
+2009-09-08  alil
+
+	* : removed testing output message
+
+2009-09-07  alil
+
+	* : worked on documentation, fixed spelling errors
+
+2009-09-03  alil
+
+	* : reworked tracing facilities to create better code especially
+	  for production code
+
+2009-09-02  alil
+
+	* : made OpENer compile able with c++, updated porting guide to
+	  include ref to setDeviceSerial
+
+2009-09-01  alil
+
+	* : added function for setting the serial number during device
+	  setup allowing to set the serial number more easily per device;
+	  changed main to prompt for command line parameters, updated TODO
+	  and README
+	* : added setsockopt for listen to broadcast messages. is necessary
+	  on some linuxes
+	* : made opener compile with ansi switch
+
+2009-08-31  alil
+
+	* : finished porting guide documentation, update and fixed some
+	  doxygen issues
+	* : finished porting guide documentation, update and fixed some
+	  doxygen issues
+
+2009-08-27  alil
+
+	* : fixed issue in assembly object creation, correctly setup
+	  default build in eclipse project
+
+2009-08-26  alil
+
+	* : worked on general documentation and introduction
+
+2009-08-25  alil
+
+	* : updated documentation main page
+	* : updated documentation of the encapsulation layer
+
+2009-08-24  alil
+
+	* : initial import
+	* :
+

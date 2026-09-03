@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/cmake_install.cmake",
+		"C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/cmake_install.cmake",
+		"C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/images/bootloader/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

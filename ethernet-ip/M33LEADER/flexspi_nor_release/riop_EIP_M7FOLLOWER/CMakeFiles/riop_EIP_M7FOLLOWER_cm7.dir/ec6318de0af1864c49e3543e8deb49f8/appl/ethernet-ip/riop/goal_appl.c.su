@@ -1,0 +1,12 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/lpit/fsl_lpit.h:396:13:LPIT_ResetStateDelay	4	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:133:15:appl_init	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:172:15:appl_setup	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:290:22:main_eipIoConnectionEvent	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:352:22:main_eipAfterAssemblyDataReceived	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:434:22:main_eipBeforeAssemblyDataSend	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:499:22:main_eipRunIdleChanged	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:535:22:main_eipResetDevice	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:567:15:main_eipCallback	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:668:22:main_eipAcdConflict	104	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:850:13:appl_eipRxPayloadProcess	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/goal_appl.c:936:13:appl_eipTxPayloadPrepare	48	static

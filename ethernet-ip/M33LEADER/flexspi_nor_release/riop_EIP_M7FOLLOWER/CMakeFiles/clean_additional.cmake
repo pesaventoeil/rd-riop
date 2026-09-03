@@ -1,0 +1,10 @@
+# Additional clean files
+cmake_minimum_required(VERSION 3.16)
+
+if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "debug")
+  file(REMOVE_RECURSE
+  "armgcc\\core1_image.bin"
+  "clean_files-NOTFOUND"
+  "riop_EIP_M7FOLLOWER_cm7.bin"
+  )
+endif()

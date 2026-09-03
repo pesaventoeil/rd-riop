@@ -1,0 +1,10 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1581:20:CLOCK_ControlGate	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1599:20:CLOCK_EnableClock	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1609:20:CLOCK_DisableClock	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:98:17:XBAR_GetCtrlRegAndShift	32	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:126:6:XBAR_Init	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:141:6:XBAR_Deinit	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:166:10:XBAR_SetSignalsConnection	40	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:211:10:XBAR_ClearOutputStatusFlag	32	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:251:10:XBAR_GetOutputStatusFlag	32	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/xbar_1/fsl_xbar.c:295:10:XBAR_SetOutputSignalConfig	32	static

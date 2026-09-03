@@ -1,0 +1,4 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_bm.c:43:15:goal_bmAlloc	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_bm.c:90:15:goal_bmBitReq	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_bm.c:124:22:goal_bmBitReqSpec	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_bm.c:159:15:goal_bmBitRel	32	static

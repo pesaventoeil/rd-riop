@@ -1,0 +1,275 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Python3::Interpreter::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Python3__Interpreter-flexspi_nor_release-2cac0a9ce37940dd6c14.json",
+					"name" : "Python3::Interpreter",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Python3::InterpreterMultiConfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Python3__InterpreterMultiConfig-flexspi_nor_release-6b1b3a3c48988f055ca8.json",
+					"name" : "Python3::InterpreterMultiConfig",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1
+					],
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-flexspi_nor_release-f040eec181a89de70dbe.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.25.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						16,
+						17
+					]
+				},
+				{
+					"build" : "images",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-images-flexspi_nor_release-993dc16e8fcf9f4b1d8c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.25.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "images",
+					"targetIndexes" : 
+					[
+						0,
+						3,
+						4,
+						5,
+						6,
+						15
+					]
+				},
+				{
+					"build" : "images/bootloader",
+					"jsonFile" : "directory-images.bootloader-flexspi_nor_release-b4648bc94f78e46750b9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.25.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "images/bootloader"
+				}
+			],
+			"name" : "flexspi_nor_release",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "sysbuild",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "M33LEADER::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-M33LEADER-flexspi_nor_release-b85a80a47ee87e600bba.json",
+					"name" : "M33LEADER",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "M33LEADER_cache::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-M33LEADER_cache-flexspi_nor_release-845f2b592f9ffc77451c.json",
+					"name" : "M33LEADER_cache",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "M33LEADER_extra_byproducts::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-M33LEADER_extra_byproducts-flexspi_nor_release-46d37f7dffcf9f32b8b8.json",
+					"name" : "M33LEADER_extra_byproducts",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "guiconfig::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-guiconfig-flexspi_nor_release-da58966cc7eacf4ea459.json",
+					"name" : "guiconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "guiproject::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-guiproject-flexspi_nor_release-b3c26d1f7a8476d38fed.json",
+					"name" : "guiproject",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "hardenconfig::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-hardenconfig-flexspi_nor_release-52a2ab5ffeb25fd1174f.json",
+					"name" : "hardenconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "menuconfig::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-menuconfig-flexspi_nor_release-24dbf3f56190981eae5b.json",
+					"name" : "menuconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER-flexspi_nor_release-77ff326210fbe3ac4db6.json",
+					"name" : "riop_EIP_M7FOLLOWER",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_cache::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_cache-flexspi_nor_release-98a1f75ea2213f65a1c2.json",
+					"name" : "riop_EIP_M7FOLLOWER_cache",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_extra_byproducts::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_extra_byproducts-flexspi_nor_release-d1c7a12d1f73e725bec6.json",
+					"name" : "riop_EIP_M7FOLLOWER_extra_byproducts",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_guiconfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_guiconfig-flexspi_nor_release-cfdc36f884c5fad827a0.json",
+					"name" : "riop_EIP_M7FOLLOWER_guiconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_guiproject::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_guiproject-flexspi_nor_release-b0ec9b740a2b4c6dae1c.json",
+					"name" : "riop_EIP_M7FOLLOWER_guiproject",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_hardenconfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_hardenconfig-flexspi_nor_release-4fb414084afbde454792.json",
+					"name" : "riop_EIP_M7FOLLOWER_hardenconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_menuconfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_menuconfig-flexspi_nor_release-f585f9a6987614249c70.json",
+					"name" : "riop_EIP_M7FOLLOWER_menuconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "riop_EIP_M7FOLLOWER_standalone_project::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-riop_EIP_M7FOLLOWER_standalone_project-flexspi_nor_release-c33634345673120fc43c.json",
+					"name" : "riop_EIP_M7FOLLOWER_standalone_project",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "standalone_project::@75409118d1221e5c3fe0",
+					"jsonFile" : "target-standalone_project-flexspi_nor_release-da5b5d12184ced2748b2.json",
+					"name" : "standalone_project",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sysbuild_guiconfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sysbuild_guiconfig-flexspi_nor_release-99e1563802f157bad55d.json",
+					"name" : "sysbuild_guiconfig",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sysbuild_menuconfig::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sysbuild_menuconfig-flexspi_nor_release-be5cfd1aca252533b3af.json",
+					"name" : "sysbuild_menuconfig",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release",
+		"source" : "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/cmake/extension/sysbuild"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

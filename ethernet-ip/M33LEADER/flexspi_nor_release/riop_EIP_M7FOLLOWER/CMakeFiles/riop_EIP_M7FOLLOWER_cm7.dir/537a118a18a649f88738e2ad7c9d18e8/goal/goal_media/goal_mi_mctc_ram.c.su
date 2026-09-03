@@ -1,0 +1,9 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:90:15:goal_miMctcRamReg	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:172:22:goal_miMctcRamOpen	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:268:22:goal_miMctcDmCbWrite	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:355:22:goal_miMctcRamInfoSetup	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:390:22:goal_miMctcRamSwap	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:437:13:goal_miMctcRamPoll	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:519:13:goal_miMctcRamLoop	56	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:566:22:goal_miMctcRamNotifyCb	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_mi_mctc_ram.c:590:15:goal_miMctcRamCfgTout	24	static

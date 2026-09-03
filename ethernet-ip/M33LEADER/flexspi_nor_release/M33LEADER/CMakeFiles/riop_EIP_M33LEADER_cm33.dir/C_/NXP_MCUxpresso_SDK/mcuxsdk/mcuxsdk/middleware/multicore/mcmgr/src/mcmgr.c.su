@@ -1,0 +1,16 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:14:16:MCMGR_RegisterEvent	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:30:23:MCMGR_TriggerEventCommon	32	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:57:16:MCMGR_TriggerEvent	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:62:16:MCMGR_TriggerEventForce	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:67:13:MCMGR_StartupDataEventHandler	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:100:13:MCMGR_FeedStartupDataEventHandler	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:136:16:MCMGR_EarlyInit	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:160:16:MCMGR_Init	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:211:16:MCMGR_StartCore	32	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:246:16:MCMGR_GetStartupData	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:284:16:MCMGR_StopCore	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:293:9:MCMGR_GetVersion	4	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:298:16:MCMGR_GetCoreProperty	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:310:10:MCMGR_GetCoreCount	4	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:315:14:MCMGR_GetCurrentCore	8	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/middleware/multicore/mcmgr/src/mcmgr.c:320:16:MCMGR_ProcessDeferredRxIsr	4	static

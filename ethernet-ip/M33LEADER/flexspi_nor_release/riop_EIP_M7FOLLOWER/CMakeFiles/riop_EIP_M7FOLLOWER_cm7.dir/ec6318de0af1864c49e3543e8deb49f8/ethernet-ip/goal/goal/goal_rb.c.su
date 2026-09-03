@@ -1,0 +1,12 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:39:15:goal_rbInit	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:82:6:goal_rbShutdown	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:108:15:goal_rbPut	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:143:15:goal_rbGet	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:194:15:goal_rbPutFast	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:263:6:goal_rbPutFastFinish	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:278:15:goal_rbWpGet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:308:15:goal_rbCntGet	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:346:13:goal_rbTouched	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:370:15:goal_rbReaderReg	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:411:15:goal_rbReaderGet	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_rb.c:472:15:goal_rbFlush	24	static

@@ -1,0 +1,17 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:117:15:goal_targetPhyGenericOpen	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:168:15:goal_targetPhyGenericClose	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:183:15:goal_targetPhyGenericId	48	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:318:22:regGet	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:335:22:regSet	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:352:22:cmd	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:426:22:linkState	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:455:22:portState	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:502:22:autoNegState	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:549:22:hwFaultGet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:579:22:speedSet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:633:22:duplexSet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:682:22:capabilitiesGet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:751:22:autoNegProgress	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:810:22:advertisement	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:960:22:genericRegSet	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/phy/generic/phy_generic.c:982:22:genericRegGet	24	static

@@ -1,0 +1,9 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_switch.h:1363:24:SWT_BridgeGetFDBTableRemainEntryNum	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_switch.h:1446:24:SWT_BridgeGetL2MCFTableRemainEntryNum	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_switch.h:2427:24:SWT_GetFDBInUseEntriesNumber	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.h:41:29:goal_targetResToGoal	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc_bsp.c:190:15:netcOpen	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc_bsp.c:237:15:netcMacTabAdd	64	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc_bsp.c:282:15:netcMacTabDel	96	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc_bsp.c:486:6:netcFDBTableDump	112	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc_bsp.c:646:6:netcL2MCTableDump	104	static

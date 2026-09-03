@@ -1,0 +1,1471 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml-stylesheet href="GSDML-Stylesheet-HTML-V2.44.xsl" type="text/xsl"?>
+
+<!--
+     If you change something here, don't forget to update the CI validation
+     script after changing the filename.
+-->
+
+<ISO15745Profile xmlns="http://www.profibus.com/GSDML/2003/11/DeviceProfile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.profibus.com/GSDML/2003/11/DeviceProfile ..\xsd\GSDML-DeviceProfile-V2.44.xsd">
+    <!-- ProfileHeader definition as defined in ISO 15745-1. Please do not change the content. -->
+    <ProfileHeader>
+        <ProfileIdentification>PROFINET Device Profile</ProfileIdentification>
+        <ProfileRevision>1.00</ProfileRevision>
+        <ProfileName>Device Profile for PROFINET Devices</ProfileName>
+        <ProfileSource>PROFIBUS Nutzerorganisation e. V. (PNO)</ProfileSource>
+        <ProfileClassID>Device</ProfileClassID>
+        <ISO15745Reference>
+            <ISO15745Part>4</ISO15745Part>
+            <ISO15745Edition>1</ISO15745Edition>
+            <ProfileTechnology>GSDML</ProfileTechnology>
+        </ISO15745Reference>
+    </ProfileHeader>
+    <ProfileBody>
+        <DeviceIdentity VendorID="0x0CC2" DeviceID="0x0001">
+            <InfoText TextId="TOK_DevIdent_InfoText"/>
+            <VendorName Value="NXP"/>
+        </DeviceIdentity>
+        <DeviceFunction>
+            <Family MainFamily="I/O" ProductFamily="demo family"/>
+        </DeviceFunction>
+        <ApplicationProcess>
+            <DeviceAccessPointList>
+                <DeviceAccessPointItem ID="ID_DAP1" PhysicalSlots="0 1 2 3 4"
+                ModuleIdentNumber="0x00000001" MinDeviceInterval="32"
+                ImplementationType="GOAL_PROFINET_Device_Stack" DNS_CompatibleName="goal-pnio"
+                FixedInSlots="0" ObjectUUID_LocalIndex="1"
+                RequiredSchemaVersion="V2.2" MaxSupportedRecordSize="4068"
+                ParameterizationSpeedupSupported="false" PowerOnToCommReady="0"
+                DeviceAccessSupported="true" NumberOfDeviceAccessAR="1"
+                PNIO_Version="V2.44" ResetToFactoryModes="1 2 4"
+                CheckDeviceID_Allowed="true" MultipleWriteSupported="true"
+                LLDP_NoD_Supported="true" NameOfStationNotTransferable="true"
+                AddressAssignment="DCP">
+                    <ModuleInfo CategoryRef="ID_PORT_IODEV_EXAMPLE">
+                        <Name TextId="TOK_Standard_1p"/>
+                        <InfoText TextId="TOK_ModInfo_InfoTextId_DAP1"/>
+                        <VendorName Value="NXP"/>
+                        <OrderNumber Value="00210"/>
+                        <HardwareRelease Value="A1.0"/>
+                        <SoftwareRelease Value="Z1.0"/>
+                    </ModuleInfo>
+                    <CertificationInfo ConformanceClass="B" ApplicationClass="" NetloadClass="I"/>
+                    <SubslotList>
+                        <SubslotItem SubslotNumber="32768" TextId="TOK_Subslot_8000"/>
+                        <SubslotItem SubslotNumber="32769" TextId="TOK_Subslot_8001"/>
+                    </SubslotList>
+                    <IOConfigData MaxInputLength="1440" MaxOutputLength="1440"/>
+                    <UseableModules>
+                        <ModuleItemRef ModuleItemTarget="ID_MOD_0x3" AllowedInSlots="1" FixedInSlots="1"/>
+                        <ModuleItemRef ModuleItemTarget="ID_MOD_0x4" AllowedInSlots="2" FixedInSlots="2"/>
+                        <ModuleItemRef ModuleItemTarget="ID_MOD_0x5" AllowedInSlots="3" FixedInSlots="3"/>
+                        <ModuleItemRef ModuleItemTarget="ID_MOD_0x6" AllowedInSlots="4" FixedInSlots="4"/>
+                    </UseableModules>
+                    <VirtualSubmoduleList>
+                        <VirtualSubmoduleItem ID="DAP1" SubmoduleIdentNumber="0x0001" Writeable_IM_Records="1 2 3 4" MayIssueProcessAlarm="false">
+                            <IOData/>
+                            <ModuleInfo>
+                                <Name TextId="TOK_Standard_1p"/>
+                                <InfoText TextId="TOK_ModInfo_InfoTextId_DAP1"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                    </VirtualSubmoduleList>
+                    <SystemDefinedSubmoduleList>
+                        <InterfaceSubmoduleItem ID="DAP1_IDS_2I" SubslotNumber="32768" SubmoduleIdentNumber="0x8000" SupportedRT_Classes="RT_CLASS_1" TextId="TOK_DAP_InterfaceModule" IsochroneModeSupported="false" SupportedProtocols="LLDP;SNMP" NetworkComponentDiagnosisSupported="false" PTP_BoundarySupported="true" DCP_BoundarySupported="true">
+                            <ApplicationRelations NumberOfAdditionalInputCR="0" NumberOfAdditionalMulticastProviderCR="0" NumberOfAdditionalOutputCR="0" NumberOfMulticastConsumerCR="0" PullModuleAlarmSupported="true" StartupMode="Advanced;Legacy">
+                                <TimingProperties SendClock="32" ReductionRatio="1 2 4 8 16 32 64 128 256 512"/>
+                            </ApplicationRelations>
+                        </InterfaceSubmoduleItem>
+                        <PortSubmoduleItem ID="DAP1_IDS_2P1" SubslotNumber="32769" SubmoduleIdentNumber="0x8001" MAUTypes="16" CheckMAUTypeSupported="true" CheckMAUTypeDifferenceSupported="true" TextId="TOK_Port1" MaxPortRxDelay="378" MaxPortTxDelay="1212" PortDeactivationSupported="true" LinkStateDiagnosisCapability="Up+Down">
+                            <MAUTypeList>
+                                <MAUTypeItem AdjustSupported="true" Value="16"/>
+                            </MAUTypeList>
+                        </PortSubmoduleItem>
+                    </SystemDefinedSubmoduleList>
+                </DeviceAccessPointItem>
+            </DeviceAccessPointList>
+            <ModuleList>
+                <ModuleItem ID="ID_MOD_0x3" ModuleIdentNumber="0x00000003">
+                    <ModuleInfo>
+                        <Name TextId="TOK_TextID_Module_0x3"/>
+                        <InfoText TextId="TOK_Info_TextID_Module_0x3"/>
+                        <HardwareRelease Value="1.0"/>
+                        <SoftwareRelease Value="1.0"/>
+                    </ModuleInfo>
+                    <VirtualSubmoduleList>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1" SubmoduleIdentNumber="0x0001" MayIssueProcessAlarm="false" FixedInSubslots="1">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x2" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="false" FixedInSubslots="2">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x2"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x2"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x3" SubmoduleIdentNumber="0x0003" MayIssueProcessAlarm="false" FixedInSubslots="3">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x3"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x3"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x4" SubmoduleIdentNumber="0x0004" MayIssueProcessAlarm="false" FixedInSubslots="4">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x4"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x4"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x5" SubmoduleIdentNumber="0x0005" MayIssueProcessAlarm="false" FixedInSubslots="5">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x5"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x5"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x6" SubmoduleIdentNumber="0x0006" MayIssueProcessAlarm="false" FixedInSubslots="6">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x6"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x6"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x7" SubmoduleIdentNumber="0x0007" MayIssueProcessAlarm="false" FixedInSubslots="7">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x7"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x7"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x8" SubmoduleIdentNumber="0x0008" MayIssueProcessAlarm="false" FixedInSubslots="8">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x8"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x8"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x9" SubmoduleIdentNumber="0x0009" MayIssueProcessAlarm="false" FixedInSubslots="9">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x9"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x9"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xA" SubmoduleIdentNumber="0x000a" MayIssueProcessAlarm="false" FixedInSubslots="10">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xA"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xA"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xB" SubmoduleIdentNumber="0x000b" MayIssueProcessAlarm="false" FixedInSubslots="11">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xB"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xB"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xC" SubmoduleIdentNumber="0x000c" MayIssueProcessAlarm="false" FixedInSubslots="12">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xC"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xC"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xD" SubmoduleIdentNumber="0x000d" MayIssueProcessAlarm="false" FixedInSubslots="13">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xD"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xD"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xE" SubmoduleIdentNumber="0x000e" MayIssueProcessAlarm="false" FixedInSubslots="14">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xE"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xE"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0xF" SubmoduleIdentNumber="0x000f" MayIssueProcessAlarm="false" FixedInSubslots="15">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0xF"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0xF"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x10" SubmoduleIdentNumber="0x0010" MayIssueProcessAlarm="false" FixedInSubslots="16">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x10"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x10"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x11" SubmoduleIdentNumber="0x0011" MayIssueProcessAlarm="false" FixedInSubslots="17">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x11"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x11"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x12" SubmoduleIdentNumber="0x0012" MayIssueProcessAlarm="false" FixedInSubslots="18">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x12"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x12"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x13" SubmoduleIdentNumber="0x0013" MayIssueProcessAlarm="false" FixedInSubslots="19">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x13"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x13"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x14" SubmoduleIdentNumber="0x0014" MayIssueProcessAlarm="false" FixedInSubslots="20">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x14"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x14"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x15" SubmoduleIdentNumber="0x0015" MayIssueProcessAlarm="false" FixedInSubslots="21">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x15"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x15"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x16" SubmoduleIdentNumber="0x0016" MayIssueProcessAlarm="false" FixedInSubslots="22">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x16"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x16"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x17" SubmoduleIdentNumber="0x0017" MayIssueProcessAlarm="false" FixedInSubslots="23">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x17"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x17"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x18" SubmoduleIdentNumber="0x0018" MayIssueProcessAlarm="false" FixedInSubslots="24">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x18"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x18"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x19" SubmoduleIdentNumber="0x0019" MayIssueProcessAlarm="false" FixedInSubslots="25">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x19"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x19"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1A" SubmoduleIdentNumber="0x001a" MayIssueProcessAlarm="false" FixedInSubslots="26">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1A"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1A"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1B" SubmoduleIdentNumber="0x001b" MayIssueProcessAlarm="false" FixedInSubslots="27">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1B"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1B"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1C" SubmoduleIdentNumber="0x001c" MayIssueProcessAlarm="false" FixedInSubslots="28">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1C"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1C"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1D" SubmoduleIdentNumber="0x001d" MayIssueProcessAlarm="false" FixedInSubslots="29">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1D"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1D"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1E" SubmoduleIdentNumber="0x001e" MayIssueProcessAlarm="false" FixedInSubslots="30">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1E"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1E"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x1F" SubmoduleIdentNumber="0x001f" MayIssueProcessAlarm="false" FixedInSubslots="31">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x1F"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1F"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x20" SubmoduleIdentNumber="0x0020" MayIssueProcessAlarm="false" FixedInSubslots="32">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x20"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x20"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x3_SUB_0x21" SubmoduleIdentNumber="0x0021" MayIssueProcessAlarm="false" FixedInSubslots="33">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Input_DataItem_Unsigned8_1"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x3_Sub_0x21"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x3_Sub_0x21"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                    </VirtualSubmoduleList>
+                </ModuleItem>
+                <ModuleItem ID="ID_MOD_0x4" ModuleIdentNumber="0x00000004">
+                    <ModuleInfo>
+                        <Name TextId="TOK_TextID_Module_0x4"/>
+                        <InfoText TextId="TOK_Info_TextID_Module_0x4"/>
+                        <HardwareRelease Value="1.0"/>
+                        <SoftwareRelease Value="1.0"/>
+                    </ModuleInfo>
+                    <VirtualSubmoduleList>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x1" SubmoduleIdentNumber="0x0001" MayIssueProcessAlarm="false" FixedInSubslots="1">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned32" TextId="TOK_Input_DataItem_Unsigned32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x1"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x1"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x2" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="false" FixedInSubslots="2">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned32" TextId="TOK_Input_DataItem_Unsigned32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x2"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x2"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x3" SubmoduleIdentNumber="0x0003" MayIssueProcessAlarm="false" FixedInSubslots="3">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Integer32" TextId="TOK_Input_DataItem_Integer32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x3"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x3"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x4" SubmoduleIdentNumber="0x0004" MayIssueProcessAlarm="false" FixedInSubslots="4">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Integer32" TextId="TOK_Input_DataItem_Integer32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x4"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x4"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x5" SubmoduleIdentNumber="0x0005" MayIssueProcessAlarm="false" FixedInSubslots="5">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x5"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x5"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x6" SubmoduleIdentNumber="0x0006" MayIssueProcessAlarm="false" FixedInSubslots="6">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x6"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x6"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x7" SubmoduleIdentNumber="0x0007" MayIssueProcessAlarm="false" FixedInSubslots="7">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x7"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x7"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x8" SubmoduleIdentNumber="0x0008" MayIssueProcessAlarm="false" FixedInSubslots="8">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x8"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x8"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x9" SubmoduleIdentNumber="0x0009" MayIssueProcessAlarm="false" FixedInSubslots="9">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x9"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x9"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xA" SubmoduleIdentNumber="0x000a" MayIssueProcessAlarm="false" FixedInSubslots="10">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xA"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xA"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xB" SubmoduleIdentNumber="0x000b" MayIssueProcessAlarm="false" FixedInSubslots="11">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xB"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xB"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xC" SubmoduleIdentNumber="0x000c" MayIssueProcessAlarm="false" FixedInSubslots="12">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xC"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xC"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xD" SubmoduleIdentNumber="0x000d" MayIssueProcessAlarm="false" FixedInSubslots="13">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xD"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xD"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xE" SubmoduleIdentNumber="0x000e" MayIssueProcessAlarm="false" FixedInSubslots="14">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xE"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xE"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0xF" SubmoduleIdentNumber="0x000f" MayIssueProcessAlarm="false" FixedInSubslots="15">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0xF"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0xF"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x4_SUB_0x10" SubmoduleIdentNumber="0x0010" MayIssueProcessAlarm="false" FixedInSubslots="16">
+                            <IOData>
+                                <Input Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Input_DataItem_Float32_4"/>
+                                </Input>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x4_Sub_0x10"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x4_Sub_0x10"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                    </VirtualSubmoduleList>
+                </ModuleItem>
+                <ModuleItem ID="ID_MOD_0x5" ModuleIdentNumber="0x00000005">
+                    <ModuleInfo>
+                        <Name TextId="TOK_TextID_Module_0x5"/>
+                        <InfoText TextId="TOK_Info_TextID_Module_0x5"/>
+                        <HardwareRelease Value="1.0"/>
+                        <SoftwareRelease Value="1.0"/>
+                    </ModuleInfo>
+                    <VirtualSubmoduleList>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1" SubmoduleIdentNumber="0x0001" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="1">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x2" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="2">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x2"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x2"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x3" SubmoduleIdentNumber="0x0003" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="3">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x3"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x3"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x4" SubmoduleIdentNumber="0x0004" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="4">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x4"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x4"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x5" SubmoduleIdentNumber="0x0005" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="5">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x5"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x5"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x6" SubmoduleIdentNumber="0x0006" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="6">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x6"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x6"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x7" SubmoduleIdentNumber="0x0007" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="7">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x7"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x7"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x8" SubmoduleIdentNumber="0x0008" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="8">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x8"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x8"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x9" SubmoduleIdentNumber="0x0009" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="9">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x9"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x9"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xA" SubmoduleIdentNumber="0x000a" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="10">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xA"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xA"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xB" SubmoduleIdentNumber="0x000b" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="11">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xB"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xB"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xC" SubmoduleIdentNumber="0x000c" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="12">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xC"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xC"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xD" SubmoduleIdentNumber="0x000d" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="13">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xD"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xD"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xE" SubmoduleIdentNumber="0x000e" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="14">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xE"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xE"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0xF" SubmoduleIdentNumber="0x000f" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="15">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0xF"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0xF"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x10" SubmoduleIdentNumber="0x0010" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="16">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x10"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x10"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x11" SubmoduleIdentNumber="0x0011" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="17">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x11"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x11"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x12" SubmoduleIdentNumber="0x0012" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="18">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x12"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x12"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x13" SubmoduleIdentNumber="0x0013" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="19">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x13"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x13"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x14" SubmoduleIdentNumber="0x0014" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="20">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x14"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x14"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x15" SubmoduleIdentNumber="0x0015" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="21">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x15"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x15"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x16" SubmoduleIdentNumber="0x0016" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="22">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x16"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x16"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x17" SubmoduleIdentNumber="0x0017" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="23">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x17"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x17"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x18" SubmoduleIdentNumber="0x0018" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="24">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x18"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x18"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x19" SubmoduleIdentNumber="0x0019" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="25">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x19"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x19"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1A" SubmoduleIdentNumber="0x001a" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="26">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1A"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1A"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1B" SubmoduleIdentNumber="0x001b" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="27">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1B"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1B"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1C" SubmoduleIdentNumber="0x001c" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="28">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1C"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1C"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1D" SubmoduleIdentNumber="0x001d" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="29">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1D"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1D"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1E" SubmoduleIdentNumber="0x001e" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="30">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1E"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1E"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x1F" SubmoduleIdentNumber="0x001f" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="31">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x1F"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1F"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x20" SubmoduleIdentNumber="0x0020" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="32">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x20"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x20"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x5_SUB_0x21" SubmoduleIdentNumber="0x0021" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="33">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned8" TextId="TOK_Output_DataItem_Unsigned8_1"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x5_Sub_0x21"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x5_Sub_0x21"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                    </VirtualSubmoduleList>
+                </ModuleItem>
+                <ModuleItem ID="ID_MOD_0x6" ModuleIdentNumber="0x00000006">
+                    <ModuleInfo>
+                        <Name TextId="TOK_TextID_Module_0x6"/>
+                        <InfoText TextId="TOK_Info_TextID_Module_0x6"/>
+                        <HardwareRelease Value="1.0"/>
+                        <SoftwareRelease Value="1.0"/>
+                    </ModuleInfo>
+                    <VirtualSubmoduleList>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x1" SubmoduleIdentNumber="0x0001" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="1">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned32" TextId="TOK_Output_DataItem_Unsigned32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x1"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x1"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x2" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="2">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Unsigned32" TextId="TOK_Output_DataItem_Unsigned32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x2"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x2"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x3" SubmoduleIdentNumber="0x0003" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="3">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Integer32" TextId="TOK_Output_DataItem_Integer32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x3"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x3"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x4" SubmoduleIdentNumber="0x0004" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="4">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Integer32" TextId="TOK_Output_DataItem_Integer32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x4"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x4"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x5" SubmoduleIdentNumber="0x0005" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="5">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x5"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x5"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x6" SubmoduleIdentNumber="0x0006" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="6">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x6"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x6"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x7" SubmoduleIdentNumber="0x0007" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="7">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x7"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x7"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x8" SubmoduleIdentNumber="0x0008" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="8">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x8"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x8"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x9" SubmoduleIdentNumber="0x0009" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="9">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x9"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x9"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xA" SubmoduleIdentNumber="0x000a" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="10">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xA"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xA"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xB" SubmoduleIdentNumber="0x000b" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="11">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xB"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xB"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xC" SubmoduleIdentNumber="0x000c" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="12">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xC"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xC"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xD" SubmoduleIdentNumber="0x000d" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="13">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xD"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xD"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xE" SubmoduleIdentNumber="0x000e" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="14">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xE"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xE"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0xF" SubmoduleIdentNumber="0x000f" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="15">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0xF"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0xF"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                        <VirtualSubmoduleItem ID="ID_MOD_0x6_SUB_0x10" SubmoduleIdentNumber="0x0010" MayIssueProcessAlarm="false" SupportedSubstitutionModes="0 1 2" FixedInSubslots="16">
+                            <IOData>
+                                <Output Consistency="All items consistency">
+                                    <DataItem DataType="Float32" TextId="TOK_Output_DataItem_Float32_4"/>
+                                </Output>
+                            </IOData>
+                            <ModuleInfo>
+                                <Name TextId="TOK_TextID_Mod_0x6_Sub_0x10"/>
+                                <InfoText TextId="TOK_Info_TextID_Mod_0x6_Sub_0x10"/>
+                            </ModuleInfo>
+                        </VirtualSubmoduleItem>
+                    </VirtualSubmoduleList>
+                </ModuleItem>
+            </ModuleList>
+            <ChannelDiagList>
+                <ChannelDiagItem ErrorType="15">
+                    <Name TextId="TOK_Name_ErrorType15"/>
+                    <ExtChannelDiagList>
+                        <ExtChannelDiagItem ErrorType="1">
+                            <Name TextId="TOK_Name_ErrorType15_SubErrorType1"/>
+                            <ExtChannelAddValue>
+                                <DataItem Id="1" DataType="Unsigned16"/>
+                                <DataItem Id="2" DataType="Unsigned8"/>
+                                <DataItem Id="3" DataType="Unsigned8"/>
+                            </ExtChannelAddValue>
+                        </ExtChannelDiagItem>
+                    </ExtChannelDiagList>
+                </ChannelDiagItem>
+                <ChannelDiagItem ErrorType="16">
+                    <Name TextId="TOK_Name_ErrorType16"/>
+                    <Help TextId="TOK_HelpName_ErrorType16"/>
+                </ChannelDiagItem>
+            </ChannelDiagList>
+            <CategoryList>
+                <CategoryItem ID="ID_PORT_IODEV_EXAMPLE" TextId="TOK_Category_Desc"/>
+            </CategoryList>
+            <ExternalTextList>
+                <PrimaryLanguage>
+                    <!--english-->
+                    <Text TextId="TOK_DevIdent_InfoText" Value="NXP device "/>
+
+                    <!--DAP - port IO device example-->
+                    <Text TextId="TOK_Category_Desc" Value="GOAL PROFINET Device Stack"/>
+                    <Text TextId="TOK_Standard_1p" Value="2-port Device"/>
+
+                    <Text TextId="TOK_ModInfo_InfoTextId_DAP1" Value="1-port Device"/>
+                    <!--port name-->
+                    <Text TextId="TOK_Subslot_8000" Value="X1"/>
+                    <Text TextId="TOK_Subslot_8001" Value="P1"/>
+                    <Text TextId="TOK_DAP_InterfaceModule" Value="Interface"/>
+                    <Text TextId="TOK_Port1" Value="RJ45 10/100 MBit/s"/>
+                    <!--module name-->
+                    <Text TextId="TOK_TextID_Module_0x3" Value="Digital In"/>
+                    <Text TextId="TOK_TextID_Module_0x4" Value="Analog In"/>
+                    <Text TextId="TOK_TextID_Module_0x5" Value="DigitalOut"/>
+                    <Text TextId="TOK_TextID_Module_0x6" Value="Aanalog Out"/>
+                    <!--module info name-->
+                    <Text TextId="TOK_Info_TextID_Module_0x3" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Module_0x4" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Module_0x5" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Module_0x6" Value=""/>
+                    <!--submodule name-->
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1" Value="di1"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x2" Value="di2"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x3" Value="di3"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x4" Value="di4"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x5" Value="di5"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x6" Value="di6"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x7" Value="di7"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x8" Value="di8"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x9" Value="di9"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xA" Value="di10"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xB" Value="di11"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xC" Value="di12"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xD" Value="di13"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xE" Value="di14"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0xF" Value="di15"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x10" Value="di16"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x11" Value="di17"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x12" Value="di18"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x13" Value="di19"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x14" Value="di20"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x15" Value="di21"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x16" Value="di22"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x17" Value="di23"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x18" Value="di24"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x19" Value="di25"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1A" Value="di26"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1B" Value="di27"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1C" Value="di28"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1D" Value="di29"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1E" Value="di30"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x1F" Value="di31"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x20" Value="di32"/>
+                    <Text TextId="TOK_TextID_Mod_0x3_Sub_0x21" Value="led"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x1" Value="adc1"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x2" Value="adc2"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x3" Value="adc3"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x4" Value="adc4"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x5" Value="adc5"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x6" Value="adc6"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x7" Value="adc7"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x8" Value="adc8"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x9" Value="adc9"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xA" Value="adc10"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xB" Value="adc11"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xC" Value="adc12"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xD" Value="adc13"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xE" Value="adc14"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0xF" Value="adc15"/>
+                    <Text TextId="TOK_TextID_Mod_0x4_Sub_0x10" Value="adc16"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1" Value="di1"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x2" Value="di2"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x3" Value="di3"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x4" Value="di4"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x5" Value="di5"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x6" Value="di6"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x7" Value="di7"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x8" Value="di8"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x9" Value="di9"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xA" Value="di10"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xB" Value="di11"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xC" Value="di12"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xD" Value="di13"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xE" Value="di14"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0xF" Value="di15"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x10" Value="di16"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x11" Value="di17"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x12" Value="di18"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x13" Value="di19"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x14" Value="di20"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x15" Value="di21"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x16" Value="di22"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x17" Value="di23"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x18" Value="di24"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x19" Value="di25"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1A" Value="di26"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1B" Value="di27"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1C" Value="di28"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1D" Value="di29"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1E" Value="di30"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x1F" Value="di31"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x20" Value="di32"/>
+                    <Text TextId="TOK_TextID_Mod_0x5_Sub_0x21" Value="led"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x1" Value="adc1"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x2" Value="adc2"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x3" Value="adc3"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x4" Value="adc4"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x5" Value="adc5"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x6" Value="adc6"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x7" Value="adc7"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x8" Value="adc8"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x9" Value="adc9"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xA" Value="adc10"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xB" Value="adc11"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xC" Value="adc12"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xD" Value="adc13"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xE" Value="adc14"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0xF" Value="adc15"/>
+                    <Text TextId="TOK_TextID_Mod_0x6_Sub_0x10" Value="adc16"/>
+                    <!--submodule info name-->
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x2" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x3" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x4" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x5" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x6" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x7" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x8" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x9" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xA" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xB" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xC" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xD" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xE" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0xF" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x10" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x11" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x12" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x13" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x14" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x15" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x16" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x17" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x18" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x19" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1A" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1B" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1C" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1D" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1E" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x1F" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x20" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x3_Sub_0x21" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x1" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x2" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x3" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x4" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x5" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x6" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x7" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x8" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x9" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xA" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xB" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xC" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xD" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xE" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0xF" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x4_Sub_0x10" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x2" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x3" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x4" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x5" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x6" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x7" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x8" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x9" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xA" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xB" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xC" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xD" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xE" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0xF" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x10" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x11" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x12" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x13" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x14" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x15" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x16" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x17" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x18" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x19" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1A" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1B" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1C" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1D" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1E" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x1F" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x20" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x5_Sub_0x21" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x1" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x2" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x3" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x4" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x5" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x6" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x7" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x8" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x9" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xA" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xB" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xC" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xD" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xE" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0xF" Value=""/>
+                    <Text TextId="TOK_Info_TextID_Mod_0x6_Sub_0x10" Value=""/>
+                    <!--dataitem name-->
+                    <Text TextId="TOK_Input_DataItem_Unsigned8_1" Value=""/>
+                    <Text TextId="TOK_Input_DataItem_Unsigned32_4" Value=""/>
+                    <Text TextId="TOK_Input_DataItem_Integer32_4" Value=""/>
+                    <Text TextId="TOK_Input_DataItem_Float32_4" Value=""/>
+                    <Text TextId="TOK_Output_DataItem_Unsigned8_1" Value=""/>
+                    <Text TextId="TOK_Output_DataItem_Unsigned32_4" Value=""/>
+                    <Text TextId="TOK_Output_DataItem_Integer32_4" Value=""/>
+                    <Text TextId="TOK_Output_DataItem_Float32_4" Value=""/>
+                    <!--errortype name-->
+                    <Text TextId="TOK_Name_ErrorType16" Value="Parameter Assignment Error"/>
+                    <Text TextId="TOK_HelpName_ErrorType16" Value="Assigning parameter failed."/>
+                    <!-- diagnosis  -->
+                    <Text TextId="TOK_Name_ErrorType15" Value="Over Temperature"/>
+                    <Text TextId="TOK_Name_ErrorType15_SubErrorType1" Value="Values={1:d}, {2:d}, {3:d}"/>
+                </PrimaryLanguage>
+            </ExternalTextList>
+        </ApplicationProcess>
+    </ProfileBody>
+</ISO15745Profile>

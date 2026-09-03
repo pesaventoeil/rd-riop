@@ -1,0 +1,21 @@
+default: M33LEADER
+build_dir: C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release
+domains:
+  - name: M33LEADER
+    build_dir: C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/M33LEADER
+    source_dir: C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER
+    core_id: cm33
+  - name: riop_EIP_M7FOLLOWER
+    build_dir: C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER
+    source_dir: C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/../M7FOLLOWER
+    core_id: cm7
+flash_order:
+  - M33LEADER
+  - riop_EIP_M7FOLLOWER
+build_order:
+- riop_EIP_M7FOLLOWER
+- M33LEADER
+
+name_mapping:
+  M33LEADER: riop_EIP_M33LEADER
+  riop_EIP_M7FOLLOWER: riop_EIP_M7FOLLOWER

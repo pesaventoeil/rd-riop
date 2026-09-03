@@ -1,0 +1,7 @@
+Release information and revision reference:
+
+Tag:      GOAL_V_3_0_1
+Date:     2025-11-26
+Time:     14:34:24
+Ref:      e72889733bc97e60a7367d6c99223f767d2460e3
+Branch:   bugfix/POGO-138_maz_LED_fixup_EIP

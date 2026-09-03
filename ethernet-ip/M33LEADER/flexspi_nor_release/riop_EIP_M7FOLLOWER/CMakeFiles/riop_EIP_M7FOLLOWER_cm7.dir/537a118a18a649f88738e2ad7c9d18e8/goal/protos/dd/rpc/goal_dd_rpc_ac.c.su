@@ -1,0 +1,12 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:85:15:goal_ddRpcInit	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:109:15:goal_ddRpcNew	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:143:22:goal_ddRpcPastInit	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:171:22:goal_ddRpcRegisterServices	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:193:22:goal_ddRpcSetupChannels	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:214:22:goal_ddCbServer	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:233:15:goal_ddCustomerIdSet	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:260:15:goal_ddFilterAdd	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:287:15:goal_ddModuleNameSet	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:326:15:goal_ddFeaturesSet	40	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:417:15:goal_ddCallbackReg	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/protos/dd/rpc/goal_dd_rpc_ac.c:441:15:goal_ddSessionFeatureActivate	40	static

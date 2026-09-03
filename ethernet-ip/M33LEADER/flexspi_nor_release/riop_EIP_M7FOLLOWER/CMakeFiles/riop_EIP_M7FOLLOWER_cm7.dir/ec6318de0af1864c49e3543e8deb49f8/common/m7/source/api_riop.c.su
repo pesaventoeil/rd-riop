@@ -1,0 +1,12 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/lpit/fsl_lpit.h:396:13:LPIT_ResetStateDelay	4	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:61:6:RIOP_StatusShmInit	4	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:66:15:RIOP_SetMcuDigitalInputPinsStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:77:15:RIOP_SetMcuDigitalOutputPinsStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:88:15:RIOP_SetAfeDigitalInputPinsStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:99:15:RIOP_SetAfeDigitalGpioSettingsStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:116:15:RIOP_SetSiggenStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:134:15:RIOP_SetCalPhase	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:145:15:RIOP_SetCalibrationStatus	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:157:15:RIOP_GetBoardStatusForICC	80	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:202:13:RIOP_LockMutex	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/api_riop.c:207:13:RIOP_UnlockMutex	16	static

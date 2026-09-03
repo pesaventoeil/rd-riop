@@ -4,10 +4,13 @@
     {
       "name": "IntelliSense Configuration",
       "compileCommands": [
-        "${workspaceFolder}/flexspi_nor_debug/M33LEADER/compile_commands.json",
-        "${workspaceFolder}/flexspi_nor_debug/riop_EIP_M7FOLLOWER/compile_commands.json"
+        "${workspaceFolder}/flexspi_nor_release/M33LEADER/compile_commands.json",
+        "${workspaceFolder}/flexspi_nor_release/riop_EIP_M7FOLLOWER/compile_commands.json"
       ],
-      "intelliSenseMode": "gcc-arm"
+      "intelliSenseMode": "gcc-arm",
+      "browse": {
+        "limitSymbolsToIncludedHeaders": true
+      }
     }
   ]
 }

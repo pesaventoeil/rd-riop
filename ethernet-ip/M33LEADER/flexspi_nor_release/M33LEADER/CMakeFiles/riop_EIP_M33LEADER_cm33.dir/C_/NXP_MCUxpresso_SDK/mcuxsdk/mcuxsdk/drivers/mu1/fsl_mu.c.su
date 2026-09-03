@@ -1,0 +1,14 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1581:20:CLOCK_ControlGate	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1599:20:CLOCK_EnableClock	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1609:20:CLOCK_DisableClock	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.h:543:20:MU_SetFlagsNonBlocking	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:46:17:MU_GetInstance	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:72:6:MU_Init	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:97:6:MU_Deinit	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:121:10:MU_SendMsg	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:169:10:MU_ReceiveMsgTimeout	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:216:10:MU_ReceiveMsg	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:249:10:MU_SetFlags	16	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:292:10:MU_GetStatusFlags	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:338:10:MU_TriggerInterrupts	24	static
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/mu1/fsl_mu.c:370:10:MU_TriggerGeneralPurposeInterrupts	24	static

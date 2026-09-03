@@ -1,0 +1,4 @@
+C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/lpit/fsl_lpit.h:396:13:LPIT_ResetStateDelay	4	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/afe_task/afe_task.c:66:6:AFE_callback	136	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/afe_task/afe_task.c:156:6:TIMER_callback	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/afe_task/afe_task.c:171:6:AFE_task	88	static

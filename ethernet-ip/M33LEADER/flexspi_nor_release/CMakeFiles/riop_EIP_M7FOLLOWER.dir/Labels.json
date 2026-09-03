@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/CMakeFiles/riop_EIP_M7FOLLOWER"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/CMakeFiles/riop_EIP_M7FOLLOWER.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/CMakeFiles/riop_EIP_M7FOLLOWER-complete.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-build.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-configure.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-download.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-install.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-patch.rule"
+		},
+		{
+			"file" : "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M33LEADER/flexspi_nor_release/riop_EIP_M7FOLLOWER-prefix/src/riop_EIP_M7FOLLOWER-stamp/riop_EIP_M7FOLLOWER-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"riop_EIP_M7FOLLOWER"
+		],
+		"name" : "riop_EIP_M7FOLLOWER"
+	}
+}

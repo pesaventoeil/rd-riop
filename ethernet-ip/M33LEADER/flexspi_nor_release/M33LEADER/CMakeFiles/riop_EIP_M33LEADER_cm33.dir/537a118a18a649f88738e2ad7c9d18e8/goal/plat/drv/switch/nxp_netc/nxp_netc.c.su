@@ -1,0 +1,11 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:193:15:goal_targetSwitchNXPNetcReg	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:245:15:goal_targetSwitchNXPNetcOpen	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:298:15:goal_targetSwitchNXPNetcClose	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:312:15:goal_targetSwitchNXPNetcCmdHandler	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:363:22:netcPortState	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:405:22:netcMacTableEntrySet	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:476:22:netcMacTableEntryGet	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:499:22:netcMacTableEntryClear	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:527:22:convertPortGoalToTgt	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:568:22:netcEpl	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/switch/nxp_netc/nxp_netc.c:611:22:netcSetupDone	16	static
