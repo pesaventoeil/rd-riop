@@ -9,13 +9,13 @@
       "displayName": "debug-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/nxa18090/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "c:/w/SDK/MCUXpresso/Latest",
+        "ARMGCC_DIR": "C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "c:/NXP_MCUxpresso_SDK/mcuxsdk",
         "BOARD": "evkmimxrt1180",
         "MCUX_VENV_PATH": "C:/Users/nxg16113/.mcuxpressotools/.venv/Scripts",
         "CORE_ID": "cm33",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
-        "POSTPROCESS_UTILITY": "C:/Users/nxa18090/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
+        "POSTPROCESS_UTILITY": "C:/Users/dpesavento.EIL/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "cacheVariables": {}
@@ -25,13 +25,13 @@
       "displayName": "flexspi_nor_debug-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/nxa18090/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "c:/w/SDK/MCUXpresso/Latest",
+        "ARMGCC_DIR": "C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "c:/NXP_MCUxpresso_SDK/mcuxsdk",
         "BOARD": "evkmimxrt1180",
-        "MCUX_VENV_PATH": "C:/Users/nxa18090/.mcuxpressotools/.venv_3_13/Scripts",
+        "MCUX_VENV_PATH": "C:/Users/dpesavento.EIL/.mcuxpressotools/.mcux-venv-3.12/Scripts",
         "CORE_ID": "cm33",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
-        "POSTPROCESS_UTILITY": "C:/Users/nxa18090/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
+        "POSTPROCESS_UTILITY": "C:/Users/dpesavento.EIL/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "cacheVariables": {}
@@ -41,13 +41,13 @@
       "displayName": "flexspi_nor_release-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/nxa18090/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "c:/w/SDK/MCUXpresso/Latest",
+        "ARMGCC_DIR": "C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "c:/NXP_MCUxpresso_SDK/mcuxsdk",
         "BOARD": "evkmimxrt1180",
-        "MCUX_VENV_PATH": "",
+        "MCUX_VENV_PATH": "C:/Users/dpesavento.EIL/.mcuxpressotools/.mcux-venv-3.12/Scripts",
         "CORE_ID": "cm33",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
-        "POSTPROCESS_UTILITY": "C:/Users/nxa18090/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
+        "POSTPROCESS_UTILITY": "C:/Users/dpesavento.EIL/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "cacheVariables": {}
@@ -57,13 +57,13 @@
       "displayName": "release-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/nxa18090/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "c:/w/SDK/MCUXpresso/Latest",
+        "ARMGCC_DIR": "C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "c:/NXP_MCUxpresso_SDK/mcuxsdk",
         "BOARD": "evkmimxrt1180",
         "MCUX_VENV_PATH": "C:/Users/nxg16113/.mcuxpressotools/.venv/Scripts",
         "CORE_ID": "cm33",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
-        "POSTPROCESS_UTILITY": "C:/Users/nxa18090/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
+        "POSTPROCESS_UTILITY": "C:/Users/dpesavento.EIL/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "cacheVariables": {}

@@ -1,0 +1,3 @@
+C:\NXP_MCUxpresso_SDK\mcuxsdk\mcuxsdk\examples\_boards\evkmimxrt1180\Kconfig.sysbuild
+C:\NXP_MCUxpresso_SDK\mcuxsdk\mcuxsdk\examples\multicore_examples\Kconfig.sysbuild
+C:\Users\dpesavento.EIL\Documents\GitHub\daniel-sandbox\rd-riop-EIP-demo\ethernet-ip\M33LEADER\Kconfig.sysbuild

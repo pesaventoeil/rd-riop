@@ -5,7 +5,7 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "preset": "flexspi_nor_debug",
+      "preset": "flexspi_nor_release",
       "targets": [
         "all"
       ],
@@ -22,7 +22,7 @@
       "type": "cmake",
       "label": "CMake: clean",
       "command": "clean",
-      "preset": "flexspi_nor_debug",
+      "preset": "flexspi_nor_release",
       "problemMatcher": [
         "$gcc"
       ],
@@ -32,7 +32,7 @@
       "type": "cmake",
       "label": "CMake: configure",
       "command": "configure",
-      "preset": "flexspi_nor_debug",
+      "preset": "flexspi_nor_release",
       "problemMatcher": [
         "$gcc"
       ],

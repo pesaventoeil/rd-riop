@@ -1,0 +1,31 @@
+# Available runners configured by board.cmake.
+runners:
+- jlink
+- linkserver
+
+# Default flash runner if --runner is not given.
+flash-runner: jlink
+
+# Default debug runner if --runner is not given.
+debug-runner: jlink
+
+# Common runner configuration values.
+config:
+  board_dir: C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/examples/_boards/evkmimxrt1180
+  # Build outputs:
+  bin_file: riop_EIP_M33LEADER_cm33.bin
+  elf_file: riop_EIP_M33LEADER_cm33.elf
+  hex_file: riop_EIP_M33LEADER_cm33.hex
+  # Host tools:
+  gdb: C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/arm-none-eabi-gdb.exe
+
+# Runner specific arguments
+args:
+  jlink:
+    - --dt-flash=y
+    - --device=MIMXRT1189xxx8_M33
+    - --tool-opt=-jlinkscriptfile jlinkscript/evkmimxrt1180_cm33.jlinkscript
+  linkserver:
+    - --dt-flash=y
+    - --device=MIMXRT1189xxxxx:MIMXRT1180-EVK
+    - --core=cm33
