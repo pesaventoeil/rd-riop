@@ -50,6 +50,47 @@ mcux_add_include(
 
 endif() # NOT RIOP_SKIP_GOAL_APPL_FILES
 
+# --- CentriFeeder DCE Modbus RTU master ---
+
+# riop/modbus include FIRST so our mbconfig.h shadows the SDK's
+mcux_add_include(
+    BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    INCLUDES
+    ${GOAL_APPL}/modbus
+)
+
+# FreeModbus core include dirs (SDK middleware)
+mcux_add_include(
+    BASE_PATH ${SdkRootDirPath}
+    INCLUDES
+    middleware/freemodbus/modbus/include
+    middleware/freemodbus/modbus/rtu
+    middleware/freemodbus/modbus
+)
+
+# FreeModbus core sources (master, RTU, FC03 + utils + CRC)
+mcux_add_source(
+    BASE_PATH ${SdkRootDirPath}
+    SOURCES
+    middleware/freemodbus/modbus/mb_m.c
+    middleware/freemodbus/modbus/rtu/mbrtu_m.c
+    middleware/freemodbus/modbus/rtu/mbcrc.c
+    middleware/freemodbus/modbus/functions/mbfuncholding_m.c
+    middleware/freemodbus/modbus/functions/mbutils.c
+)
+
+# DCE Modbus port layer + task
+mcux_add_source(
+    BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    SOURCES
+    ${GOAL_APPL}/modbus/modbus_serial.c
+    ${GOAL_APPL}/modbus/modbus_timer.c
+    ${GOAL_APPL}/modbus/modbus_cb.c
+    ${GOAL_APPL}/modbus/modbus_port.c
+    ${GOAL_APPL}/modbus/portevent.c
+    ${GOAL_APPL}/dce_task.c
+)
+
 
 # goal sources
 mcux_add_source(
