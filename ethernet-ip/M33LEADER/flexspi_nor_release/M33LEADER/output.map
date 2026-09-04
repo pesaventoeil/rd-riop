@@ -3538,7 +3538,7 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
                 0x0ffe0000                        . = (. + __RAM_VECTOR_TABLE_SIZE_BYTES)
                 0x0ffe0000                        . = ALIGN (0x4)
 
-.text           0x2800b400    0x75848
+.text           0x2800b400    0x75c78
                 0x2800b400                        . = ALIGN (0x4)
  EXCLUDE_FILE(*fsl_clock.c.obj *nor_flash_ops.c.obj *fsl_flexspi.c.obj *fsl_flexspi_nor_flash.c.obj) *(.text .rodata .text* .rodata*)
  .text.deregister_tm_clones
@@ -8447,82 +8447,82 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
                 0x28049610                        . = ALIGN (0x10)
                 0x28049610                        core1_image_start = .
  *(.core1_code)
- .core1_code    0x28049610    0x375c4 CMakeFiles/riop_EIP_M33LEADER_cm33.dir/C_/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/misc_utilities/fsl_incbin.S.obj
-                0x28080bd0                core1_image_size
- *fill*         0x28080bd4        0x4 
+ .core1_code    0x28049610    0x379f4 CMakeFiles/riop_EIP_M33LEADER_cm33.dir/C_/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/misc_utilities/fsl_incbin.S.obj
+                0x28081000                core1_image_size
+ *fill*         0x28081004        0x4 
  .core1_code.__stub
-                0x28080bd8       0x70 linker stubs
+                0x28081008       0x70 linker stubs
  *(.core1_code*)
-                0x28080c48                        core1_image_end = .
-                0x28080c48                        . = ALIGN (0x4)
+                0x28081078                        core1_image_end = .
+                0x28081078                        . = ALIGN (0x4)
                 0x00000001                        ASSERT (((core1_image_end - core1_image_start) <= m_core1_image_maximum_size), Core1 image size exceeds the limit)
 
-.vfp11_veneer   0x28080c48        0x0
- .vfp11_veneer  0x28080c48        0x0 linker stubs
+.vfp11_veneer   0x28081078        0x0
+ .vfp11_veneer  0x28081078        0x0 linker stubs
 
-.v4_bx          0x28080c48        0x0
- .v4_bx         0x28080c48        0x0 linker stubs
+.v4_bx          0x28081078        0x0
+ .v4_bx         0x28081078        0x0 linker stubs
 
-.iplt           0x28080c48        0x0
- .iplt          0x28080c48        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
+.iplt           0x28081078        0x0
+ .iplt          0x28081078        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x28080c48        0x8
-                0x28080c48                        __exidx_start = .
+.ARM            0x28081078        0x8
+                0x28081078                        __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x28080c48        0x8 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crt0.o
+ .ARM.exidx     0x28081078        0x8 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crt0.o
                                  0x10 (size before relaxing)
- .ARM.exidx     0x28080c50        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libc_nano.a(libc_a-strcmp.o)
+ .ARM.exidx     0x28081080        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libc_nano.a(libc_a-strcmp.o)
                                   0x8 (size before relaxing)
- .ARM.exidx     0x28080c50        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libc_nano.a(libc_a-strlen.o)
+ .ARM.exidx     0x28081080        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libc_nano.a(libc_a-strlen.o)
                                   0x8 (size before relaxing)
  .ARM.exidx.text.__udivmoddi4
-                0x28080c50        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libgcc.a(_udivmoddi4.o)
+                0x28081080        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard\libgcc.a(_udivmoddi4.o)
                                   0x8 (size before relaxing)
-                0x28080c50                        __exidx_end = .
+                0x28081080                        __exidx_end = .
 
-.ctors          0x28080c50        0x0
-                0x28080c50                        __CTOR_LIST__ = .
+.ctors          0x28081080        0x0
+                0x28081080                        __CTOR_LIST__ = .
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
  *(SORT_BY_NAME(.ctors.*))
  *(.ctors)
-                0x28080c50                        __CTOR_END__ = .
+                0x28081080                        __CTOR_END__ = .
 
-.dtors          0x28080c50        0x0
-                0x28080c50                        __DTOR_LIST__ = .
+.dtors          0x28081080        0x0
+                0x28081080                        __DTOR_LIST__ = .
  *crtbegin.o(.dtors)
  *crtbegin?.o(.dtors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .dtors)
  *(SORT_BY_NAME(.dtors.*))
  *(.dtors)
-                0x28080c50                        __DTOR_END__ = .
+                0x28081080                        __DTOR_END__ = .
 
-.preinit_array  0x28080c50        0x0
-                0x28080c50                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x28081080        0x0
+                0x28081080                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x28080c50                        PROVIDE (__preinit_array_end = .)
+                0x28081080                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x28080c50        0x4
-                0x28080c50                        PROVIDE (__init_array_start = .)
+.init_array     0x28081080        0x4
+                0x28081080                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x28080c50        0x4 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
-                0x28080c54                        PROVIDE (__init_array_end = .)
+ .init_array    0x28081080        0x4 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
+                0x28081084                        PROVIDE (__init_array_end = .)
 
-.fini_array     0x28080c54        0x4
+.fini_array     0x28081084        0x4
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x28080c54        0x4 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
+ .fini_array    0x28081084        0x4 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x28080c58                        __etext = .
-                0x28080c58                        __data_flash_start = .
+                0x28081088                        __etext = .
+                0x28081088                        __data_flash_start = .
 
-.data           0x20484000     0x4ba0 load address 0x28080c58
+.data           0x20484000     0x4ba0 load address 0x28081088
                 0x20484000                        . = ALIGN (0x4)
                 0x20484000                        __data_start__ = .
  *(m_usb_dma_init_data)
@@ -8607,19 +8607,19 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
  *(.jcr*)
                 0x20488ba0                        . = ALIGN (0x4)
                 0x20488ba0                        __data_end__ = .
-                0x280857f8                        __ram_function_flash_start = (__data_flash_start + (__data_end__ - __data_start__))
+                0x28085c28                        __ram_function_flash_start = (__data_flash_start + (__data_end__ - __data_start__))
 
 .tm_clone_table
-                0x20488ba0        0x0 load address 0x280857f8
+                0x20488ba0        0x0 load address 0x28085c28
  .tm_clone_table
                 0x20488ba0        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
  .tm_clone_table
                 0x20488ba0        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtend.o
 
-.igot.plt       0x20488ba0        0x0 load address 0x280857f8
+.igot.plt       0x20488ba0        0x0 load address 0x28085c28
  .igot.plt      0x20488ba0        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
 
-.ram_function   0x0ffe0000     0x2700 load address 0x280857f8
+.ram_function   0x0ffe0000     0x2700 load address 0x28085c28
                 0x0ffe0000                        . = ALIGN (0x20)
                 0x0ffe0000                        __ram_function_start__ = .
  *(CodeQuickAccess)
@@ -8806,12 +8806,12 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
                 0x0ffe2700                        . = ALIGN (0x80)
  *fill*         0x0ffe26a8       0x58 
                 0x0ffe2700                        __ram_function_end__ = .
-                0x28087ef8                        __noncache_data_flash_start = (__ram_function_flash_start + (__ram_function_end__ - __ram_function_start__))
+                0x28088328                        __noncache_data_flash_start = (__ram_function_flash_start + (__ram_function_end__ - __ram_function_start__))
 
-.rel.dyn        0x0ffe2700        0x0 load address 0x28087ef8
+.rel.dyn        0x0ffe2700        0x0 load address 0x28088328
  .rel.iplt      0x0ffe2700        0x0 C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v8-m.main+fp/hard/crtbegin.o
 
-.ncache.init    0x20000000        0x0 load address 0x28087ef8
+.ncache.init    0x20000000        0x0 load address 0x28088328
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        __noncache_data_start__ = .
  *(NonCacheable.init)
@@ -8829,17 +8829,17 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
  NonCacheable   0x20001900     0xca00 CMakeFiles/riop_EIP_M33LEADER_cm33.dir/bc5d4de8fc13fea4f4f781cddebac240/board/nxp/evkmimxrt1180/goal_target_board.c.obj
                 0x2000e300                        . = ALIGN (0x4)
                 0x2000e300                        __noncache_bss_end__ = .
-                0x28087ef8                        __qadata_flash_start = (__noncache_data_flash_start + (__noncache_data_end__ - __noncache_data_start__))
+                0x28088328                        __qadata_flash_start = (__noncache_data_flash_start + (__noncache_data_end__ - __noncache_data_start__))
 
-.qadata         0x2000e300        0x0 load address 0x28087ef8
+.qadata         0x2000e300        0x0 load address 0x28088328
                 0x2000e300                        . = ALIGN (0x4)
                 0x2000e300                        __qadata_start__ = .
                 0x2000e300                        . = ALIGN (0x4)
                 0x2000e300                        __qadata_end__ = .
-                0x28087ef8                        text_data_end = (__qadata_flash_start + (__qadata_end__ - __qadata_start__))
+                0x28088328                        text_data_end = (__qadata_flash_start + (__qadata_end__ - __qadata_start__))
                 0x28800000                        text_end = (ORIGIN (m_text) + LENGTH (m_text))
                 0x00000001                        ASSERT ((text_data_end < text_end), region m_text overflowed with text and data)
-                0x0007cef8                        __CONTAINER_IMG_SIZE = (text_data_end - m_interrupts_start)
+                0x0007d328                        __CONTAINER_IMG_SIZE = (text_data_end - m_interrupts_start)
 
 .freertos_heap  0x204a4400    0x40000
                 0x204a4400                        . = ALIGN (0x4)
@@ -9437,7 +9437,7 @@ LOAD C:/Users/dpesavento.EIL/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-
  *fill*         0x204a4000      0x400 
                 0x204a4400                        __HeapLimit = .
 
-.stack          0x20488ba0     0x2000 load address 0x280857f8
+.stack          0x20488ba0     0x2000 load address 0x28085c28
                 0x20488ba0                        . = ALIGN (0x8)
                 0x20488ba0                        __StackStart = .
                 0x2048aba0                        . = (. + m_stack_size)

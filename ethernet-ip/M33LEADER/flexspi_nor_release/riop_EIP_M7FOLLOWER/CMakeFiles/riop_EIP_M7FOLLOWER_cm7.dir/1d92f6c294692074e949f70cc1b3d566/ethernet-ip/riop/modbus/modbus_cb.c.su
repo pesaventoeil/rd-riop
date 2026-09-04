@@ -1,0 +1,6 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:34:6:mbcb_rawInvalidate	4	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:39:6:mbcb_rawGet	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:65:14:eMBMasterRegHoldingCB	32	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:89:14:eMBMasterRegInputCB	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:95:14:eMBMasterRegCoilsCB	24	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_cb.c:102:14:eMBMasterRegDiscreteCB	16	static

@@ -1,0 +1,2 @@
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_port.c:24:6:vMBPortEnterCritical	16	static
+C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/ethernet-ip/riop/modbus/modbus_port.c:36:6:vMBPortExitCritical	4	static

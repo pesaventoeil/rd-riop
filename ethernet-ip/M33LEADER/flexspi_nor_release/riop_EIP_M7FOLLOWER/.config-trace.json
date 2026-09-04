@@ -2008,6 +2008,7 @@
       "MCUX_COMPONENT_driver.pwm && MCUX_HAS_COMPONENT_driver.pwm",
       "MCUX_COMPONENT_driver.rgpio && MCUX_HAS_COMPONENT_driver.rgpio",
       "MCUX_COMPONENT_driver.sema42 && MCUX_HAS_COMPONENT_driver.sema42",
+      "MCUX_COMPONENT_driver.tpm && MCUX_HAS_COMPONENT_driver.tpm",
       "MCUX_COMPONENT_driver.trdc && MCUX_HAS_COMPONENT_driver.trdc",
       "MCUX_COMPONENT_driver.xbar_1 && MCUX_HAS_COMPONENT_driver.xbar_1",
       "MCUX_COMPONENT_utility.assert_lite && !MCUX_COMPONENT_utility.assert",
@@ -3187,9 +3188,23 @@
     "CONFIG_MCUX_COMPONENT_driver.tpm",
     "y",
     "bool",
-    null,
-    "unset",
-    null
+    "y",
+    "assign",
+    [
+      "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
+      53
+    ]
+  ],
+  [
+    "CONFIG_TPM_TIMEOUT",
+    "y",
+    "int",
+    "0",
+    "default",
+    [
+      "C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk\\drivers\\.\\tpm\\Kconfig",
+      17
+    ]
   ],
   [
     "CONFIG_MCUX_HAS_COMPONENT_driver.trdc",
@@ -4895,7 +4910,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      53
+      54
     ]
   ],
   [
@@ -10732,7 +10747,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      56
+      57
     ]
   ],
   [
@@ -10829,7 +10844,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      60
+      61
     ]
   ],
   [
@@ -10878,7 +10893,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      61
+      62
     ]
   ],
   [
@@ -10889,7 +10904,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      62
+      63
     ]
   ],
   [
@@ -10985,7 +11000,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      63
+      64
     ]
   ],
   [
@@ -11075,7 +11090,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      70
+      71
     ]
   ],
   [
@@ -11119,7 +11134,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      64
+      65
     ]
   ],
   [
@@ -11165,7 +11180,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      65
+      66
     ]
   ],
   [
@@ -11187,7 +11202,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      66
+      67
     ]
   ],
   [
@@ -11319,7 +11334,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      67
+      68
     ]
   ],
   [
@@ -11330,7 +11345,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      68
+      69
     ]
   ],
   [
@@ -11341,7 +11356,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      69
+      70
     ]
   ],
   [
@@ -11705,7 +11720,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      71
+      72
     ]
   ],
   [
@@ -11749,7 +11764,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      72
+      73
     ]
   ],
   [
@@ -11804,7 +11819,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      73
+      74
     ]
   ],
   [
@@ -11815,7 +11830,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      74
+      75
     ]
   ],
   [
@@ -11826,7 +11841,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      75
+      76
     ]
   ],
   [
@@ -11837,7 +11852,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      76
+      77
     ]
   ],
   [
@@ -11859,7 +11874,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      77
+      78
     ]
   ],
   [
@@ -11881,7 +11896,7 @@
     "assign",
     [
       "C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/M7FOLLOWER/prj.conf",
-      78
+      79
     ]
   ],
   [
