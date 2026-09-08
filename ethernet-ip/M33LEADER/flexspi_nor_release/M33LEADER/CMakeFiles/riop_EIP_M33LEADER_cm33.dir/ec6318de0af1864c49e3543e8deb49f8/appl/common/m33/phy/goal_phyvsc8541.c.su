@@ -1,8 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:249:15:goal_targetPhyVsc8541Open	40	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:333:22:goal_targetPhyVsc8541Cmd	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:372:22:goal_targetPhyVsc8541RegGet	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:382:22:goal_targetPhyVsc8541RegSet	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:392:22:goal_targetPhyVsc8541SpeedGet	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:427:22:goal_targetPhyVsc8541DuplexGet	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:452:22:goal_targetPhyVsc8541MdiMode	48	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/appl/common/m33/phy/goal_phyvsc8541.c:608:22:goal_targetPhyVsc8541LinkStateGet	24	static

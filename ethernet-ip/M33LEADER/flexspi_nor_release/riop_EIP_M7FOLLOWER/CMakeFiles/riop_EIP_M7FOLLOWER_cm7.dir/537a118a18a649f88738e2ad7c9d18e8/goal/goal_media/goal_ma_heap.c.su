@@ -1,6 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:63:15:goal_maHeapDrvReg	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:102:15:goal_maHeapAllocAlign	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:123:15:goal_maHeapCallocAlign	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:144:15:goal_maHeapFree	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:163:15:goal_maHeapRealloc	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal_media/goal_ma_heap.c:184:15:goal_maHeapStatsGet	24	static

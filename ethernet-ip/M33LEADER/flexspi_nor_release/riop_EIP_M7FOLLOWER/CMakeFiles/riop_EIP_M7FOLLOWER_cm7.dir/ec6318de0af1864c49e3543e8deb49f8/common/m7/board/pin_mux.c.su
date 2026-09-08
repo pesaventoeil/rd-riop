@@ -1,5 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1581:20:CLOCK_ControlGate	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1599:20:CLOCK_EnableClock	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_iomuxc.h:1880:20:IOMUXC_SetPinMux	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/board/pin_mux.c:35:6:BOARD_InitBootPins	8	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/board/pin_mux.c:56:6:BOARD_InitPins	16	static

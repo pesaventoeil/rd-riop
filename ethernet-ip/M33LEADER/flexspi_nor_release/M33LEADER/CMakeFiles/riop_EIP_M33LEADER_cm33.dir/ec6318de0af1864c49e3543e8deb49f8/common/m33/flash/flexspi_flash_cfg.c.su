@@ -1,3 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1560:20:CLOCK_SetRootClock	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_flash_cfg.c:97:6:flexspi_clock_init	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m33/flash/flexspi_flash_cfg.c:116:6:flexspi_config_init	16	static

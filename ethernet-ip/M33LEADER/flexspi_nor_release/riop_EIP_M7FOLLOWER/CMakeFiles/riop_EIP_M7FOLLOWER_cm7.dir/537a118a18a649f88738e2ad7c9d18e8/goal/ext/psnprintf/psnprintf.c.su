@@ -1,6 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:12:5:psnprintf	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:147:5:pvsnprintf	80	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:279:5:pvsnfmt_char	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:297:8:pstrnlen	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:316:5:pvsnfmt_str	48	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/psnprintf/psnprintf.c:409:5:pvsnfmt_int	152	static

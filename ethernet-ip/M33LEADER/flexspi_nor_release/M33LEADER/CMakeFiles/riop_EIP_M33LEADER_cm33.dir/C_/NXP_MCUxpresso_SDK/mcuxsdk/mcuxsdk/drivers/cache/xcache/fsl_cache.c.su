@@ -1,9 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:46:10:XCACHE_GetInstanceByAddr	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:71:6:XCACHE_EnableCache	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:94:6:XCACHE_DisableCache	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:116:6:XCACHE_InvalidateCache	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:141:6:XCACHE_InvalidateCacheByRange	40	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:199:6:XCACHE_CleanCache	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:229:6:XCACHE_CleanCacheByRange	40	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:287:6:XCACHE_CleanInvalidateCache	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.c:318:6:XCACHE_CleanInvalidateCacheByRange	40	static

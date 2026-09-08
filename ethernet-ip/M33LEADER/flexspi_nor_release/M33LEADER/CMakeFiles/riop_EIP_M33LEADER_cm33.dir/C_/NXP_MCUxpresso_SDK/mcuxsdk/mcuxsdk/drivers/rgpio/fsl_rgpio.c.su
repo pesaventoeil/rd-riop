@@ -1,4 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/rgpio/fsl_rgpio.h:186:20:RGPIO_PinWrite	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/rgpio/fsl_rgpio.h:202:20:RGPIO_WritePinOutput	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/rgpio/fsl_rgpio.c:52:10:RGPIO_GetInstance	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/rgpio/fsl_rgpio.c:96:6:RGPIO_PinInit	24	static

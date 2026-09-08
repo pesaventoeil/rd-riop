@@ -1,6 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:87:15:goal_targetCommonInitPre	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:129:22:goal_targetCommonInit	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:201:22:goal_targetCommonShutdown	8	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:216:6:goal_targetReset	4	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:230:6:goal_targetHalt	4	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.c:244:13:goal_targetCommonIsrCheck	16	static

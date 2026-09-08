@@ -1,7 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/arch/rt1180/goal_target_common.h:41:29:goal_targetResToGoal	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/cache/xcache/fsl_cache.h:173:20:DCACHE_InvalidateByRange	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c:176:15:goal_drvNvsSflashFslReg	56	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c:250:22:goal_drvNvsSflashFslOpen	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c:342:22:goal_drvNvsSflashFslRead	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c:370:22:goal_drvNvsSflashFslWrite	48	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/nvs/sflash/fsl/rt1180/nvs_sflash_fsl.c:409:22:goal_drvNvsSflashFslErase	40	static

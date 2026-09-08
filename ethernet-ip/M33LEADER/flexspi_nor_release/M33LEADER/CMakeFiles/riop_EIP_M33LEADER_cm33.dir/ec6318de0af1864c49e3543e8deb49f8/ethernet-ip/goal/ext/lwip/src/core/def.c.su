@@ -1,7 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:76:1:lwip_htons	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:90:1:lwip_htonl	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:105:1:lwip_strnstr	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:128:1:lwip_strnistr	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:151:1:lwip_stricmp	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:186:1:lwip_strnicmp	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/ext/lwip/src/core/def.c:222:1:lwip_itoa	40	static

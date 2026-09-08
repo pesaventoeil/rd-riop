@@ -1,8 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:74:10:PHY_VSC8541_Init	32	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:158:10:PHY_VSC8541_Write	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:163:10:PHY_VSC8541_Read	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:168:10:PHY_VSC8541_GetAutoNegotiationStatus	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:189:10:PHY_VSC8541_GetLinkStatus	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:214:10:PHY_VSC8541_GetLinkSpeedDuplex	32	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:259:10:PHY_VSC8541_SetLinkSpeedDuplex	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/components/phy/device/phyvsc8541/fsl_phyvsc8541.c:297:10:PHY_VSC8541_EnableLoopback	24	static

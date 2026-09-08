@@ -1,5 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/rgpio/fsl_rgpio.h:186:20:RGPIO_PinWrite	24	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/lpit/fsl_lpit.h:396:13:LPIT_ResetStateDelay	4	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/digital_io.c:48:6:dwt_init	4	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/digital_io.c:65:6:digital_io_init	8	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/digital_io.c:114:6:appl_loop	24	static

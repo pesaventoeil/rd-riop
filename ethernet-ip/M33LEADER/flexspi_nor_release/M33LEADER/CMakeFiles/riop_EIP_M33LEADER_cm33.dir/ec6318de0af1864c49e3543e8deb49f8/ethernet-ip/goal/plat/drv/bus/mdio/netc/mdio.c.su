@@ -1,6 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1474:24:CLOCK_GetRootClockMux	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1515:24:CLOCK_GetRootClockDiv	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/devices/RT/RT1180/MIMXRT1189/drivers/fsl_clock.h:1634:24:CLOCK_GetRootClockFreq	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/bus/mdio/netc/mdio.c:56:15:goal_drvBusMdioNetcOpen	40	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/bus/mdio/netc/mdio.c:99:22:goal_drvBusMdioNetcRead	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/bus/mdio/netc/mdio.c:124:22:goal_drvBusMdioNetcWrite	32	static

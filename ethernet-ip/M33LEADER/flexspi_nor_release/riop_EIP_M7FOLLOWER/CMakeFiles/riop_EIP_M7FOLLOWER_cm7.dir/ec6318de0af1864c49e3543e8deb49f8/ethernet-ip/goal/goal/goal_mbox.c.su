@@ -1,8 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:58:15:goal_mboxCreate	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:79:15:goal_mboxLockFreeCreate	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:95:22:goal_mboxInternalCreate	40	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:154:15:goal_mboxDestroy	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:191:15:goal_mboxMsgGet	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:252:15:goal_mboxMsgPut	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:311:9:goal_mboxIsFull	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/goal/goal_mbox.c:325:9:goal_mboxIsEmpty	16	static

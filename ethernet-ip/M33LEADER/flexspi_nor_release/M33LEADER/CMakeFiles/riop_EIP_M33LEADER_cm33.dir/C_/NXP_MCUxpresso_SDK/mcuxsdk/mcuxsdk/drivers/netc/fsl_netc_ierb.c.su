@@ -1,3 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_ierb.c:9:6:NETC_SoftReset	4	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_ierb.c:15:10:NETC_IERBLock	4	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/netc/fsl_netc_ierb.c:29:10:NETC_IERBUnlock	4	static

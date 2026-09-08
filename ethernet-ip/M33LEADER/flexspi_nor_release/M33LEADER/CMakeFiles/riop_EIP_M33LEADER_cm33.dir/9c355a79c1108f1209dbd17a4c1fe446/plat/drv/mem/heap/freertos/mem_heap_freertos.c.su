@@ -1,6 +1,0 @@
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:77:15:goal_drvMemHeapCreate	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:99:22:goal_drvMemHeapStatusGet	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:127:22:goal_drvMemHeapAllocAlign	24	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:157:22:goal_drvMemHeapCallocAlign	32	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:181:22:goal_drvMemHeapFree	16	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/ethernet-ip/goal/plat/drv/mem/heap/freertos/mem_heap_freertos.c:206:15:goal_drvMemHeapRealloc	32	static

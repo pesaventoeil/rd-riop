@@ -1,4 +1,0 @@
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/pwm/fsl_pwm.h:1206:20:PWM_SetPwmLdok	16	static
-C:/NXP_MCUxpresso_SDK/mcuxsdk/mcuxsdk/drivers/lpit/fsl_lpit.h:396:13:LPIT_ResetStateDelay	4	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/SIGGEN_task/SIGGEN_task.c:32:6:SIGGEN_timerCallback	40	static
-C:/Users/dpesavento.EIL/Documents/GitHub/daniel-sandbox/rd-riop-EIP-demo/common/m7/source/SIGGEN_task/SIGGEN_task.c:103:6:SIGGEN_ControlTask	40	static
