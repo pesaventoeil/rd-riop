@@ -8,8 +8,8 @@
  *         2-wire RS-485 via MAX3485 (U35) on LPUART10.
  */
 
-#ifndef _APP_H_
-#define _APP_H_
+#ifndef _DCE_APP_H_
+#define _DCE_APP_H_
 
 #include "fsl_device_registers.h"
 #include "fsl_clock.h"
@@ -97,7 +97,7 @@
 
 /* Must equal the configured root frequency. Used in _Static_assert below,
  * so it has to be a literal rather than a CLOCK_GetRootClockFreq() call. */
-#define TPM_SOURCE_CLOCK_HZ         (24000000UL)
+#define TPM_SOURCE_CLOCK_HZ         (80000000UL)
 #define TPM_SOURCE_CLOCK            TPM_SOURCE_CLOCK_HZ
 
 /* The RT1180 TPM has a 32-BIT counter: PERI_TPM.h defines CNT and MOD as
@@ -105,12 +105,12 @@
  * Kinetis parts. Consequences:
  *   - No need to split prescalers across timer modes; one value covers the
  *     whole range from 1750 us to seconds.
- *   - Running undivided gives the best T3.5 resolution (41.7 ns) and still
- *     leaves ~179 s of range before MOD overflows.
+ *   - Running undivided gives the best T3.5 resolution (12.5 ns) and still
+ *     leaves ~53 s of range before MOD overflows.
  *
  * fsl_tpm prescale enums are log2 of the divider; modbus_timer.c relies on
  * this when it computes (1U << tpmInfo.prescale). */
-#define TPM_PRESCALE_LOG2           (0)                          /* /1 -> 24 MHz */
+#define TPM_PRESCALE_LOG2           (0)                          /* /1 -> 80 MHz */
 #define TPM_PRESCALER               kTPM_Prescale_Divide_1
 #define TPM_PRESCALER_RESPOND       kTPM_Prescale_Divide_1
 #define TPM_PRESCALER_CONVERT       kTPM_Prescale_Divide_1
@@ -151,4 +151,4 @@ _Static_assert(TPM_TICKS(MB_MASTER_TIMEOUT_US_RESPOND, TPM_PRESCALE_LOG2) <= 0xF
 _Static_assert(TPM_TICKS(MB_MASTER_DELAY_US_CONVERT, TPM_PRESCALE_LOG2) <= 0xFFFFFFFFUL,
                "Convert delay overflows the 32-bit TPM counter");
 
-#endif /* _APP_H_ */
+#endif /* _DCE_APP_H_ */
