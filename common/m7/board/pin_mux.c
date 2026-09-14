@@ -66,6 +66,22 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AON_09_LPUART1_RX,          /* GPIO_AON_09 is configured as LPUART1_RX */
       1U);                                    /* Software Input On Field: Force input path of pad GPIO_AON_09 */
+
+  /* --- CentriFeeder DCE: RS-485 on LPUART10 (MAX3485 U35) ---
+   * TX  GPIO_AD_32 -> U35 DI
+   * RX  GPIO_AD_33 <- U35 RO   (SION forced, same as LPUART1_RX above)
+   * RTS GPIO_AD_35 -> U35 DE//RE  (hardware driver enable via MODIR[TXRTSE])
+   * AD_35 pull is left disabled so R310 (10K to GND) holds DE low during the
+   * Hi-Z window before pinmux runs. AD pads are on IOMUXC1 (already enabled). */
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_AD_32_LPUART10_TX,          /* GPIO_AD_32 is configured as LPUART10_TX */
+      0U);                                    /* Input Path determined by functionality */
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_AD_33_LPUART10_RX,          /* GPIO_AD_33 is configured as LPUART10_RX */
+      1U);                                    /* Force input path of pad GPIO_AD_33 */
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_AD_35_LPUART10_RTS_B,       /* GPIO_AD_35 is configured as LPUART10_RTS_B */
+      0U);                                    /* Input Path determined by functionality */
 }
 
 /***********************************************************************************************************************
