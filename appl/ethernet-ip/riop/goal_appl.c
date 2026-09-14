@@ -35,6 +35,7 @@
 extern void riop_appl_loop(void);
 static void appl_eipTxPayloadPrepare(uint8_t *pOutputData);
 static void appl_eipRxPayloadProcess(uint8_t *pInputData);
+#include "dce_task.h"
 #endif
 /**-- ICC_EIP_GEN_INCLUDES_END --**/
 
@@ -155,6 +156,7 @@ GOAL_STATUS_T appl_init(
     /* user code block */
 #if RIOP
     riop_appl_init();
+    dce_taskInit();
 #endif
     /**-- ICC_EIP_GEN_APPLINIT_AFTER_END --**/
 
@@ -1029,6 +1031,16 @@ static void appl_eipTxPayloadPrepare(
                 GOAL_MEMCPY(&pData->adc14_out, &tt, sizeof(tt)); //#14
                 GOAL_MEMCPY(&pData->adc15_out, &tt, sizeof(tt)); //#15
                 GOAL_MEMCPY(&pData->adc16_out, &tt, sizeof(tt)); //#16
+        }
+
+        /* CentriFeeder: publish DCE FlowRate / Totalization over the former
+         * temperature-duplicate float slots adc15_out / adc16_out. Overrides
+         * the temperature values written just above. */
+        {
+                DCE_DATA_T dce;
+                dce_dataGet(&dce);
+                GOAL_MEMCPY(&pData->adc15_out, &dce.flowRate,     sizeof(float)); //FlowRate
+                GOAL_MEMCPY(&pData->adc16_out, &dce.totalization, sizeof(float)); //Totalization
         }
 }
 #endif
