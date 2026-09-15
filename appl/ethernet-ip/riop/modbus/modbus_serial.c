@@ -22,6 +22,7 @@
 #include "mbport.h"
 
 #include "fsl_lpuart.h"
+#include "fsl_clock.h"
 #include "clock_config.h"
 #include "dce_app.h"
 #include "port.h"
@@ -87,6 +88,11 @@ static BOOL UartInit(uint32_t ulBaudRate, UCHAR ucDataBits, eMBParity eParity)
         return FALSE;
     }
     config.dataBitsCount = kLPUART_EightDataBits;
+
+    /* Enable the LPUART10 peripheral clock gate. The clock ROOT is configured
+     * in clock_config.c, but the LPCG must also be on or the first register
+     * access faults. */
+    CLOCK_EnableClock(kCLOCK_Lpuart10);
 
     if (kStatus_Success != LPUART_Init(DEMO_LPUART, &config, DEMO_LPUART_CLK_FREQ)) {
         return FALSE;

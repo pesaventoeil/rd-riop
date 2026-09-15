@@ -30,6 +30,7 @@
 #include "mbrtu.h"
 
 #include "fsl_tpm.h"
+#include "fsl_clock.h"
 #include "fsl_cache.h"
 #include "fsl_lpuart.h"
 #include "dce_app.h"
@@ -72,6 +73,10 @@ void BOARD_TPM_HANDLER(void)
 BOOL
 xMBMasterPortTimersInit( USHORT usTimerT35_50us )
 {
+    /* Enable the TPM6 peripheral clock gate before any TPM register access.
+     * Root is set in clock_config.c; the LPCG must also be on. */
+    CLOCK_EnableClock(kCLOCK_Tpm6);	
+	
     /* The stack passes the computed T3.5 in 50 us units, but T3.5 above
      * 19200 baud is the fixed 1750 us from app.h, so the argument is
      * deliberately unused -- same as the stock file, just now on purpose. */
