@@ -2,17 +2,17 @@
  *
  * Location: appl\ethernet-ip\riop\dce_task.c
  *
- * Replaces the dummy generator with a real FC03 poll of the DCE's holding
- * registers 504..507 over RS-485 on LPUART10.
+ * FreeModbus is always linked into M7FOLLOWER. Runtime is gated by
+ * DCE_MODBUS_RUNTIME (default 0 in dce_task.h):
+ *   0 = idle: clear published floats, do not touch LPUART10/TPM6 or create
+ *       Modbus tasks. Use this until PC EIP Class 1 / MCTC are healthy again.
+ *   1 = live FC03 poll of holding regs 504..507 over RS-485 on LPUART10.
  *
- * Two tasks:
- *   mbpoll  - runs eMBMasterPoll() forever; this is the FreeModbus event
- *             pump and owns the stack's init/enable.
- *   dce     - issues one FC03 every DCE_POLL_PERIOD_MS, converts the reply
- *             into FlowRate/Totalization, and enforces the staleness timeout.
+ * When runtime is on, two tasks run:
+ *   mbpoll  - eMBMasterPoll() forever; owns master init/enable.
+ *   dce     - one FC03 every DCE_POLL_PERIOD_MS; FlowRate/Totalization + stale.
  *
- * Bench diagnostics live in dceDiag (see dce_task.h). It is a plain global
- * so it can be read from GDB with "p dceDiag" while the target runs.
+ * Bench diagnostics: GDB "p dceDiag".
  */
 
 #include <stdint.h>
@@ -21,24 +21,28 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "fsl_debug_console.h"
 
+#include "dce_task.h"
+
+#if DCE_MODBUS_RUNTIME
 #include "mb.h"
 #include "mb_m.h"
 #include "mbport.h"
 
 #include "dce_app.h"
 #include "modbus_cb.h"
-#include "dce_task.h"
 
 #define DCE_POLL_PERIOD_MS      100u
 #define DCE_TASK_PRIORITY       4u
 #define DCE_TASK_STACK_SIZE     (configMINIMAL_STACK_SIZE + 256)
 
-/* The FreeModbus poll task must outrank the requester so responses are
- * processed promptly, but must stay below the GOAL EtherNet/IP task so a
- * stalled RS-485 link can never delay a CIP connection.
- * >>> VERIFY against the GOAL task priority before shipping. <<< */
+/* Priority notes (M7 FreeRTOS, verified against this tree):
+ *   GOAL Main maps to FreeRTOS ~0 (GOAL prio 1, scale 0..100 → 0..31).
+ *   EIP Eth Rx/Tx (GOAL 75/85) run on CM33, not here.
+ *   Local RIOP: AFE=7, SIGGEN=6, GPIO=5.
+ * mbpoll must outrank the dce requester so responses are pumped promptly,
+ * and stay at/below GPIO so a busy Modbus path cannot starve AFE sampling.
+ * It will preempt GOAL Main on M7 — keep poll work short (queue wait yields). */
 #define MB_POLL_TASK_PRIORITY   5u
 #define MB_POLL_TASK_STACK_SIZE (configMINIMAL_STACK_SIZE + 1024)
 
@@ -50,6 +54,7 @@
  * is a NORMAL state: the DCE only speaks Modbus when enabled from its front
  * panel, and drops out of eMBSPoll() the moment that is switched off. */
 #define DCE_STALE_TIMEOUT_MS    1000u
+#endif /* DCE_MODBUS_RUNTIME */
 
 static DCE_DATA_T dceData;
 
@@ -57,10 +62,16 @@ static DCE_DATA_T dceData;
  * the file scope ("p dceDiag"). */
 DCE_DIAG_T dceDiag;
 
+#if DCE_MODBUS_RUNTIME
 /* Set true by the poll task once eMBMasterInit()/Enable() have run.
  * The requester task waits on this so it never issues a request
  * before the master stack exists. */
 static volatile bool dceMbReady = false;
+
+/* Rate-from-delta state for totalization (see dce_task). Cleared on stale. */
+static float s_prevTotal     = 0.0f;
+static bool  s_havePrevTotal = false;
+#endif
 
 void dce_dataGet(
     DCE_DATA_T *pOut
@@ -78,6 +89,7 @@ void dce_diagGet(
     *pOut = dceDiag;
 }
 
+#if DCE_MODBUS_RUNTIME
 static void dce_dataSet(
     float flowRate,
     float totalization
@@ -95,11 +107,14 @@ static void dce_dataInvalidate(
     void
 )
 {
+    /* Comms-lost: zero rate and clear valid, but keep last totalization so
+     * EIP does not flash 0 before the next good Count sample restores it.
+     * Drop delta state so the first sample after recovery does not spike. */
     taskENTER_CRITICAL();
-    dceData.flowRate     = 0.0f;
-    dceData.totalization = 0.0f;
-    dceData.valid        = false;
+    dceData.flowRate = 0.0f;
+    dceData.valid    = false;
     taskEXIT_CRITICAL();
+    s_havePrevTotal = false;
 }
 
 /* FreeModbus master event pump. Must run in a task, not an ISR: the event
@@ -161,9 +176,8 @@ static void dce_task(
 )
 {
     TickType_t tsWake;
+    TickType_t tsPrevSample = 0;
     uint16_t   regs[DCE_REG_BLOCK_NREGS];
-    float      total    = 0.0f;
-    float      flowRate = 0.0f;
 
     (void) pvParameters;
 
@@ -201,18 +215,31 @@ static void dce_task(
                 memcpy(dceDiag.lastRegs, regs, sizeof(dceDiag.lastRegs));
 
                 if (0u != cwratio) {
-                    flowRate = (float) count / (float) cwratio;
+                    /* Count is treated as an accumulating counter:
+                     * totalization = Count/CWratio; flowRate is the
+                     * per-minute delta of that total. If Count is instead a
+                     * rate numerator, swap these on the bench. */
+                    TickType_t now      = xTaskGetTickCount();
+                    float      totalNow = (float) count / (float) cwratio;
+                    float      flowRate = 0.0f;
 
-                    /* TODO: totalization source is still undecided.
-                     * Integrating the rate over the poll interval is a
-                     * placeholder that behaves sensibly, but if usMBReg_Count
-                     * is itself an accumulating counter then Count/CWratio
-                     * IS the total and the rate needs a different source
-                     * (candidates: usMBReg_Percent @600 x usMBReg_EFS @502).
-                     * Decide on the bench with a real DCE. */
-                    total += flowRate * ((float) DCE_POLL_PERIOD_MS / 60000.0f);
+                    if (s_havePrevTotal) {
+                        uint32_t dtMs   = (uint32_t)(now - tsPrevSample);
+                        float    dTotal = totalNow - s_prevTotal;
 
-                    dce_dataSet(flowRate, total);
+                        if (dTotal < 0.0f) {
+                            dTotal = 0.0f; /* counter reset/wrap */
+                        }
+                        if ((dtMs > 0u) &&
+                            (dtMs <= (DCE_STALE_TIMEOUT_MS * 2u))) {
+                            flowRate = dTotal * (60000.0f / (float) dtMs);
+                        }
+                    }
+                    s_prevTotal     = totalNow;
+                    s_havePrevTotal = true;
+                    tsPrevSample    = now;
+
+                    dce_dataSet(flowRate, totalNow);
                 } else {
                     /* cwratio == 0 means the DCE is uncalibrated. Hold the
                      * previous values and let the staleness timeout decide. */
@@ -224,29 +251,53 @@ static void dce_task(
         }
 
         /* Staleness check runs regardless of this poll's outcome. */
-        if (dceData.valid) {
-            uint32_t age = (uint32_t) xTaskGetTickCount() - dceData.tsLastGood;
+        {
+            bool     valid;
+            uint32_t tsLastGood;
 
-            if (age > pdMS_TO_TICKS(DCE_STALE_TIMEOUT_MS)) {
-                dce_dataInvalidate();
-                dceDiag.staleEvents++;
+            taskENTER_CRITICAL();
+            valid      = dceData.valid;
+            tsLastGood = dceData.tsLastGood;
+            taskEXIT_CRITICAL();
+
+            if (valid) {
+                uint32_t age = (uint32_t) xTaskGetTickCount() - tsLastGood;
+
+                if (age > pdMS_TO_TICKS(DCE_STALE_TIMEOUT_MS)) {
+                    dce_dataInvalidate();
+                    dceDiag.staleEvents++;
+                }
             }
         }
 
         vTaskDelayUntil(&tsWake, pdMS_TO_TICKS(DCE_POLL_PERIOD_MS));
     }
 }
+#endif /* DCE_MODBUS_RUNTIME */
 
 void dce_taskInit(void)
 {
     memset(&dceData, 0, sizeof(dceData));
     memset(&dceDiag, 0, sizeof(dceDiag));
-    dceDiag.mbState = DCE_MB_NOT_STARTED;
+
+#if !DCE_MODBUS_RUNTIME
+    /* Linked-but-idle: adc15/adc16 stay 0.0 via dce_dataGet(); no HW/tasks.
+     * Matches 71ce78e behaviour (Modbus in image, EIP still connects). */
+    dceDiag.mbState = DCE_MB_IDLE_LINKED;
+#else
     dceMbReady = false;
+    dceDiag.mbState = DCE_MB_NOT_STARTED;
 
-    (void) xTaskCreate(dce_mbPollTask, "mbpoll", MB_POLL_TASK_STACK_SIZE,
-                       NULL, MB_POLL_TASK_PRIORITY, NULL);
+    if (pdPASS != xTaskCreate(dce_mbPollTask, "mbpoll", MB_POLL_TASK_STACK_SIZE,
+                              NULL, MB_POLL_TASK_PRIORITY, NULL)) {
+        dceDiag.mbState = DCE_MB_CREATE_FAILED;
+        return;
+    }
 
-    (void) xTaskCreate(dce_task, "dce", DCE_TASK_STACK_SIZE,
-                       NULL, DCE_TASK_PRIORITY, NULL);
+    if (pdPASS != xTaskCreate(dce_task, "dce", DCE_TASK_STACK_SIZE,
+                              NULL, DCE_TASK_PRIORITY, NULL)) {
+        dceDiag.mbState = DCE_MB_CREATE_FAILED;
+        return;
+    }
+#endif
 }

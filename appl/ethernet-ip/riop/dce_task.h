@@ -4,6 +4,17 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/* Runtime gate: FreeModbus stays linked (M7FOLLOWER CMakeLists) whether this
+ * is 0 or 1. When 0, dce_taskInit() only clears published floats — no mbpoll /
+ * dce tasks, no LPUART10 / TPM6 bring-up. That matches the known-good "Modbus
+ * in the image but idle" state (71ce78e) and keeps EIP/MCTC recoverable while
+ * RS-485 is unwired. Set to 1 only after PC EIP Class 1 connects again
+ * (see RECOVERY.md §5.0) and the bus is ready. Override from the build with
+ * -DDCE_MODBUS_RUNTIME=1 if preferred. */
+#ifndef DCE_MODBUS_RUNTIME
+#define DCE_MODBUS_RUNTIME      0
+#endif
+
 /** CentriFeeder DCE process values, published by the Modbus RTU master. */
 typedef struct {
     float    flowRate;      /**< engineering units per minute */
@@ -14,11 +25,13 @@ typedef struct {
 
 /** Lifecycle of the Modbus master stack, for bench diagnostics. */
 typedef enum {
-    DCE_MB_NOT_STARTED = 0, /**< dce_taskInit() not yet called          */
-    DCE_MB_TASK_ENTERED,    /**< mbpoll task is running                  */
-    DCE_MB_INIT_FAILED,     /**< eMBMasterInit() returned an error        */
-    DCE_MB_ENABLE_FAILED,   /**< eMBMasterEnable() returned an error      */
-    DCE_MB_RUNNING          /**< stack up, dce task issuing FC03 polls    */
+    DCE_MB_NOT_STARTED = 0, /**< dce_taskInit() not yet called            */
+    DCE_MB_IDLE_LINKED,     /**< runtime gated off; FreeModbus linked only */
+    DCE_MB_TASK_ENTERED,    /**< mbpoll task is running                    */
+    DCE_MB_INIT_FAILED,     /**< eMBMasterInit() returned an error         */
+    DCE_MB_ENABLE_FAILED,   /**< eMBMasterEnable() returned an error       */
+    DCE_MB_CREATE_FAILED,   /**< xTaskCreate for mbpoll/dce failed         */
+    DCE_MB_RUNNING          /**< stack up, dce task issuing FC03 polls     */
 } DCE_MB_STATE_T;
 
 /** Bench diagnostics. Read this over GDB ("p dceDiag") to see what the
