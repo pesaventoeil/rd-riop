@@ -23,7 +23,9 @@
 
 #include "fsl_lpuart.h"
 #include "fsl_clock.h"
+#include "fsl_iomuxc.h"
 #include "clock_config.h"
+#include "pin_mux.h"
 #include "dce_app.h"
 #include "port.h"
 
@@ -94,6 +96,14 @@ static BOOL UartInit(uint32_t ulBaudRate, UCHAR ucDataBits, eMBParity eParity)
      * access faults. */
     CLOCK_EnableClock(kCLOCK_Lpuart10);
 
+    /* Mux only the LPUART10 pins (same settings as common/m7/board/pin_mux.c).
+     * Do not call BOARD_InitBootPins() here: it also re-muxes LPUART1 and
+     * GPIO_AD_27, which the M33 owns. */
+    CLOCK_EnableClock(kCLOCK_Iomuxc1);
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_32_LPUART10_TX, 0U);
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_33_LPUART10_RX, 1U);
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_35_LPUART10_RTS_B, 0U);
+
     if (kStatus_Success != LPUART_Init(DEMO_LPUART, &config, DEMO_LPUART_CLK_FREQ)) {
         return FALSE;
     }
@@ -108,6 +118,9 @@ static BOOL UartInit(uint32_t ulBaudRate, UCHAR ucDataBits, eMBParity eParity)
      * it is inverted, clear TXRTSPOL. */
     DEMO_LPUART->MODIR |= LPUART_MODIR_TXRTSE_MASK | LPUART_MODIR_TXRTSPOL_MASK;
 
+    /* Reset priority 0 is above configMAX_SYSCALL_INTERRUPT_PRIORITY and
+     * asserts in vPortValidateInterruptPriority. See DCE_MB_IRQ_PRIO. */
+    NVIC_SetPriority(DEMO_LPUART_IRQn, DCE_MB_IRQ_PRIO);
     EnableIRQ(DEMO_LPUART_IRQn);
     return TRUE;
 }

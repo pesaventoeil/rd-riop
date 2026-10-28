@@ -42,6 +42,12 @@
 #define DEMO_LPUART_IRQHandler      DCE_LPUART_IRQHandler
 #define DEMO_LPUART_CLK_FREQ        DCE_LPUART_CLK_FREQ
 
+/* NVIC priority for LPUART10 and TPM6. Both ISRs post to FreeRTOS queues, so
+ * the level must be numerically >= configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY
+ * (2). The reset level 0 trips configASSERT in vPortValidateInterruptPriority
+ * and halts the M7. 7 sits below the NAFE SPI/DRDY IRQs (5/6). */
+#define DCE_MB_IRQ_PRIO             (7U)
+
 /* =========================================================================
  * Modbus link parameters (must match the DCE)
  *

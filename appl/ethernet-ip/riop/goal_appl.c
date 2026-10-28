@@ -156,7 +156,6 @@ GOAL_STATUS_T appl_init(
     /* user code block */
 #if RIOP
     riop_appl_init();
-    dce_taskInit();
 #endif
     /**-- ICC_EIP_GEN_APPLINIT_AFTER_END --**/
 
@@ -277,6 +276,10 @@ GOAL_STATUS_T appl_setup(
     }
     /**-- ICC_EIP_GEN_APPLSETUP_AFTER_START --**/
     /* user code block */
+#if RIOP
+    /* Start Modbus only after goal_eipNew() has created the CC instance. */
+    dce_taskInit();
+#endif
     /**-- ICC_EIP_GEN_APPLSETUP_AFTER_END --**/
 
     return GOAL_OK;

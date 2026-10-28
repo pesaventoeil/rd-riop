@@ -82,6 +82,9 @@ xMBMasterPortTimersInit( USHORT usTimerT35_50us )
      * deliberately unused -- same as the stock file, just now on purpose. */
     (void)usTimerT35_50us;
 
+    /* Reset priority 0 is above configMAX_SYSCALL_INTERRUPT_PRIORITY and
+     * asserts in vPortValidateInterruptPriority. See DCE_MB_IRQ_PRIO. */
+    NVIC_SetPriority(BOARD_TPM_IRQ_NUM, DCE_MB_IRQ_PRIO);
     prvTpmArm(TPM_PRESCALER, TIME_PERIOD_US);
     TPM_StopTimer(BOARD_TPM);   /* armed but idle until the stack asks */
 

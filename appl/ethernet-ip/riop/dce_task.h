@@ -12,7 +12,18 @@
  * (see RECOVERY.md §5.0) and the bus is ready. Override from the build with
  * -DDCE_MODBUS_RUNTIME=1 if preferred. */
 #ifndef DCE_MODBUS_RUNTIME
-#define DCE_MODBUS_RUNTIME      0
+#define DCE_MODBUS_RUNTIME      1
+#endif
+
+/* Bench-only: remux LPUART10 RS-485 pads to GPIO and toggle DI+DE so a scope /
+ * DS View / LabJack AIN can prove MCU→U35 drive. Do NOT drive AD_33 (RO).
+ * When 1, Modbus is not started regardless of DCE_MODBUS_RUNTIME.
+ * Keep at 0 for live FC03; M33 early-init bitbang also keys off this. */
+#ifndef DCE_GPIO_BITBANG_TEST
+#define DCE_GPIO_BITBANG_TEST   0
+#endif
+#ifndef DCE_GPIO_BITBANG_ON_M33
+#define DCE_GPIO_BITBANG_ON_M33 0
 #endif
 
 /** CentriFeeder DCE process values, published by the Modbus RTU master. */
