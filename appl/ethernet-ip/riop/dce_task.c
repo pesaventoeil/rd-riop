@@ -778,13 +778,13 @@ void dce_mirrorHandleWriteRequest(
     s_mailboxArmedSeqSeen = true;
     taskEXIT_CRITICAL();
 
-    /* TODO(widen-allowlist): Any broader DCE write permission requires
-     * Daniel's explicit approval before changing these checks. */
+    /* DEV 2026-11-06 (Daniel): allow all mailbox op=1 writes during bring-up.
+     * Still requires valid length and a mappable address (checked below).
+     * Fuse/OTP not reachable via this mailbox path. */
     if ((pReq->op != 1u) ||
         (DCE_MODBUS_SLAVE_ADDR != DCE_ALLOWED_SLAVE_ADDR) ||
-        (pReq->address != DCE_ALLOWED_REG_ADDR) ||
-        (pReq->lengthWords != 1u) ||
-        (pReq->values[0] != DCE_ALLOWED_VALUE_WORD0)) {
+        (pReq->lengthWords < 1u) ||
+        (pReq->lengthWords > GOAL_APP_DCE_MIRROR_MAX_WRITE_WORDS)) {
         taskENTER_CRITICAL();
         dceMirrorAckPublish(pReq->seq, DCE_ACK_REJECTED, DCE_MB_EX_ILLEGAL_FUNCTION);
         s_mailboxDeniedCount++;
