@@ -25,6 +25,7 @@
 #include "goal_eip.h"
 #include "goal_app_eip.h"
 #include <goal_dd.h>
+#include <string.h>
 #if RIOP
 #include "gl.h"
 #endif
@@ -35,6 +36,10 @@
 extern void riop_appl_loop(void);
 static void appl_eipTxPayloadPrepare(uint8_t *pOutputData);
 static void appl_eipRxPayloadProcess(uint8_t *pInputData);
+static void appl_dceMirrorInputPrepare(uint8_t *pMirrorData);
+static void appl_dceMirrorOutputProcess(uint8_t *pMailboxData);
+static void appl_dceFastInputPrepare(uint8_t *pFastData);
+static void appl_dcePollSelProcess(uint8_t *pSelData);
 #include "dce_task.h"
 #endif
 /**-- ICC_EIP_GEN_INCLUDES_END --**/
@@ -119,6 +124,10 @@ static GOAL_STATUS_T main_eipResetDevice(
 #if RIOP
 static uint8_t inputData[GOAL_APP_ASM_SIZE_INPUT] = {0x0};  /**< input assembly data */
 static uint8_t outputData[GOAL_APP_ASM_SIZE_OUTPUT] = {0x0};  /**< output assembly data */
+static uint8_t dceMirrorInputData[GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT] = {0x0};
+static uint8_t dceMirrorOutputData[GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT] = {0x0};
+static uint8_t dceFastInputData[GOAL_APP_ASM_SIZE_DCE_FAST_INPUT] = {0x0};
+static uint8_t dcePollSelOutputData[GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT] = {0x0};
 extern int riop_appl_init(void);
 #endif
 /**-- ICC_EIP_GEN_LOCALVARS_END --**/
@@ -250,6 +259,46 @@ GOAL_STATUS_T appl_setup(
         return res;
     }
 
+    /* DCE mirror input assembly */
+    res = goal_eipCreateAssemblyObject(
+        pHdlEip,
+        GOAL_APP_ASM_ID_DCE_MIRROR_INPUT,
+        GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT
+    );
+    if (GOAL_RES_ERR(res)) {
+        goal_logErr("failed to create DCE mirror Input Assembly");
+        return res;
+    }
+
+    /* DCE write-request mailbox assembly */
+    res = goal_eipCreateAssemblyObject(
+        pHdlEip,
+        GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT,
+        GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT
+    );
+    if (GOAL_RES_ERR(res)) {
+        goal_logErr("failed to create DCE mirror Output Assembly");
+        return res;
+    }
+
+    /* G48: DCE fast/compact input assembly 172 (explicit messaging, like the
+     * HMI backend reads 170) and poll-set selector output assembly 173 (explicit
+     * Set_Attribute_Single, like the mailbox 171). Neither is part of any
+     * implicit connection; a failure here is logged but not fatal so the
+     * proven 170/171 path always comes up. */
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_DCE_FAST_INPUT,
+            GOAL_APP_ASM_SIZE_DCE_FAST_INPUT))) {
+        goal_logErr("failed to create DCE fast Input Assembly 172");
+    }
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_DCE_POLLSEL_OUTPUT,
+            GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT))) {
+        goal_logErr("failed to create DCE poll-set selector Output Assembly 173");
+    }
+
 
     /* define allowed connections */
     if (GOAL_RES_OK(res)) {
@@ -273,6 +322,15 @@ GOAL_STATUS_T appl_setup(
                                             GOAL_APP_ASM_ID_HEARTBEAT_LO,
                                             GOAL_APP_ASM_ID_INPUT,
                                             GOAL_APP_ASM_ID_CONFIG);
+    }
+
+    if (GOAL_RES_OK(res)) {
+        res = goal_eipAddExclusiveOwnerConnection(
+            pHdlEip,
+            GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT,
+            GOAL_APP_ASM_ID_DCE_MIRROR_INPUT,
+            GOAL_APP_ASM_ID_CONFIG
+        );
     }
     /**-- ICC_EIP_GEN_APPLSETUP_AFTER_START --**/
     /* user code block */
@@ -388,6 +446,34 @@ static GOAL_STATUS_T main_eipAfterAssemblyDataReceived(
 
             break;
 
+        case GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT:
+#if RIOP
+            res = goal_eipAssemblyObjectRead(
+                pHdlEip,
+                GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT,
+                &dceMirrorOutputData[0],
+                GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT
+            );
+            if (GOAL_RES_OK(res)) {
+                appl_dceMirrorOutputProcess(&dceMirrorOutputData[0]);
+            }
+#endif
+            break;
+
+        case GOAL_APP_ASM_ID_DCE_POLLSEL_OUTPUT:
+#if RIOP
+            res = goal_eipAssemblyObjectRead(
+                pHdlEip,
+                GOAL_APP_ASM_ID_DCE_POLLSEL_OUTPUT,
+                &dcePollSelOutputData[0],
+                GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT
+            );
+            if (GOAL_RES_OK(res)) {
+                appl_dcePollSelProcess(&dcePollSelOutputData[0]);
+            }
+#endif
+            break;
+
         case GOAL_APP_ASM_ID_CONFIG:
             /**-- ICC_EIP_GEN_ASM_ID_CONFIG_START --**/
             /* user code block */
@@ -473,6 +559,27 @@ static GOAL_STATUS_T main_eipBeforeAssemblyDataSend(
          case GOAL_APP_ASM_ID_INPUT:
 		appl_eipTxPayloadPrepare (&inputData[0]);
             	res = goal_eipAssemblyObjectWrite(pHdlEip, GOAL_APP_ASM_ID_INPUT, &inputData[0], GOAL_APP_ASM_SIZE_INPUT);
+            break;
+
+        case GOAL_APP_ASM_ID_DCE_MIRROR_INPUT:
+            appl_dceMirrorInputPrepare(&dceMirrorInputData[0]);
+            res = goal_eipAssemblyObjectWrite(
+                pHdlEip,
+                GOAL_APP_ASM_ID_DCE_MIRROR_INPUT,
+                &dceMirrorInputData[0],
+                GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT
+            );
+            break;
+
+        case GOAL_APP_ASM_ID_DCE_FAST_INPUT:
+            appl_dceFastInputPrepare(&dceFastInputData[0]);
+            res = goal_eipAssemblyObjectWrite(
+                pHdlEip,
+                GOAL_APP_ASM_ID_DCE_FAST_INPUT,
+                &dceFastInputData[0],
+                GOAL_APP_ASM_SIZE_DCE_FAST_INPUT
+            );
+            break;
 #endif
         /**-- ICC_EIP_GEN_BEFORE_ASSEMBLYDATA_SEND_SWITCH_END --**/
 
@@ -847,6 +954,91 @@ typedef struct __attribute__((packed)) {
     float adc15_out;
     float adc16_out;
 } riop_data_out;
+
+typedef struct __attribute__((packed)) {
+    uint16_t schemaVersion;
+    uint16_t tagCount;
+    uint32_t scanCounter;
+    uint32_t lastScanTicks;
+    uint16_t commStatus;
+    uint32_t ackSeq;
+    uint16_t ackCode;
+    uint16_t ackDetail;
+    uint8_t quality[GOAL_APP_DCE_MIRROR_QUALITY_BYTES];
+    uint16_t regWords[GOAL_APP_DCE_MIRROR_REG_WORDS];
+} dce_mirror_input_asm_t;
+
+typedef char dce_mirror_input_size_must_match[
+    (sizeof(dce_mirror_input_asm_t) == GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT) ? 1 : -1
+];
+typedef char dce_pollsel_size_must_match[
+    (sizeof(DCE_POLLSEL_REQ_T) == GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT) ? 1 : -1
+];
+typedef char dce_mirror_output_size_must_match[
+    (sizeof(DCE_MIRROR_WRITE_REQ_T) == GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT) ? 1 : -1
+];
+
+/****************************************************************************/
+/** Prepare DCE mirror payload for dedicated input assembly 170.
+ */
+static void appl_dceMirrorInputPrepare(
+    uint8_t *pMirrorData
+)
+{
+    DCE_MIRROR_SNAPSHOT_T snapshot;
+    dce_mirror_input_asm_t payload;
+
+    dce_mirrorGetSnapshot(&snapshot);
+    memset(&payload, 0, sizeof(payload));
+    payload.schemaVersion = 1u;
+    payload.tagCount = GOAL_APP_DCE_MIRROR_TAG_COUNT;
+    payload.scanCounter = snapshot.scanCounter;
+    payload.lastScanTicks = snapshot.lastScanTicks;
+    payload.commStatus = snapshot.commStatus;
+    payload.ackSeq = snapshot.ackSeq;
+    payload.ackCode = snapshot.ackCode;
+    payload.ackDetail = snapshot.ackDetail;
+    GOAL_MEMCPY(payload.quality, snapshot.quality, sizeof(payload.quality));
+    GOAL_MEMCPY(payload.regWords, snapshot.regWords, sizeof(payload.regWords));
+
+    GOAL_MEMCPY(pMirrorData, &payload, sizeof(payload));
+}
+
+/****************************************************************************/
+/** Process mailbox write request from dedicated output assembly 171.
+ */
+static void appl_dceMirrorOutputProcess(
+    uint8_t *pMailboxData
+)
+{
+    const DCE_MIRROR_WRITE_REQ_T *req = (const DCE_MIRROR_WRITE_REQ_T *)pMailboxData;
+    dce_mirrorHandleWriteRequest(req);
+}
+
+/****************************************************************************/
+/** Fill DCE fast/compact input assembly 172 (layout owned by dce_task.c). */
+static void appl_dceFastInputPrepare(
+    uint8_t *pFastData
+)
+{
+    dce_fastGetPayload(pFastData, GOAL_APP_ASM_SIZE_DCE_FAST_INPUT);
+}
+
+/****************************************************************************/
+/** Process the poll-set selector from output assembly 173.
+ *
+ * LOCAL RIOP SETTING ONLY: this never produces a Modbus request. It only
+ * selects which blocks dce_task polls (see dce_poll_table.h). Layout, little
+ * endian: u16 sel_seq, u8 set, u8 flags, u32 reserved.
+ */
+static void appl_dcePollSelProcess(
+    uint8_t *pSelData
+)
+{
+    const DCE_POLLSEL_REQ_T *req = (const DCE_POLLSEL_REQ_T *)pSelData;
+    dce_pollGapSet(req->reserved);
+    dce_pollSelectorSet(req->selSeq, req->set, req->flags);
+}
 
 /****************************************************************************/
 /** Process the ethernet-ip rx payload (output data) received from PLC

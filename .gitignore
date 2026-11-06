@@ -6,3 +6,8 @@ release/
 *.su 
 *.ninja_log 
 *.map 
+
+# junk / local
+-
+.cursor/
+

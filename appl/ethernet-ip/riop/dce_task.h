@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "goal_app_eip.h"
 
 /* Runtime gate: FreeModbus stays linked (M7FOLLOWER CMakeLists) whether this
  * is 0 or 1. When 0, dce_taskInit() only clears published floats — no mbpoll /
@@ -13,6 +14,12 @@
  * -DDCE_MODBUS_RUNTIME=1 if preferred. */
 #ifndef DCE_MODBUS_RUNTIME
 #define DCE_MODBUS_RUNTIME      1
+#endif
+
+/* Keep write execution compiled; mailbox-to-Modbus forwarding is still guarded
+ * by a strict positive allowlist in dce_task.c. */
+#ifndef DCE_MIRROR_WRITES
+#define DCE_MIRROR_WRITES       1
 #endif
 
 /* Bench-only: remux LPUART10 RS-485 pads to GPIO and toggle DI+DE so a scope /
@@ -71,6 +78,67 @@ typedef struct {
     uint16_t lastRegs[4];   /**< raw registers 504..507 from last good    */
 } DCE_DIAG_T;
 
+typedef enum {
+    DCE_ACK_OK = 0u,
+    DCE_ACK_REJECTED = 1u,
+    DCE_ACK_NEEDS_ARM = 2u,
+    DCE_ACK_SEQ_REPLAY = 3u,
+    DCE_ACK_INVALID_ADDR = 4u,
+    DCE_ACK_INVALID_LENGTH = 5u,
+    DCE_ACK_WRITES_DISABLED = 6u,
+    DCE_ACK_ALLOWLIST_REJECT = 7u
+} DCE_MIRROR_ACK_T;
+
+/* G48 ack_detail values >= 0x80 are LOCAL RIOP outcomes (never a DCE exception
+ * code); 0x01..0x0B keep their Modbus exception meaning. */
+#define DCE_ACK_DETAIL_LOCAL_REJECT   0x80u  /* master stack refused/failed the frame locally */
+#define DCE_ACK_DETAIL_WRITE_PENDING  0x81u  /* previous mailbox write not executed yet        */
+#define DCE_ACK_DETAIL_TIMEOUT        0x82u  /* DCE did not answer within the response timeout */
+#define DCE_ACK_DETAIL_BAD_FRAME      0x83u  /* reply failed CRC/length/address checks         */
+#define DCE_ACK_DETAIL_OTHER          0x84u  /* other master-stack error                        */
+
+typedef struct __attribute__((packed)) {
+    uint32_t seq;
+    uint16_t op;
+    uint16_t address;
+    uint16_t lengthWords;
+    uint16_t flags;
+    uint16_t values[GOAL_APP_DCE_MIRROR_MAX_WRITE_WORDS];
+} DCE_MIRROR_WRITE_REQ_T;
+
+typedef struct {
+    uint32_t scanCounter;
+    uint32_t lastScanTicks;
+    uint16_t commStatus;
+    uint32_t ackSeq; /* Sequence echoed from the last mailbox ack. */
+    uint16_t ackCode;
+    uint16_t ackDetail; /* Modbus exception code / reject detail. */
+    uint8_t quality[GOAL_APP_DCE_MIRROR_QUALITY_BYTES];
+    uint16_t regWords[GOAL_APP_DCE_MIRROR_REG_WORDS];
+} DCE_MIRROR_SNAPSHOT_T;
+
+/** asm 173 (PC -> RIOP), explicit Set_Attribute_Single. Local setting only:
+ *  NEVER produces a Modbus request. Little endian, 8 bytes. */
+typedef struct __attribute__((packed)) {
+    uint16_t selSeq;    /**< increments on every change AND as a >=1 Hz heartbeat */
+    uint8_t  set;       /**< 0 STATUS, 1 RUN, 2 SETUP (see dce_poll_table.h)       */
+    uint8_t  flags;     /**< bit0 = poll Y[0..9] (1000..1009) in RUN                */
+    uint32_t reserved;  /**< 0                                                      */
+} DCE_POLLSEL_REQ_T;
+
+/** Apply a poll-set selection. Accepted only when selSeq differs from the last
+ *  accepted one (heartbeat); unknown set id is ignored. 3 s without a new selSeq
+ *  -> back to SETUP. */
+void dce_pollSelectorSet(uint16_t selSeq, uint8_t set, uint8_t flags);
+
+/** G49 bench knob, carried in asm 173 `reserved`: bit31 = valid, bits 7..0 =
+ *  idle gap in ms inserted after every transaction (0..100). Local RIOP timing
+ *  only, never a Modbus request. reserved == 0 leaves the gap unchanged. */
+void dce_pollGapSet(uint32_t reserved);
+
+/** Fill the asm 172 payload (len bytes, 128). Safe from any task. */
+void dce_fastGetPayload(uint8_t *pOut, uint16_t len);
+
 /** Create the DCE polling task. Call once during board init. */
 void dce_taskInit(void);
 
@@ -80,5 +148,11 @@ void dce_dataGet(DCE_DATA_T *pOut);
 /** Snapshot the diagnostics. Not locked; counters are monotonic and a torn
  *  read is harmless for a bench readout. */
 void dce_diagGet(DCE_DIAG_T *pOut);
+
+/** Snapshot all mirrored DCE registers and status for EIP assembly 170. */
+void dce_mirrorGetSnapshot(DCE_MIRROR_SNAPSHOT_T *pOut);
+
+/** Handle one mailbox write request from EIP assembly 171. */
+void dce_mirrorHandleWriteRequest(const DCE_MIRROR_WRITE_REQ_T *pReq);
 
 #endif /* DCE_TASK_H */

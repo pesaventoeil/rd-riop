@@ -22,6 +22,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* ----------------------- Modbus includes ----------------------------------*/
 #include "mb.h"
@@ -41,18 +42,75 @@ static void prvvTIMERExpiredISR( void );
 
 /* Program prescaler + period, reset the counter, and start.
  * Every arm path goes through here so the two bugs above cannot come back. */
-static void prvTpmArm( tpm_clock_prescale_t prescale, uint32_t ulPeriodUs )
+volatile uint32_t dceTpmDiag[6];
+/* G51: end-of-frame gap (T3.5) in us, runtime adjustable (asm 173 reserved).
+ * The DCE leaves inter-character gaps of up to ~3.5 ms inside long replies, so the
+ * spec's fixed 1750 us (>19200 baud) cuts replies short (G48: 11 % failed
+ * transactions). Bench sweep G50: 1.75 ms 11 % bad, 3.0 ms 3 %, 3.5 ms ~1 %,
+ * >=4.0 ms 0 % over 25 s runs. 5.0 ms = 25 % margin over the clean threshold. */
+volatile uint32_t dceT35Us = 5000UL;
+
+/* G45: TPM6 is NOT guaranteed to have a 32-bit counter (the SDK feature macro
+ * says yes for every instance, but TPM3..TPM6 can be 16 bit). A 16-bit MOD
+ * silently truncates 1750 us @ 80 MHz (140000 ticks) to 8928 ticks = 112 us and
+ * 200 ms (16000000 ticks) to 9216 ticks = 115 us. Read the real width from
+ * TPM_PARAM[WIDTH] and pick the smallest prescaler that fits the period. */
+static uint32_t prvTpmMaxCount( void )
+{
+    uint32_t w = (BOARD_TPM->PARAM >> 16) & 0xFFu;
+    return (w >= 32u) ? 0xFFFFFFFFu : ((1UL << w) - 1UL);
+}
+
+static void prvTpmArm( tpm_clock_prescale_t prescaleReq, uint32_t ulPeriodUs )
 {
     tpm_config_t tpmInfo;
+    static uint32_t cUs[4], cP[4], cTicks[4], cMax;
+    uint32_t maxCnt = cMax ? cMax : (cMax = prvTpmMaxCount());
+    uint32_t p = 0u;
+    uint64_t ticks = 0u;
+    uint32_t slot;
+    bool hit = false;
+
+    (void)prescaleReq;
+    /* The T3.5 re-arm runs from the LPUART ISR on every byte, so memoise. */
+    for (slot = 0u; slot < 4u; slot++) {
+        if (cUs[slot] == ulPeriodUs) {
+            p = cP[slot]; ticks = cTicks[slot]; hit = true;
+            break;
+        }
+    }
+    if (!hit) {
+        for (p = 0u; p < 7u; p++) {
+            ticks = ((uint64_t)ulPeriodUs * (uint64_t)(TPM_SOURCE_CLOCK / (1U << p))) / 1000000ULL;
+            if (ticks < (uint64_t)maxCnt) {
+                break;
+            }
+        }
+        for (slot = 0u; slot < 4u; slot++) {
+            if (cUs[slot] == 0u) {
+                cUs[slot] = ulPeriodUs; cP[slot] = p; cTicks[slot] = (uint32_t)ticks;
+                break;
+            }
+        }
+    }
 
     TPM_StopTimer(BOARD_TPM);
 
     TPM_GetDefaultConfig(&tpmInfo);
-    tpmInfo.prescale = prescale;
+    tpmInfo.prescale = (tpm_clock_prescale_t)p;
     TPM_Init(BOARD_TPM, &tpmInfo);
 
-    TPM_SetTimerPeriod(BOARD_TPM,
-        USEC_TO_COUNT(ulPeriodUs, TPM_SOURCE_CLOCK / (1U << prescale)));
+    TPM_SetTimerPeriod(BOARD_TPM, (uint32_t)ticks);
+
+    dceTpmDiag[0] = BOARD_TPM->PARAM;
+    dceTpmDiag[5] = maxCnt;
+    if (ulPeriodUs == MB_MASTER_TIMEOUT_US_RESPOND) {
+        dceTpmDiag[1] = BOARD_TPM->MOD;
+        dceTpmDiag[2] = p;
+    } else if (ulPeriodUs == dceT35Us) {
+        dceTpmDiag[3] = BOARD_TPM->MOD;
+        dceTpmDiag[4] = p;
+    }
 
     BOARD_TPM->CNT = 0U;    /* fix 2: discard any residual count */
 
@@ -106,7 +164,7 @@ void vMBMasterPortTimersRespondTimeoutEnable(void)
 void vMBMasterPortTimersT35Enable(void)
 {
     vMBMasterSetCurTimerMode(MB_TMODE_T35);
-    prvTpmArm(TPM_PRESCALER, TIME_PERIOD_US);   /* fix 1: reprogram, do not inherit */
+    prvTpmArm(TPM_PRESCALER, dceT35Us);   /* fix 1: reprogram, do not inherit */
 }
 
 void vMBMasterPortTimersDisable(void)
@@ -117,7 +175,10 @@ void vMBMasterPortTimersDisable(void)
     TPM_StopTimer(BOARD_TPM);
 }
 
+extern void dceRxFrameEnd( void );
+
 static void prvvTIMERExpiredISR( void )
 {
+    dceRxFrameEnd();
     ( void )xMBMasterRTUTimerExpired(  );
 }

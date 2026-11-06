@@ -1,0 +1,116 @@
+/* dce_tag_table.h - GENERATED from dce_register_map.csv (106 tags, CSV row order = quality bit order).
+ * imgIndex = word index into the asm 170 register image; words = 1 or 2.
+ * Do not hand-edit; regenerate if the CSV or the image block map changes. */
+#ifndef DCE_TAG_TABLE_H
+#define DCE_TAG_TABLE_H
+#include <stdint.h>
+typedef struct { uint16_t imgIndex; uint8_t words; } dce_tag_t;
+static const dce_tag_t dceTags[106] = {
+    {0, 1}, /* 0 usMBReg_DIN @0 */
+    {1, 1}, /* 1 usMBReg_Command @1 */
+    {2, 1}, /* 2 usMBReg_Response @2 */
+    {3, 1}, /* 3 usMBReg_Flag @3 */
+    {4, 1}, /* 4 usMBReg_ReadVersion1 @4 */
+    {5, 1}, /* 5 usMBReg_ReadVersion2 @5 */
+    {6, 1}, /* 6 usMBReg_ReadZero @6 */
+    {7, 1}, /* 7 usMBReg_ReadCali @7 */
+    {8, 1}, /* 8 usMBReg_ReadCALd @8 */
+    {9, 1}, /* 9 usMBReg_ReadRange @9 */
+    {10, 1}, /* 10 usMBReg_ReadInhibit @10 */
+    {11, 1}, /* 11 usMBReg_ReadFilter @11 */
+    {12, 1}, /* 12 usMBReg_RemoteEnable @100 */
+    {13, 1}, /* 13 usMBReg_RemoteLogic @101 */
+    {14, 1}, /* 14 usMBReg_RemoteType @102 */
+    {15, 1}, /* 15 usMBReg_DOUT1 @103 */
+    {16, 1}, /* 16 usMBReg_DOUT2 @104 */
+    {17, 1}, /* 17 usMBReg_AlarmEnable @105 */
+    {18, 1}, /* 18 usMBReg_AlarmLogic @106 */
+    {19, 1}, /* 19 usMBReg_AlarmType @107 */
+    {20, 1}, /* 20 usMBReg_AlarmPulse @108 */
+    {21, 1}, /* 21 usMBReg_AlarmDuration @109 */
+    {22, 1}, /* 22 usMBReg_AlarmState @110 */
+    {23, 1}, /* 23 usMBReg_WeightedCount1 @111 */
+    {24, 1}, /* 24 usMBReg_WeightedCount2 @112 */
+    {25, 1}, /* 25 usMBReg_WCountWidth @113 */
+    {26, 1}, /* 26 usMBReg_ErrorCode @114 */
+    {27, 1}, /* 27 usMBReg_TempCoeff @115 */
+    {28, 1}, /* 28 usMBReg_Temperature @116 */
+    {29, 1}, /* 29 usMBReg_Transducer @117 */
+    {30, 1}, /* 30 usMBReg_TempZero @118 */
+    {31, 1}, /* 31 usMBReg_AM_switch @119 */
+    {32, 1}, /* 32 usMBReg_DDL_SetPoint @120 */
+    {33, 1}, /* 33 usMBReg_SetPoint_ReadBack @121 */
+    {34, 1}, /* 34 usMBReg_BucketSpan @200 */
+    {35, 1}, /* 35 usMBReg_DIN1_FuntionSel @201 */
+    {36, 1}, /* 36 usMBReg_BatchSetPoint1 @202 */
+    {37, 1}, /* 37 usMBReg_BatchSetPoint2 @203 */
+    {38, 1}, /* 38 usMBReg_ControlEnable @204 */
+    {39, 1}, /* 39 usMBReg_BatchStop @205 */
+    {40, 1}, /* 40 usMBReg_PulsedAirTime @206 */
+    {41, 1}, /* 41 usMBReg_PulsedAirManual @207 */
+    {42, 1}, /* 42 usMBReg_PulsedAirEnable @208 */
+    {43, 1}, /* 43 usMBReg_PulsedAirFreq @209 */
+    {44, 1}, /* 44 usMBReg_RateFilterEnable @210 */
+    {45, 1}, /* 45 usMBReg_RateFilterTime @211 */
+    {46, 1}, /* 46 usMBReg_DIN1 @212 */
+    {47, 1}, /* 47 usMBReg_DIN2 @213 */
+    {48, 1}, /* 48 usMBReg_DIN3 @214 */
+    {49, 1}, /* 49 usMBReg_DIN4 @215 */
+    {50, 1}, /* 50 usMBReg_ControlType @300 */
+    {51, 1}, /* 51 usMBReg_ManualOut @301 */
+    {52, 1}, /* 52 usMBReg_PID1_SmartStart1 @302 */
+    {53, 1}, /* 53 usMBReg_PID_Control_Value @303 */
+    {54, 1}, /* 54 usMBReg_DelayTime @304 */
+    {55, 1}, /* 55 usMBReg_CBD_offset @305 */
+    {56, 1}, /* 56 usMBReg_PID1_Heartbeat @306 */
+    {57, 1}, /* 57 usMBReg_PID1_A2Mcurve @307 */
+    {58, 1}, /* 58 usMBReg_PID1_SmartStart2 @308 */
+    {59, 1}, /* 59 usMBReg_CBD_4mA @309 */
+    {60, 1}, /* 60 usMBReg_CBD_20mA @310 */
+    {61, 1}, /* 61 usMBReg_CO @311 */
+    {62, 1}, /* 62 usMBReg_AIN1 @312 */
+    {63, 1}, /* 63 usMBReg_AIN2 @313 */
+    {64, 1}, /* 64 usMBReg_CommandPID1 @314 */
+    {65, 1}, /* 65 usMBReg_PID2_ControlType @400 */
+    {66, 1}, /* 66 usMBReg_PID2_ManualOut @401 */
+    {67, 1}, /* 67 usMBReg_PID2_PVmin @402 */
+    {68, 1}, /* 68 usMBReg_PID2_PVmax @403 */
+    {69, 1}, /* 69 usMBReg_PID2_Deadband @404 */
+    {70, 1}, /* 70 usMBReg_PID2_Offset @405 */
+    {71, 1}, /* 71 usMBReg_PID2_ValveStuck @406 */
+    {72, 1}, /* 72 usMBReg_PID2_PulseWidthCnt @407 */
+    {73, 1}, /* 73 usMBReg_PID2_PulsePrcntOut @408 */
+    {74, 1}, /* 74 usMBReg_PID2_PulseEnable @409 */
+    {75, 1}, /* 75 usMBReg_PID2_MaxOpen @410 */
+    {76, 1}, /* 76 usMBReg_PID2_SetPointLimit @411 */
+    {77, 2}, /* 77 usMBReg_CWratio @500 */
+    {79, 2}, /* 78 usMBReg_EFS @502 */
+    {81, 2}, /* 79 usMBReg_Count @504 */
+    {83, 2}, /* 80 usMBReg_ReadCWratio @506 */
+    {85, 2}, /* 81 usMBReg_Percent @600 */
+    {87, 2}, /* 82 usMBReg_PercentLinear @602 */
+    {89, 2}, /* 83 usMBReg_RateSP @604 */
+    {91, 2}, /* 84 usMBReg_WeightSP @606 */
+    {93, 2}, /* 85 usMBReg_Kp @608 */
+    {95, 2}, /* 86 usMBReg_Ki @610 */
+    {97, 2}, /* 87 usMBReg_Kd @612 */
+    {99, 2}, /* 88 usMBReg_PID2_Kp @614 */
+    {101, 2}, /* 89 usMBReg_PID2_Ki @616 */
+    {103, 2}, /* 90 usMBReg_PID2_Kd @618 */
+    {105, 1}, /* 91 usMBReg_CommandCoeff @620 */
+    {106, 2}, /* 92 usMBReg_Density_KP @621 */
+    {108, 2}, /* 93 usMBReg_Density_Bulk @623 */
+    {110, 2}, /* 94 usMBReg_Read_VPP_p0 @625 */
+    {112, 2}, /* 95 usMBReg_Read_VPP_p1 @627 */
+    {114, 1}, /* 96 usMBReg_Y[0] @1000 */
+    {115, 1}, /* 97 usMBReg_Y[1] @1001 */
+    {116, 1}, /* 98 usMBReg_Y[2] @1002 */
+    {117, 1}, /* 99 usMBReg_Y[3] @1003 */
+    {118, 1}, /* 100 usMBReg_Y[4] @1004 */
+    {119, 1}, /* 101 usMBReg_Y[5] @1005 */
+    {120, 1}, /* 102 usMBReg_Y[6] @1006 */
+    {121, 1}, /* 103 usMBReg_Y[7] @1007 */
+    {122, 1}, /* 104 usMBReg_Y[8] @1008 */
+    {123, 1}, /* 105 usMBReg_Y[9] @1009 */
+};
+#endif

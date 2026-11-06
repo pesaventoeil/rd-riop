@@ -33,10 +33,22 @@
 #define GOAL_APP_ASM_ID_CONFIG       151        /**< Config Assembly ID */
 #define GOAL_APP_ASM_ID_HEARTBEAT_IO 152        /**< Heartbeat Assembly ID  (Input Only) */
 #define GOAL_APP_ASM_ID_HEARTBEAT_LO 153        /**< Heartbeat Assembly ID  (Listen Only) */
+#define GOAL_APP_ASM_ID_DCE_MIRROR_INPUT  170   /**< DCE mirror input assembly (RIOP -> scanner) */
+#define GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT 171   /**< DCE write-mailbox output assembly (scanner -> RIOP) */
+#define GOAL_APP_ASM_ID_DCE_FAST_INPUT   172   /**< DCE fast/compact input assembly (RIOP -> PC), explicit messaging */
+#define GOAL_APP_ASM_ID_DCE_POLLSEL_OUTPUT 173 /**< DCE poll-set selector output assembly (PC -> RIOP), explicit messaging */
 #define GOAL_APP_IOCON_NUM           6          /**< number of simultaneous connections for Input Only connections */
 #define GOAL_APP_LOCON_NUM           6          /**< number of simultaneous connections for Listen Only connections */
 #define GOAL_APP_ASM_SIZE_INPUT      97         /**< Input Assembly Data */
 #define GOAL_APP_ASM_SIZE_OUTPUT     97         /**< Output Assembly Data */
 #define GOAL_APP_ASM_SIZE_CONFIG     10         /**< Config Assembly Data */
+#define GOAL_APP_DCE_MIRROR_REG_WORDS 124       /**< 8 FC03 block plan word count */
+#define GOAL_APP_DCE_MIRROR_TAG_COUNT 106       /**< Number of mapped tags in dce_register_map.csv */
+#define GOAL_APP_DCE_MIRROR_QUALITY_BYTES 14    /**< 106 bits rounded up to bytes */
+#define GOAL_APP_DCE_MIRROR_MAX_WRITE_WORDS 2   /**< Largest mapped writable item is 2 words */
+#define GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT 284  /**< Header + ack + quality + register image */
+#define GOAL_APP_ASM_SIZE_DCE_FAST_INPUT 128    /**< asm 172: 96 B fastrun layout + 32 B diag */
+#define GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT 8  /**< asm 173: u16 sel_seq, u8 set, u8 flags, u32 reserved */
+#define GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT 16  /**< seq/op/address/len/flags/values[2] */
 
 #endif /* GOAL_APP_EIP_H */

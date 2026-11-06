@@ -1,10 +1,13 @@
 # RECOVERY.md — rd-riop-EIP-demo
 
-How to get this repo back to a known-good, CODESYS-connected, Modbus-polling
+How to get this repo back to a known-good EIP-connected, Modbus-polling
 state from nothing. Keep this file current: it is the thing you read when
 the MCTC breaks again and you can't remember what was working.
 
-Last updated: 2026-09-15.
+Primary health check is the **PC EtherNet/IP Class 1 poll scripts** (not
+CODESYS). CODESYS remains an optional secondary scanner.
+
+Last updated: 2026-10-22. Morning flash checklist: see **MORNING.md**.
 
 ---
 
@@ -25,7 +28,8 @@ SDK 25.09.00, GOAL EIP stack) plus the CentriFeeder additions:
 Data path: DCE ──RS-485 (LPUART10, 38400 8-N-2, slave addr 1)──▶ `dce_task`
 ──▶ `dce_dataGet()` ──▶ `appl_eipTxPayloadPrepare()` writes FlowRate /
 Totalization into input assembly 100, float slots `adc15_out` / `adc16_out`
-(byte offsets 89 / 93) ──▶ MCTC ──▶ CM33 GOAL ──▶ CODESYS.
+(byte offsets 89 / 93) ──▶ MCTC ──▶ CM33 GOAL ──▶ PC Class 1 scanner
+(or optional CODESYS).
 
 ---
 
@@ -35,12 +39,13 @@ Branch: `main`. All work is on this one branch.
 
 | Commit | Meaning |
 |---|---|
-| `6410533` **Confirmed: CODESYS connects, MCTC healthy** | Pure NXP baseline. If everything else is on fire, `git checkout 6410533` and prove the board still talks to CODESYS before touching anything. |
+| `6410533` **Confirmed: EIP + MCTC healthy** | Pure NXP baseline. If everything else is on fire, `git checkout 6410533` and prove Class 1 (or optional CODESYS) before touching anything. |
 | `71ce78e` Modbus stack compiles and links into M7 build; baseline still connects | FreeModbus core + port layer in the build but idle. |
 | `2e8c22b` Add .gitignore; stop tracking build output | |
-| `0e4c296` **Step 4: wire dce_task into assembly (dummy generator); CODESYS shows 123.45/climbing** | End-to-end path through MCTC to CODESYS proven with fake data. |
+| `0e4c296` **Step 4: wire dce_task into assembly (dummy generator); adc15 shows 123.45** | End-to-end path through MCTC proven with fake data (historically via CODESYS). |
 | `3912750` Set TPM6 source clock to 80 MHz to match baseline clock_config | |
-| `f3cc42b` Reapply "Add LPUART10 RS-485 pin mux (AD_32/33/35) for DCE Modbus" | Current HEAD as of this writing. |
+| `f3cc42b` Reapply "Add LPUART10 RS-485 pin mux (AD_32/33/35) for DCE Modbus" | Pinmux only. |
+| `d300831` **Step 5: real FC03 poll + dceDiag** | First commit that *starts* Modbus at runtime (LPUART10/TPM6 + mbpoll/dce). |
 
 Tag the two milestones so they survive any future rebase:
 
@@ -49,24 +54,28 @@ git tag -a baseline-codesys-ok  6410533 -m "Pure NXP baseline, CODESYS connects,
 git tag -a dummy-data-to-codesys 0e4c296 -m "dce_task dummy generator visible in CODESYS"
 ```
 
-### Uncommitted on 2026-09-15 (commit these first)
+### Runtime gate (2026-10-22) — EIP recovery while keeping FreeModbus linked
 
-* `appl/ethernet-ip/riop/dce_task.c` — real FC03 poll replaces the dummy
-  generator; `dceDiag` bench counters replace the `0xAA...` GDB markers.
-* `appl/ethernet-ip/riop/dce_task.h` — `DCE_DIAG_T`, `dce_diagGet()`.
-* `appl/ethernet-ip/riop/modbus/modbus_serial.c` — duplicate
-  `LPUART_Init()` removed.
-* `appl/ethernet-ip/riop/modbus/modbus_timer.c` — TPM arm-path fixes.
-* `RECOVERY.md` — this file.
+`DCE_MODBUS_RUNTIME` defaults to **0** in `dce_task.h`. With that:
 
-Both cores built clean against this tree at 15:01 local (`.ninja_log`), so
-it is safe to commit as-is:
+* FreeModbus core + port stay in `M7FOLLOWER/CMakeLists.txt` (same as `71ce78e`).
+* `dce_taskInit()` only clears published data and sets `dceDiag.mbState = DCE_MB_IDLE_LINKED`.
+* No `mbpoll` / `dce` tasks, no LPUART10/TPM6 init, no FC03 traffic.
+* `goal_appl.c` still overlays `adc15`/`adc16` from `dce_dataGet()` → **0.0 / 0.0**.
 
-```bash
-git add appl/ethernet-ip/riop RECOVERY.md
-git commit -m "Step 5: real FC03 poll of DCE regs 504-507 + dceDiag bench counters"
-git tag -a fc03-poll-untested HEAD -m "FC03 master compiled, not yet run against a DCE"
-```
+Set `DCE_MODBUS_RUNTIME` to **1** only after PC EIP Class 1 connects again
+and RS-485 is ready.
+
+Known-good ladder for EIP (do not skip):
+
+| State | Commit / flag | Expect |
+|---|---|---|
+| Pure NXP | `6410533` | PC EIP Class 1 Forward_Open OK |
+| Modbus linked, idle | `71ce78e` or HEAD with `DCE_MODBUS_RUNTIME=0` | Class 1 OK; adc15/adc16 = 0.0 |
+| Dummy floats | `0e4c296` | Class 1 shows 123.45 on adc15 |
+| Live FC03 | `DCE_MODBUS_RUNTIME=1` | poll / timeouts; bus later |
+
+Uncommitted local: `common/m7/source/init.c` may re-enable `BOARD_InitDebugConsole()` — leave it; unrelated to Modbus.
 
 ---
 
@@ -119,66 +128,100 @@ git tag -a fc03-poll-untested HEAD -m "FC03 master compiled, not yet run against
 
 ---
 
-## 5. Bench procedure — CODESYS + real DCE
+## 5. Prove EIP healthy again (PC poll scripts first)
 
-### 5.1 Before touching the DCE (EtherNet/IP only)
+Goal right now: **EIP + MCTC healthy with FreeModbus linked but idle.**
+RS-485 is unwired; do not scope TX or chase Modbus poll success yet.
+**Prefer the PC Class 1 tools below over CODESYS.**
 
-1. Build + flash the current tree. Power-cycle the board.
-2. CODESYS: the RIOP device should go to **Running** (green) on the
-   EtherNet/IP scanner, same as at `0e4c296`.
-3. `adc15` / `adc16` in the input assembly should read **0.0 / 0.0** — not
-   123.45. That proves the real `dce_task` is in the image and, with no DCE,
-   `valid` stays false.
-4. Attach GDB (LinkServer) to the **M7** ELF and read:
-   ```
-   p dceDiag
-   ```
-   Expect `mbState = DCE_MB_RUNNING`, `polls` climbing ~10/s, `timeouts`
-   tracking `polls`, everything else 0. Anything else:
-   * `DCE_MB_INIT_FAILED` → `xMBMasterPortSerialInit` or `xMBMasterPortTimersInit` returned FALSE (clock gate, TPM root).
-   * `DCE_MB_ENABLE_FAILED` → event queue / semaphore creation failed (heap).
-   * `polls` frozen → `dce` task never woke; check `dceMbReady`, task creation.
-   * `otherErrors` climbing → `MB_MRE_MASTER_BUSY`/`ILL_ARG`: run-resource semaphore not released; look at `portevent.c`.
-5. **Scope GPIO_AD_35 (DE) and GPIO_AD_32 (TX).** DE must idle LOW and go
-   HIGH for exactly the 8-byte request burst (~2.3 ms at 38400), every
-   100 ms. If DE is inverted, clear `LPUART_MODIR_TXRTSPOL_MASK` in
-   `modbus_serial.c`. If DE never moves, the pin mux for AD_35 is not
-   `LPUART10_RTS_B` (commit `f3cc42b`).
-6. On the TX line, decode the request. It must be
-   `01 03 01 F8 00 04 <crc> <crc>` — addr 1, FC03, **start 0x01F8 = 504**,
-   4 regs. If it says `01 F7` or `01 F9` the fork applies an offset;
-   adjust `DCE_REG_COUNT_ADDR`.
+### 5.0 PC EIP poll scripts (primary)
 
-### 5.2 With the DCE
+Preferred docs (CR3000 v5d pack README; same Class 1 tooling):
 
-7. Wire A/B to the DCE's RS-485 (2-wire). Match polarity; a MAX3485 will
-   happily receive nothing at all if A/B are swapped.
-8. On the DCE front panel: Drop Number 1, 38400, Modbus **enabled**. The DCE
-   only runs `eMBSPoll()` while enabled — silence is normal otherwise.
-9. `p dceDiag` again. Expect `good` climbing with `polls`, `timeouts`
-   static. `lastRegs` = `{Count_hi, Count_lo, CWratio_hi, CWratio_lo}`.
-   * `rxErrors` climbing → framing: confirm 2 stop bits on the DCE side and
-     that T3.5 (1750 µs) is actually expiring — scope TPM6 by toggling a
-     spare pin in `prvvTIMERExpiredISR` if needed.
-   * `exceptions` climbing → DCE rejected the request: wrong slave address
-     or register range. Try a PC Modbus tool on a USB-RS485 dongle first to
-     confirm the DCE answers FC03 @ 504 x4 at all.
-10. CODESYS `adc15` should now show `Count / CWratio` and `adc16` a slowly
-    climbing integral. Confirm the number against the CR3000 / Maple HMI
-    display of the same DCE.
+| Path | When |
+|---|---|
+| `/workspace/crimson-eip/v5d_zero_arm_test/README.md` | Cloud /agent workspace |
+| `C:\Users\dpesavento.EIL\nextgen_eip\README.md` or `...\nextgen_eip\v2\README.md` | Local mirror (pack lives here) |
 
-### 5.3 Open question to settle on the bench
+| Piece | Path |
+|---|---|
+| Class 1 CLI | `C:\Users\dpesavento.EIL\nextgen_eip\v2\eip_rawstep.py` (also root `nextgen_eip\`) |
+| Class 1 library | `eip_class1.py` + `tag_map.py` + `eip_commander.py` (same folder) |
+| In-repo CODESYS only | `ethernet-ip/plc-scripts/codesys/` — **optional secondary** |
 
-`usMBReg_Count` (504) is either a rate proxy or an accumulating counter.
-The DCE map also exposes `usMBReg_Percent` (600, float, % of full scale),
-`usMBReg_PercentLinear` (602) and `usMBReg_EFS` (502, float, full-scale in
-EU). If `Count / CWratio` climbs monotonically while feeding, it is the
-**total**, and FlowRate should come from `Percent × EFS / 100` instead.
-Watch `lastRegs` for ~30 s of feeding and decide. Then delete the TODO in
-`dce_task.c`.
+No LabJack. Leave `DCE_MODBUS_RUNTIME=0` for this check.
 
-Also still to verify: `MB_POLL_TASK_PRIORITY` (5) vs. the GOAL EIP task
-priority on M7 — grep `xTaskCreate` under `ethernet-ip/goal/plat/`.
+RIOP assemblies (`appl/ethernet-ip/riop/goal_app_eip.h`) — override the
+README’s CR3000 defaults (asm 2/3, 36/52):
+
+| Direction | Instance | Size | Notes |
+|---|---|---|---|
+| T2O (adapter → PC) | **100** | **97** | input; `adc15` @ byte **89**, `adc16` @ **93** |
+| O2T (PC → adapter) | **150** | **97** | output |
+| Config | **151** | **10** | `--config-instance 151` |
+
+Host: board IPv4 (GOAL sample default **`192.168.1.3`**). Only **one**
+scanner — stop CODESYS if it holds Exclusive Owner. Inbound UDP **2222**
+may be required (pack README firewall note).
+
+```bat
+cd C:\Users\dpesavento.EIL\nextgen_eip\v2
+set PYTHONPATH=%CD%
+python eip_rawstep.py --host 192.168.1.3 --o2t-size 97 --t2o-size 97 --o2t-instance 150 --t2o-instance 100 --config-instance 151 --value 0.0 --rpi-ms 500
+```
+
+Type `status` / `hold` on stdin; `stop` (or Ctrl+C) to Forward_Close.
+Exit 0 = clean stop; 2 = Forward_Open rejected; 1 = connection lost.
+
+**Success with `DCE_MODBUS_RUNTIME=0`:** Forward_Open OK, cyclic T2O
+arrives (97 bytes), **adc15 / adc16 = 0.0 / 0.0** (not 123.45) — connection
+healthy + idle DCE overlay. Optional GDB M7: `p dceDiag` → `mbState =
+DCE_MB_IDLE_LINKED`, counters 0.
+
+### 5.1 Bench checklist after flash
+
+1. Confirm `DCE_MODBUS_RUNTIME` is **0** (`dce_task.h`).
+2. Clean rebuild M33LEADER sysbuild, preset **`flexspi_nor_release`**.
+   After configure, `git status` and grep `AUTO-ADDED BY MCUXPRESSO` in
+   CMakeLists — stash IDE debris if present.
+3. Flash via **SPT/OPI** (`mrlabjack\known_good_6410533\flash_spt_opi.ps1` or
+   `mrlabjack\head_gate0\`), not LinkServer / in-image FCB
+   (`XIP_BOOT_HEADER_ENABLE=0`). Then power-cycle: **preferred** LabJack
+   PowerTail (`ljpower.py cycle`) when the probe is already unplugged;
+   **fallback** true cold cycle (24V + RIOP USB + probe out until LED off)
+   only if ListIdentity fails. Proven 2026-10-26 — see
+   `HANDOFF_2026-10-26.md` and agent/personal store
+   `RIOP_POWER_CYCLE.md` under
+   `%LOCALAPPDATA%\Cursor\AgentStores\cursor_agent_stores\`
+   `f0369756-0f84-467c-8591-15373493b82b\files\` (agent) and
+   `t33809769-u458052730\files\` (personal).
+4. Run §5.0 PC Class 1 poll. If Forward_Open fails:
+   * GDB M7: `p dceDiag` → expect `DCE_MB_IDLE_LINKED`. If
+     `DCE_MB_RUNNING` / `polls` climbing, the gate did not take effect.
+   * If MCTC is dead again (~30 timeouts, `sizeXferRemote = 0`), see §6 —
+     rebuild from `6410533` then re-apply Modbus with the gate still off.
+5. Optional secondary: CODESYS RIOP scanner → **Running**, same adc15/adc16
+   zeros (`ethernet-ip/plc-scripts/codesys/`).
+
+When that passes, Modbus-in-image is safe. Enable live master later with
+`DCE_MODBUS_RUNTIME=1` and only then do bus bring-up.
+
+### 5.2 Live Modbus (after EIP is healthy; RS-485 next)
+
+1. Set `DCE_MODBUS_RUNTIME` to 1, rebuild, flash, power-cycle.
+2. GDB M7: `p dceDiag` — with no slave expect `mbState = DCE_MB_RUNNING`,
+   `polls` ~10/s, `timeouts` tracking `polls`. Failures:
+   * `DCE_MB_INIT_FAILED` → serial/timer init (clock gate, TPM root).
+   * `DCE_MB_ENABLE_FAILED` → event queue / semaphore (heap).
+   * `DCE_MB_CREATE_FAILED` → `xTaskCreate` failed (heap).
+   * `otherErrors` climbing → run-resource; see `portevent.c`.
+3. Wire A/B, enable Modbus on the DCE panel, then chase `good` / PC EIP
+   adc15–adc16. Scope / register-map checks are deferred until then.
+
+### 5.3 Open items (after the bus works)
+
+* Totalization source: integrate rate vs. Count as total (TODO in `dce_task.c`).
+* Priorities verified: mbpoll=5 (= GPIO), below AFE=7; GOAL Main on M7 ≈ 0.
 
 ---
 
@@ -191,14 +234,15 @@ orientation, RPC length mismatch, stray RPMSG-Lite task.
 
 What actually fixed it: throw the tree away and rebuild from a pristine NXP
 import (`6410533`), then re-apply the Modbus work file by file, building
-and re-checking CODESYS after each step. Do not merge Modbus work into a
-build tree that has ever been half-configured.
+and re-checking PC EIP Class 1 (§5.0) after each step. Do not merge Modbus
+work into a build tree that has ever been half-configured.
 
 Re-apply order (each step is a commit above):
 
-1. Pristine import → confirm CODESYS connects.
+1. Pristine import → confirm PC EIP Class 1 connects (§5.0).
 2. Add `modbus/` port files, not in build → still connects.
 3. Add FreeModbus core + port to `M7FOLLOWER/CMakeLists.txt` → builds, still connects.
-4. `dce_task` with dummy generator wired into `appl_eipTxPayloadPrepare` → CODESYS shows 123.45.
+4. `dce_task` with dummy generator wired into `appl_eipTxPayloadPrepare` → adc15 shows 123.45.
 5. TPM6 clock root 80 MHz; LPUART10 pin mux AD_32/33/35.
-6. Real FC03 poll (this commit).
+6. Real FC03 code linked, but keep `DCE_MODBUS_RUNTIME=0` until EIP is green.
+7. Only then set `DCE_MODBUS_RUNTIME=1` for live poll.

@@ -28,7 +28,8 @@
  * dce_task after eMBMasterReqReadHoldingRegister() returns success. The
  * master stack serialises requests behind its own resource semaphore and we
  * are the only requester, so no additional locking is needed here. */
-static uint16_t prvRawRegs[DCE_REG_BLOCK_NREGS];
+#define MBCB_MAX_RAW_REGS 64u
+static uint16_t prvRawRegs[MBCB_MAX_RAW_REGS];
 static uint8_t  prvRawNRegs;
 
 void mbcb_rawInvalidate(void)
@@ -69,10 +70,19 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR *pucRegBuffer, USHORT usAddress,
 
     (void)usAddress;
 
+    if (MB_REG_WRITE == eMode) {
+        /* G48 write-ack fix. For FC06/FC16 the master stack calls this callback
+         * with MB_REG_WRITE while it processes the slave's (echo) reply. The
+         * old MB_ENOREG here was turned by the stack into MB_EX_ILLEGAL_DATA_ADDRESS
+         * -> request result MB_MRE_EXE_FUN even though the DCE had accepted the
+         * write (ack_code=1 / ack_detail=4 in G41..G47). Nothing to stage for a
+         * write echo: just acknowledge it. */
+        return MB_ENOERR;
+    }
     if (MB_REG_READ != eMode) {
         return MB_ENOREG;
     }
-    if (usNRegs > DCE_REG_BLOCK_NREGS) {
+    if (usNRegs > MBCB_MAX_RAW_REGS) {
         return MB_ENOREG;
     }
 

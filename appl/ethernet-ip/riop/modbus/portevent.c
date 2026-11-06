@@ -47,6 +47,7 @@ static QueueHandle_t     xMasterEventQueue;   /* protocol events           */
 static SemaphoreHandle_t xMasterRunRes;       /* one request at a time     */
 static SemaphoreHandle_t xMasterResultSem;    /* request completion signal */
 static volatile eMBMasterReqErrCode eMasterResult;
+static volatile uint16_t uMasterLastExceptionCode;
 
 /* The RTU state machine posts events from the LPUART and TPM ISRs as well as
  * from the poll task, so every queue operation has to pick its API by
@@ -143,6 +144,7 @@ void vMBMasterRunResRelease( void )
 void vMBMasterCBRequestScuuess( void )      /* upstream spelling, leave it */
 {
     eMasterResult = MB_MRE_NO_ERR;
+    uMasterLastExceptionCode = 0u;
     (void) xSemaphoreGive(xMasterResultSem);
 }
 
@@ -151,6 +153,7 @@ void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR *pucPDUData
 {
     (void)ucDestAddress; (void)pucPDUData; (void)ucPDULength;
     eMasterResult = MB_MRE_TIMEDOUT;
+    uMasterLastExceptionCode = 0u;
     (void) xSemaphoreGive(xMasterResultSem);
 }
 
@@ -159,6 +162,7 @@ void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR *pucPDUData,
 {
     (void)ucDestAddress; (void)pucPDUData; (void)ucPDULength;
     eMasterResult = MB_MRE_REV_DATA;
+    uMasterLastExceptionCode = 0u;
     (void) xSemaphoreGive(xMasterResultSem);
 }
 
@@ -167,7 +171,19 @@ void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR *pucPDUDat
 {
     (void)ucDestAddress; (void)pucPDUData; (void)ucPDULength;
     eMasterResult = MB_MRE_EXE_FUN;
+    /* G48: pucPDUData is the master's SEND buffer (mb_m.c EV_MASTER_ERROR_PROCESS
+     * passes vMBMasterGetPDUSndBuf), i.e. the request, not the slave's reply.
+     * pucPDUData[1] was therefore the high address byte of the request (0 for
+     * register 1), which dce_task turned into the bogus detail 4. The real wire
+     * exception byte is captured from the reply by the UART port
+     * (dceUartDiag.acc[]) and decoded in dce_task.c. */
+    uMasterLastExceptionCode = 0u;
     (void) xSemaphoreGive(xMasterResultSem);
+}
+
+uint16_t mbport_lastExceptionCodeGet(void)
+{
+    return (uint16_t)uMasterLastExceptionCode;
 }
 
 eMBMasterReqErrCode eMBMasterWaitRequestFinish( void )

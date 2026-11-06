@@ -13,6 +13,38 @@
 
 #include "fsl_device_registers.h"
 #include "fsl_clock.h"
+#include <stdint.h>
+
+/* G44 bench diagnostics: raw LPUART10 counters. Written from the LPUART ISR /
+ * port functions, published into the mirror image by dce_task.c while a
+ * transaction fails (so they show up in assembly 170 words 0..27). */
+typedef struct {
+    volatile uint32_t rxBytes;
+    volatile uint32_t rxFE;
+    volatile uint32_t rxNF;
+    volatile uint32_t rxOR;
+    volatile uint32_t txBytes;
+    volatile uint32_t rxDropped;   /* G46: bytes discarded because they were not a frame start */
+    volatile uint32_t nFirst;
+    volatile uint8_t  first[16];
+    volatile uint32_t nAcc;        /* G48: bytes of the CURRENT reply handed to the Modbus stack (after the leading-byte filter) */
+    volatile uint8_t  acc[4];      /* G48: addr, func, exception code/byte count of that reply */
+} DCE_UART_DIAG_T;
+extern DCE_UART_DIAG_T dceUartDiag;
+/* G48: per-transaction timing stamps in FreeRTOS ticks, written by the UART port.
+ * txDone = request fully on the wire (RS-485 driver released), rxFirst = first
+ * accepted reply byte. rxFirst - txDone = DCE reply latency (1 tick resolution). */
+typedef struct {
+    volatile uint32_t txDoneTick;
+    volatile uint32_t rxFirstTick;
+    volatile uint8_t  txDoneValid;
+    volatile uint8_t  rxFirstValid;
+} DCE_TIMING_T;
+extern DCE_TIMING_T dceTiming;
+/* G45: TPM6 timer diagnostics. [0]=PARAM [1]=respond MOD [2]=respond prescale log2
+ * [3]=T3.5 MOD [4]=T3.5 prescale log2 [5]=max counter value used for range check */
+extern volatile uint32_t dceTpmDiag[6];
+extern volatile uint32_t dceT35Us;
 
 /* =========================================================================
  * RS-485 / LPUART10
@@ -126,16 +158,21 @@
  * the same >19200 distinction (mbsrtu.c:245), and so does mbrtu_m.c. */
 #define TIME_PERIOD_US              (1750UL)
 
-/* Response timeout. The 32-bit counter means Crimson's 2000 ms is reachable,
- * but there is no reason to wait that long: an FC03 response is 13 bytes,
- * about 3.7 ms at 38400. A shorter timeout just means the dce task notices a
- * silent DCE sooner. 200 ms is generous and keeps the task responsive
- * relative to its 100 ms poll period. */
-#define MB_MASTER_TIMEOUT_US_RESPOND (200000UL)
+/* Response timeout = time from the last request byte on the wire to the FIRST
+ * reply byte (FreeModbus cancels it on the first received byte; the reply body
+ * is then framed by T3.5). G48: 100 ms -> 50 ms. The DCE reply latency is only
+ * estimated (~10-20 ms, see REPORT_G48.md); G48 measures it (asm 172 diag), so
+ * the next step can tighten this. 50 ms keeps >2x margin over the estimate and
+ * only matters when the DCE is silent. */
+#define MB_MASTER_TIMEOUT_US_RESPOND (50000UL)
 
-/* Turnaround delay between transactions. Mirrors the 10 ms "Comms Delay"
- * the Red Lion used, which paces the half-duplex bus so we do not start
- * driving before the DCE has released its transceiver. */
+/* FreeModbus master semantics (mbrtu_m.c, xMBMasterRTUTransmitFSM): this timer
+ * is armed ONLY after a BROADCAST request (address 0) and then replaces the
+ * respond timeout. Every request this firmware issues goes to slave 1, so this
+ * delay is never started and contributes 0 ms to the per-request turnaround.
+ * (G47 analysis attributing 10 ms of the ~20 ms per-request overhead to it was
+ * wrong.) Left at 10 ms only so an accidental broadcast still paces the bus;
+ * lowering it would change nothing on a single-slave link. */
 #define MB_MASTER_DELAY_US_CONVERT  (10000UL)
 
 /* ------------------------------------------------------------------------

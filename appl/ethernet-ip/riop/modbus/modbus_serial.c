@@ -17,6 +17,9 @@
 
 #include <stdint.h>
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 /* ----------------------- Modbus includes ----------------------------------*/
 #include "mb.h"
 #include "mbport.h"
@@ -34,13 +37,61 @@
 static void prvvUARTTxReadyISR( void );
 static void prvvUARTRxISR( void );
 
+DCE_UART_DIAG_T dceUartDiag;
+DCE_TIMING_T dceTiming;
 static bool RxIsrFlag = 0;
+
+/* G46: leading-byte filter.
+ * Bench evidence (G44/G45 diag): right after the request is sent, a stray byte
+ * (0xFF) shows up on LPUART10 RX. FreeModbus treats ANY first byte as the start
+ * of the slave's reply: it cancels the response timeout, runs T3.5, finds a
+ * 1-byte "frame" and fails the request ~4 ms after it started. The DCE's real
+ * reply (5+2N bytes, complete, no framing errors) arrives a few ms later and is
+ * thrown away; the next request then collides with the tail of it.
+ * A valid reply always starts with the slave address, so drop any first byte
+ * that is not the DCE address without telling the stack. */
+static volatile bool    s_rxMidFrame = false;
+static volatile uint8_t s_pendByte   = 0u;
+
+/* Called from the TPM6 ISR whenever any Modbus timer (T3.5 / respond) expires. */
+void dceRxFrameEnd(void)
+{
+    s_rxMidFrame = false;
+}
 static bool TxIsrFlag = 0;
 
 void DEMO_LPUART_IRQHandler(void)
 {
     if (RxIsrFlag) {
-        prvvUARTRxISR();
+        uint32_t st = LPUART_GetStatusFlags(DEMO_LPUART);
+        if (st & kLPUART_FramingErrorFlag)  { dceUartDiag.rxFE++; }
+        if (st & kLPUART_NoiseErrorFlag)    { dceUartDiag.rxNF++; }
+        if (st & kLPUART_RxOverrunFlag)     { dceUartDiag.rxOR++; }
+        LPUART_ClearStatusFlags(DEMO_LPUART, st & (kLPUART_FramingErrorFlag | kLPUART_NoiseErrorFlag |
+                                                   kLPUART_RxOverrunFlag | kLPUART_ParityErrorFlag));
+        if (st & kLPUART_RxDataRegFullFlag) {
+            uint8_t b = (uint8_t)LPUART_ReadByte(DEMO_LPUART);
+            if (dceUartDiag.nFirst < 16u) {
+                dceUartDiag.first[dceUartDiag.nFirst] = b;
+                dceUartDiag.nFirst++;
+            }
+            dceUartDiag.rxBytes++;
+            if (!s_rxMidFrame && (b != (uint8_t)DCE_MODBUS_SLAVE_ADDR)) {
+                dceUartDiag.rxDropped++;
+            } else {
+                if (!s_rxMidFrame && !dceTiming.rxFirstValid) {
+                    dceTiming.rxFirstTick  = (uint32_t)xTaskGetTickCountFromISR();
+                    dceTiming.rxFirstValid = 1u;
+                }
+                if (dceUartDiag.nAcc < 4u) {
+                    dceUartDiag.acc[dceUartDiag.nAcc] = b;
+                }
+                dceUartDiag.nAcc++;
+                s_rxMidFrame = true;
+                s_pendByte = b;
+                prvvUARTRxISR();
+            }
+        }
         LPUART_ClearStatusFlags(DEMO_LPUART, kLPUART_RxDataRegFullFlag);
     }
 
@@ -129,6 +180,12 @@ static BOOL UartInit(uint32_t ulBaudRate, UCHAR ucDataBits, eMBParity eParity)
 void
 vMBMasterPortSerialEnable( BOOL xRxEnable, BOOL xTxEnable )
 {
+    /* G48: TX finished (driver released, receiver on) -> stamp for the reply-latency measurement. */
+    if (xRxEnable && !xTxEnable && !dceTiming.txDoneValid && !dceTiming.rxFirstValid) {
+        dceTiming.txDoneTick  = (uint32_t)xTaskGetTickCount();
+        dceTiming.txDoneValid = 1u;
+    }
+
     /* If xRXEnable enable serial receive interrupts. */
     if (xRxEnable) {
         RxIsrFlag = 1;
@@ -173,6 +230,8 @@ void vMBMasterPortClose(void)
 BOOL
 xMBMasterPortSerialPutByte( CHAR ucByte )
 {
+    dceUartDiag.txBytes++;
+    s_rxMidFrame = false;
     LPUART_WriteByte(DEMO_LPUART, ucByte);
     return 1;
 }
@@ -180,7 +239,7 @@ xMBMasterPortSerialPutByte( CHAR ucByte )
 BOOL
 xMBMasterPortSerialGetByte( CHAR * pucByte )
 {
-    *pucByte = LPUART_ReadByte(DEMO_LPUART);
+    *pucByte = (CHAR)s_pendByte;   /* byte already read (and filtered) by the ISR */
     return 1;
 }
 
