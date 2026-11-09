@@ -37,6 +37,8 @@
 #define GOAL_APP_ASM_ID_DCE_MIRROR_OUTPUT 171   /**< DCE write-mailbox output assembly (scanner -> RIOP) */
 #define GOAL_APP_ASM_ID_DCE_FAST_INPUT   172   /**< DCE fast/compact input assembly (RIOP -> PC), explicit messaging */
 #define GOAL_APP_ASM_ID_DCE_POLLSEL_OUTPUT 173 /**< DCE poll-set selector output assembly (PC -> RIOP), explicit messaging */
+#define GOAL_APP_ASM_ID_NAFE_TEMP_INPUT  174  /**< NAFE temperature input assembly (RIOP -> PC), explicit messaging, read-only */
+#define GOAL_APP_ASM_ID_NAFE_CFG_OUTPUT  175  /**< NAFE-only RAM config output (PC -> RIOP), DEBUG_NAFE builds only */
 #define GOAL_APP_IOCON_NUM           6          /**< number of simultaneous connections for Input Only connections */
 #define GOAL_APP_LOCON_NUM           6          /**< number of simultaneous connections for Listen Only connections */
 #define GOAL_APP_ASM_SIZE_INPUT      97         /**< Input Assembly Data */
@@ -49,6 +51,8 @@
 #define GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT 284  /**< Header + ack + quality + register image */
 #define GOAL_APP_ASM_SIZE_DCE_FAST_INPUT 128    /**< asm 172: 96 B fastrun layout + 32 B diag */
 #define GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT 8  /**< asm 173: u16 sel_seq, u8 set, u8 flags, u32 reserved */
+#define GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT TEMP_EIP_IN_LEN /**< asm 174: 96 B release + 136 B debug (DEBUG_NAFE) */
+#define GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT TEMP_EIP_CFG_LEN /**< asm 175: 32 B */
 #define GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT 16  /**< seq/op/address/len/flags/values[2] */
 
 #endif /* GOAL_APP_EIP_H */

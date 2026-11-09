@@ -91,7 +91,29 @@ mcux_add_source(
     ${GOAL_APPL}/dce_task.c
 )
 
+# --- NAFE13388 slow temperature path (asm 174 read-only, asm 175 DEBUG_NAFE RAM config) ---
+mcux_add_include(
+    BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    INCLUDES
+    ${GOAL_APPL}/nafe_temp
+    ${GOAL_APPL}/nafe_temp/include
+)
 
+mcux_add_source(
+    BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    SOURCES
+    ${GOAL_APPL}/nafe_temp/nafe_enc.c
+    ${GOAL_APPL}/nafe_temp/rtd.c
+    ${GOAL_APPL}/nafe_temp/thermocouple.c
+    ${GOAL_APPL}/nafe_temp/temp_sched.c
+    ${GOAL_APPL}/nafe_temp/temp_profiles.c
+    ${GOAL_APPL}/nafe_temp/temp_eip.c
+    ${GOAL_APPL}/nafe_temp/nafe_temp_task.c
+)
+# ITCM (m_text) has ~13 KB headroom in the -O0 G53 image; build the NAFE temp path with -Os.
+foreach(_nt nafe_enc rtd thermocouple temp_sched temp_profiles temp_eip nafe_temp_task)
+    set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/${GOAL_APPL}/nafe_temp/${_nt}.c PROPERTIES COMPILE_OPTIONS "-Os")
+endforeach()
 # goal sources
 mcux_add_source(
     BASE_PATH ${CMAKE_CURRENT_LIST_DIR}

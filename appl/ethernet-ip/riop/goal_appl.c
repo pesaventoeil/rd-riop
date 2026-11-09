@@ -41,6 +41,7 @@ static void appl_dceMirrorOutputProcess(uint8_t *pMailboxData);
 static void appl_dceFastInputPrepare(uint8_t *pFastData);
 static void appl_dcePollSelProcess(uint8_t *pSelData);
 #include "dce_task.h"
+#include "nafe_temp_task.h"
 #endif
 /**-- ICC_EIP_GEN_INCLUDES_END --**/
 
@@ -128,6 +129,10 @@ static uint8_t dceMirrorInputData[GOAL_APP_ASM_SIZE_DCE_MIRROR_INPUT] = {0x0};
 static uint8_t dceMirrorOutputData[GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT] = {0x0};
 static uint8_t dceFastInputData[GOAL_APP_ASM_SIZE_DCE_FAST_INPUT] = {0x0};
 static uint8_t dcePollSelOutputData[GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT] = {0x0};
+static uint8_t nafeTempInputData[GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT] = {0x0};
+#if DEBUG_NAFE
+static uint8_t nafeCfgOutputData[GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT] = {0x0};
+#endif
 extern int riop_appl_init(void);
 #endif
 /**-- ICC_EIP_GEN_LOCALVARS_END --**/
@@ -298,6 +303,23 @@ GOAL_STATUS_T appl_setup(
             GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT))) {
         goal_logErr("failed to create DCE poll-set selector Output Assembly 173");
     }
+    /* NAFE temperature path: read-only input 174 (explicit messaging, not part of any Class 1
+     * connection), plus NAFE-only RAM config output 175 in DEBUG_NAFE builds. Neither touches DCE
+     * Modbus or the 171 mailbox. Failure here never blocks 170-173. */
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_NAFE_TEMP_INPUT,
+            GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT))) {
+        goal_logErr("failed to create NAFE temp Input Assembly 174");
+    }
+#if DEBUG_NAFE
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_NAFE_CFG_OUTPUT,
+            GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT))) {
+        goal_logErr("failed to create NAFE cfg Output Assembly 175");
+    }
+#endif
 
 
     /* define allowed connections */
@@ -337,6 +359,7 @@ GOAL_STATUS_T appl_setup(
 #if RIOP
     /* Start Modbus only after goal_eipNew() has created the CC instance. */
     dce_taskInit();
+    nafe_tempTaskInit();
 #endif
     /**-- ICC_EIP_GEN_APPLSETUP_AFTER_END --**/
 
@@ -474,6 +497,20 @@ static GOAL_STATUS_T main_eipAfterAssemblyDataReceived(
 #endif
             break;
 
+#if RIOP && DEBUG_NAFE
+        case GOAL_APP_ASM_ID_NAFE_CFG_OUTPUT:
+            res = goal_eipAssemblyObjectRead(
+                pHdlEip,
+                GOAL_APP_ASM_ID_NAFE_CFG_OUTPUT,
+                &nafeCfgOutputData[0],
+                GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT
+            );
+            if (GOAL_RES_OK(res)) {
+                nafe_tempPost175(&nafeCfgOutputData[0], GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT);
+            }
+            break;
+#endif
+
         case GOAL_APP_ASM_ID_CONFIG:
             /**-- ICC_EIP_GEN_ASM_ID_CONFIG_START --**/
             /* user code block */
@@ -578,6 +615,16 @@ static GOAL_STATUS_T main_eipBeforeAssemblyDataSend(
                 GOAL_APP_ASM_ID_DCE_FAST_INPUT,
                 &dceFastInputData[0],
                 GOAL_APP_ASM_SIZE_DCE_FAST_INPUT
+            );
+            break;
+
+        case GOAL_APP_ASM_ID_NAFE_TEMP_INPUT:
+            nafe_tempGet174(&nafeTempInputData[0], GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT);
+            res = goal_eipAssemblyObjectWrite(
+                pHdlEip,
+                GOAL_APP_ASM_ID_NAFE_TEMP_INPUT,
+                &nafeTempInputData[0],
+                GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT
             );
             break;
 #endif
