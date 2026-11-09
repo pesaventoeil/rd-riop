@@ -33,6 +33,19 @@
 /* Well done: Main function moved here from "flash zone". */
 #include "mcmgr.h"
 
+/* N8: NAFE temp path build switches (only present in the EIP gateway M7 build). */
+#if defined(__has_include)
+#if __has_include("nafe_temp_cfg.h")
+#include "nafe_temp_cfg.h"
+#endif
+#endif
+#ifndef NAFE_TEMP_TASK_ENABLE
+#define NAFE_TEMP_TASK_ENABLE 0
+#endif
+#ifndef NAFE_TEMP_OWNS_AFE
+#define NAFE_TEMP_OWNS_AFE 0
+#endif
+
 uint32_t fsm_mode;
 unsigned char LED_status;
 unsigned char di;
@@ -341,6 +354,14 @@ case 19:
 			break;
 		}
 
+#if NAFE_TEMP_TASK_ENABLE && NAFE_TEMP_OWNS_AFE
+		/* N8: U38 belongs to the NAFE temp task; never start NXP AFE sampling (see nafe_temp_cfg.h). */
+		riop_command.afe_command.afe_hvsig_command.is_dirty = 0;
+		riop_command.afe_command.afe_current_command.is_dirty = 0;
+		riop_command.afe_command.afe_lvsig_command.is_dirty = 0;
+		riop_command.afe_command.afe_temperature_command.is_dirty = 0;
+		riop_command.afe_command.afe_calibration_command.is_dirty = 0;
+#endif
 		ICC_DataHandleTask(NULL);
 	}
 }
