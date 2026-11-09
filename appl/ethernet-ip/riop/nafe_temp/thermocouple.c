@@ -3,6 +3,24 @@
 #include <math.h>
 #include "dce_ng/temp_path.h"
 
+/* Compact exp() for the type-K exponential term (argument range about [-185, 0]). Avoids pulling
+ * libm exp + its 2 KB table into the RIOP M7 image, whose ITCM is full. Range reduction by ln2,
+ * degree-12 Taylor on |r| <= ln2/2, exponent built directly. Relative error < 1e-15 (host test). */
+double tp_exp(double x)
+{
+    if (x < -700.0) return 0.0;
+    if (x > 700.0) x = 700.0;
+    const double ln2 = 0.69314718055994530942;
+    double kf = x / ln2;
+    int k = (int)(kf < 0 ? kf - 0.5 : kf + 0.5);
+    double r = (x - (double)k * 6.93147180369123816490e-01) - (double)k * 1.90821492927058770002e-10; /* Cody-Waite ln2 hi/lo */
+    double term = 1.0, sum = 1.0;
+    for (int n = 1; n <= 12; n++) { term *= r / (double)n; sum += term; }
+    union { double d; unsigned long long u; } sc;
+    sc.u = (unsigned long long)(k + 1023) << 52;
+    return sum * sc.d;
+}
+
 static double poly(const double *c, int n, double x)
 {
     double y = 0.0;
@@ -55,7 +73,7 @@ int tc_temp_to_mv(tc_type_t t, double tc, double *mv)
         if (tc < 0.0) *mv = poly(K_NEG, N(K_NEG), tc);
         else {
             double e = tc - 126.9686;
-            *mv = poly(K_POS, N(K_POS), tc) + 0.1185976 * exp(-1.183432E-04 * e * e);
+            *mv = poly(K_POS, N(K_POS), tc) + 0.1185976 * tp_exp(-1.183432E-04 * e * e);
         }
         return 0;
     case TC_J:

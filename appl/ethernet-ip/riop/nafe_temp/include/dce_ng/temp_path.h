@@ -157,6 +157,7 @@ uint16_t nafe_cmd_reg(uint8_t dev_addr, uint16_t reg, bool read);
 uint16_t nafe_cmd_instr(uint8_t dev_addr, uint16_t instr);
 int temp_cfg_to_regs(const temp_ch_cfg_t *c, bool odc_cycle, nafe_ch_regs_t *out);
 float nafe_gain_value(nafe_gain_t g);
+double tp_exp(double x); /* compact exp (thermocouple.c) */
 double nafe_code_to_volts(int32_t code24, nafe_gain_t g);
 int32_t nafe_sign_extend24(uint32_t raw);
 double nafe_die_temp_c(uint16_t raw);
