@@ -35,6 +35,19 @@
 #define TEMP_EIP_IN_LEN TEMP_EIP_RELEASE_LEN /* 96 */
 #endif
 #define TEMP_EIP_CFG_LEN 32u
+/* N9: asm 176 = lossless scan log (read-only, explicit Get_Attribute_Single class 0x04 attr 3; DEBUG_NAFE builds).
+ * Ring of the last TEMP_EIP_LOG_SLOTS completed scans, slot = scan_count % SLOTS. Record = the 96 B release image of
+ * that scan (asm 174 bytes 0..95) with bytes 0..1 = 175 applied_count, 2..3 = skip_count, 4..7 = scan_count.
+ * Header: u16 version 1, u16 rec_len 96, u8 slots, u8 valid records, u16 0, u32 newest scan_count, u32 frame. */
+#ifndef NAFE_LOG_STREAM
+#define NAFE_LOG_STREAM DEBUG_NAFE
+#endif
+#define TEMP_EIP_ASM_LOG 176u
+#define TEMP_EIP_LOG_VERSION 1u
+#define TEMP_EIP_LOG_HDR_LEN 16u
+#define TEMP_EIP_LOG_REC_LEN TEMP_EIP_RELEASE_LEN
+#define TEMP_EIP_LOG_SLOTS 4u
+#define TEMP_EIP_LOG_LEN (TEMP_EIP_LOG_HDR_LEN + TEMP_EIP_LOG_SLOTS * TEMP_EIP_LOG_REC_LEN) /* 400 */
 
 /* per-channel status byte (174) */
 #define TEMP_ST_BIT_VALID 0x01u
@@ -132,5 +145,9 @@ size_t temp_eip_pack174(const temp_rt_t *rt, uint8_t *buf, size_t len);
 /* Process one asm 175 write. No-op (ACK_DISABLED) unless DEBUG_NAFE. Returns ack code. */
 int temp_eip_apply175(temp_rt_t *rt, const uint8_t *buf, size_t len);
 uint16_t temp_eip_checksum(const uint8_t *buf, size_t n); /* 16-bit byte sum over bytes 0..27 */
+
+/* N9: add the scan packed in img174 to the asm 176 ring if rt->scan_count is new; always refresh the header.
+ * Returns 1 if a record was added. */
+int temp_eip_log_push(uint8_t *ring, const temp_rt_t *rt, const uint8_t *img174);
 
 #endif

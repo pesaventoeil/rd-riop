@@ -133,6 +133,9 @@ static uint8_t nafeTempInputData[GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT] = {0x0};
 #if DEBUG_NAFE
 static uint8_t nafeCfgOutputData[GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT] = {0x0};
 #endif
+#if NAFE_LOG_STREAM
+static uint8_t nafeLogInputData[GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT] = {0x0};
+#endif
 extern int riop_appl_init(void);
 #endif
 /**-- ICC_EIP_GEN_LOCALVARS_END --**/
@@ -318,6 +321,15 @@ GOAL_STATUS_T appl_setup(
             GOAL_APP_ASM_ID_NAFE_CFG_OUTPUT,
             GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT))) {
         goal_logErr("failed to create NAFE cfg Output Assembly 175");
+    }
+#endif
+#if NAFE_LOG_STREAM
+    /* N9: read-only scan log 176 (explicit only). Failure never blocks 170-175. */
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_NAFE_LOG_INPUT,
+            GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT))) {
+        goal_logErr("failed to create NAFE log Input Assembly 176");
     }
 #endif
 
@@ -627,6 +639,17 @@ static GOAL_STATUS_T main_eipBeforeAssemblyDataSend(
                 GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT
             );
             break;
+#if NAFE_LOG_STREAM
+        case GOAL_APP_ASM_ID_NAFE_LOG_INPUT:
+            nafe_tempGet176(&nafeLogInputData[0], GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT);
+            res = goal_eipAssemblyObjectWrite(
+                pHdlEip,
+                GOAL_APP_ASM_ID_NAFE_LOG_INPUT,
+                &nafeLogInputData[0],
+                GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT
+            );
+            break;
+#endif
 #endif
         /**-- ICC_EIP_GEN_BEFORE_ASSEMBLYDATA_SEND_SWITCH_END --**/
 

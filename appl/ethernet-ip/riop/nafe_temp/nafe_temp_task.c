@@ -27,6 +27,9 @@ static temp_rt_t s_rt;
 static uint8_t s_174[TEMP_EIP_IN_LEN];
 static uint8_t s_175[TEMP_EIP_CFG_LEN];
 static volatile uint8_t s_175_pending;
+#if NAFE_LOG_STREAM
+static uint8_t s_176[TEMP_EIP_LOG_LEN]; /* N9: asm 176 scan ring */
+#endif
 static nafe_ch_regs_t s_slot[16];
 static volatile uint32_t s_spi_timeouts; /* lifetime count, also folded into skip_count */
 static volatile uint32_t s_bus_busy;     /* transfers refused because NXP owned the NAFE */
@@ -214,6 +217,9 @@ static void publish(void)
     temp_eip_pack174(&s_rt, tmp, sizeof tmp);
     taskENTER_CRITICAL();
     memcpy(s_174, tmp, sizeof tmp);
+#if NAFE_LOG_STREAM
+    (void)temp_eip_log_push(s_176, &s_rt, tmp); /* one record per completed scan */
+#endif
     taskEXIT_CRITICAL();
 }
 
@@ -276,6 +282,18 @@ void nafe_tempGet174(uint8_t *buf, uint32_t len)
     taskENTER_CRITICAL();
     memcpy(buf, s_174, n);
     taskEXIT_CRITICAL();
+}
+
+void nafe_tempGet176(uint8_t *buf, uint32_t len)
+{
+#if NAFE_LOG_STREAM
+    uint32_t n = len < TEMP_EIP_LOG_LEN ? len : TEMP_EIP_LOG_LEN;
+    taskENTER_CRITICAL();
+    memcpy(buf, s_176, n);
+    taskEXIT_CRITICAL();
+#else
+    memset(buf, 0, len);
+#endif
 }
 
 void nafe_tempPost175(const uint8_t *buf, uint32_t len)

@@ -53,6 +53,8 @@
 #define GOAL_APP_ASM_SIZE_DCE_POLLSEL_OUTPUT 8  /**< asm 173: u16 sel_seq, u8 set, u8 flags, u32 reserved */
 #define GOAL_APP_ASM_SIZE_NAFE_TEMP_INPUT TEMP_EIP_IN_LEN /**< asm 174: 96 B release + 136 B debug (DEBUG_NAFE) */
 #define GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT TEMP_EIP_CFG_LEN /**< asm 175: 32 B */
+#define GOAL_APP_ASM_ID_NAFE_LOG_INPUT   176  /**< N9: NAFE lossless scan log (RIOP -> PC), explicit, read-only, DEBUG_NAFE */
+#define GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT TEMP_EIP_LOG_LEN /**< asm 176: 16 B header + 4 x 96 B records */
 #define GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT 16  /**< seq/op/address/len/flags/values[2] */
 
 #endif /* GOAL_APP_EIP_H */

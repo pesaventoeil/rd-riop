@@ -192,6 +192,28 @@ size_t temp_eip_pack174(const temp_rt_t *rt, uint8_t *b, size_t len)
     return TEMP_EIP_IN_LEN;
 }
 
+#if NAFE_LOG_STREAM
+int temp_eip_log_push(uint8_t *ring, const temp_rt_t *rt, const uint8_t *img)
+{
+    int added = 0;
+    if (rt->scan_count != 0u && (ring[5] == 0u || rt->scan_count != r32(ring, 8))) {
+        uint8_t *r = ring + TEMP_EIP_LOG_HDR_LEN + (rt->scan_count % TEMP_EIP_LOG_SLOTS) * TEMP_EIP_LOG_REC_LEN;
+        memcpy(r, img, TEMP_EIP_LOG_REC_LEN);
+        w16(r, 0, rt->applied_count);
+        w16(r, 2, rt->skip_count);
+        w32(r, 4, rt->scan_count);
+        if (ring[5] < TEMP_EIP_LOG_SLOTS) ring[5]++;
+        w32(ring, 8, rt->scan_count);
+        added = 1;
+    }
+    w16(ring, 0, TEMP_EIP_LOG_VERSION);
+    w16(ring, 2, TEMP_EIP_LOG_REC_LEN);
+    ring[4] = TEMP_EIP_LOG_SLOTS;
+    w32(ring, 12, rt->frame);
+    return added;
+}
+#endif
+
 uint16_t temp_eip_checksum(const uint8_t *b, size_t n)
 {
     uint16_t s = 0;
