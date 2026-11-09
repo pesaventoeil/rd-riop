@@ -216,6 +216,7 @@ typedef struct {
     bool started;
     double cjc_c;
     double die_c;          /* NAFE DIE_TEMP, read every scan when read_reg16 is provided */
+    bool die_valid;        /* last DIE_TEMP read succeeded and was plausible */
     double lvsig_ohms;     /* LVSIG GPIO0-GPIO1 element (RIOP R347), when cjc_src == TEMP_CJC_LVSIG_RTD */
     temp_status_t lvsig_status;
     int exc_owner;         /* channel slot currently holding the excitation, -1 = none */

@@ -111,9 +111,15 @@ static void update_cjc(temp_sched_t *s)
 {
     const temp_profile_t *p = s->prof;
     uint16_t raw;
+    s->die_valid = false;
     if (s->ops->read_reg16 && !s->ops->read_reg16(s->ops->ctx, TP_NAFE_REG_DIE_TEMP, &raw)) {
-        s->die_c = nafe_die_temp_c(raw);
-        if (p->cjc_src == TEMP_CJC_DIE) s->cjc_c = s->die_c;
+        double t = nafe_die_temp_c(raw);
+        /* plausibility: an SPI fault reads 0xFFFF (-0.016 C) or garbage; NAFE range is -40..125 C */
+        if (raw != 0xFFFFu && t > -45.0 && t < 155.0) {
+            s->die_c = t;
+            s->die_valid = true;
+            if (p->cjc_src == TEMP_CJC_DIE) s->cjc_c = s->die_c;
+        }
     }
     /* R347 / LVSIG element is read every scan when the profile describes the divider (board-wide value
      * for asm 174); it is used as CJC only when cjc_src == TEMP_CJC_LVSIG_RTD. */

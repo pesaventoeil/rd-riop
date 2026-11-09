@@ -58,6 +58,7 @@ bool temp_rt_poll(temp_rt_t *rt, uint32_t now_ms)
         rt->samples[i]++;
         if (st == TEMP_ST_OK) { rt->last_ok_ms[i] = now_ms; rt->ever_ok[i] = true; }
     }
+    if (rt->sched.die_valid) { rt->die_ok_ms = now_ms; rt->die_ever_ok = true; }
     if (rt->live.lvsig_r_top > 0.0f) rt->r347_tried = true;
     if (rt->sched.lvsig_status == TEMP_ST_OK) {
         r347_acc_add(&rt->r347, rt->sched.die_c, rt->sched.lvsig_ohms);
@@ -126,7 +127,8 @@ size_t temp_eip_pack174(const temp_rt_t *rt, uint8_t *b, size_t len)
     if (rt->r347_tried && (!rt->r347_ever_ok || (uint32_t)(rt->now_ms - rt->r347_ok_ms) > temp_rt_stale_ms(rt))) rfl |= TEMP_R347_STALE;
     w8(b, 20, rfl);
     w8(b, 21, (uint8_t)cls);
-    uint8_t hf = rt->hdr_flags & (uint8_t)~(TEMP_HF_DEBUG_PRESENT | TEMP_HF_OVERRIDES_ACTIVE);
+    uint8_t hf = rt->hdr_flags & (uint8_t)~(TEMP_HF_DEBUG_PRESENT | TEMP_HF_OVERRIDES_ACTIVE | TEMP_HF_DIE_VALID);
+    if (rt->sched.die_valid && rt->die_ever_ok && (uint32_t)(rt->now_ms - rt->die_ok_ms) <= temp_rt_stale_ms(rt)) hf |= TEMP_HF_DIE_VALID;
     if (DEBUG_NAFE) hf |= TEMP_HF_DEBUG_PRESENT;
     if (rt->ch_override || rt->board_override) hf |= TEMP_HF_OVERRIDES_ACTIVE;
     w8(b, 22, hf);

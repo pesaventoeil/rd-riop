@@ -51,6 +51,7 @@
 #define TEMP_HF_SCAN_SKIPPED 0x04u /* NXP AFE_task owned the NAFE this period */
 #define TEMP_HF_DEBUG_PRESENT 0x08u
 #define TEMP_HF_OVERRIDES_ACTIVE 0x10u
+#define TEMP_HF_DIE_VALID 0x20u /* last DIE_TEMP read OK and fresh (age <= 3 x period + 1 s) */
 
 /* R347 flags (174 offset 20) */
 #define TEMP_R347_PASS 0x01u  /* valid and inside the 95..140 ohm plausibility window */
@@ -83,7 +84,7 @@ enum {
 /* 175 ack codes (174 debug block) */
 enum { TEMP_ACK_NONE = 0, TEMP_ACK_OK = 1, TEMP_ACK_REJECTED = 2, TEMP_ACK_DISABLED = 3 };
 
-/* Built-in profiles selectable by id (174 header byte 29, 175 SELECT_PROFILE) */
+/* Built-in profiles selectable by id (174 header byte 27, 175 SELECT_PROFILE) */
 enum { TEMP_PROF_BENCH1_PT100 = 0, TEMP_PROF_BENCH1_PT1000 = 1, TEMP_PROF_SLOW_1PM = 2, TEMP_PROF_R347_CHECK = 3,
        TEMP_PROF_BENCH0_NOEXC = 4, TEMP_PROF_COUNT = 5 };
 const temp_profile_t *temp_builtin_profile(unsigned id);
@@ -102,7 +103,8 @@ typedef struct {
     uint32_t scan_tick_ms;     /* time of the last completed scan: payload changes only when this does */
     uint32_t last_ok_ms[TEMP_MAX_CHANNELS];
     bool ever_ok[TEMP_MAX_CHANNELS];
-    uint32_t r347_ok_ms;
+    uint32_t r347_ok_ms, die_ok_ms;
+    bool die_ever_ok;
     bool r347_ever_ok, r347_tried;
     uint16_t samples[TEMP_MAX_CHANNELS];
     r347_acc_t r347;
