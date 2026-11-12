@@ -108,7 +108,29 @@ N10 (7e6df68) flashed and verified at 13:40 ET 11/12 but never came up: no broad
 |---|---|---|---|---|
 | `RIOP_DIAG_M33_ENABLE` switch (`riop_EIP_M33LEADER.c`) | TEMP | Bisect: 0 = N10r (M33 behaves as N9, M7 identical to N10), 1 = N10f. | Remove the switch once N10f (or a later fix) passes a full day on the bench. | EI Software NextGen Dev |
 | M33 poller start gate (netif up + link up + >=20 s, fallback 60 s) | KEEP | Ensures no NETC register access before GOAL has finished bringing up NETC and lwIP. | Permanent while the M33 poller exists. | EI Software NextGen Dev |
-| M33 SI list reduced to ENETC1 PSI0 | KEEP | Only the SI GOAL configures in switch mode (`goal_target_eth.c`). | Permanent unless the port map changes. | EI Software NextGen Dev |
+| ~~M33 SI list reduced to ENETC1 PSI0~~ | WITHDRAWN (N10g) | Wrong: RIOP is not in switch mode. GOAL builds only `GOAL_BOARD_ETH_PORT_4` (ENETC0 endpoint), so ENETC1 is never initialised. N10f read it and still killed the board. Replaced by the ENETC0_SI0-only poller below. | n/a | EI Software NextGen Dev |
 | `RIOP_ENET_RX_RECOVER` = 0 | TEMP (disabled) | Not safe to re-enable as written: there is no MAC restart and the netif bounce runs outside the tcpip thread. | Re-enable only after it restarts the MACs and posts the bounce through `tcpip_callback()`, and after Daniel's go. | EI Software NextGen Dev |
 
 Bisect images (built, **not flashed**): N10r = N10 minus the M33 poller; N10f = hardened poller; N10a = N9 + LED only (branch fix/n10-boot-ledonly). Flash N10r first.
+
+---
+
+## N10g: root cause and fix (2026-11-12 afternoon)
+
+**Bench (14:0x-14:2x ET, hands-free via `swd_flash_test.ps1`):** N10r booted (broadcast ListIdentity bound to .33 answered about 35 s after power-on; asm 177 OK; reset_cause 0x00010001). N10f never answered across 8 broadcast tries from about 35 s to 3 min, so it was rolled back to N10r. The M33 poller's register accesses are the fault, not their timing.
+
+**Root cause (offline, high confidence):** RIOP builds GOAL with **only the ENETC0 endpoint**: `GOAL_BOARD_ETH_PORT_4=1` and ports 0-3 = 0 under `#if RIOP` in `goal_target_board.c`. That means `kNETC_ENETC0EthPort`, RGMII, PHY address 3, `hasSwitch = FALSE` and `epConfig.si = kNETC_ENETC0PSI0`. GOAL never initialises the NETC switch or ENETC1. N10 and N10f both polled the **SW0 port 0-3 MAC PM0 counters** (64-bit registers on MAC blocks with no link clock or init) and **ENETC1 SI registers**. N10 also polled ENETC1_SI1. On an uninitialised NETC block that is a bus stall or bus error on the M33, which owns NETC, lwIP and GOAL, so all networking dies. No fault handler was recording, so it left no evidence. The earlier "switch-port" PHY link mask and the PHY addresses 2/5/4/7 in this register were wrong for RIOP; the only PHY is ENETC0 at address 3.
+
+Secondary findings: OCRAM1 is **non-cacheable on the M33** (`CACHE_MODE_WRITE_THROUGH=1` MPU workaround), so no clean is needed. The N10 `DCACHE_CleanByRange(0x204FDF00)` was a no-op anyway, because the secure XCACHE table starts at 0x30000000. The RX-recover path (graceful MAC stop with no restart, netif bounce outside the tcpip thread) is deleted in N10g.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| M33 poller reads **only ENETC0_SI0** `SIRFRM0`/`SITFRM0` (32-bit), only after netif up + link + >=20 s, no time fallback | KEEP | The only NETC registers polled are those of the block GOAL itself brings up. They are read-only and have no read side effects. | Permanent while the poller exists. | EI Software NextGen Dev |
+| `RIOP_DIAG_M33_MAC_COUNTERS` (ENETC0 port MAC `PM0_RERRN/TERRN/RDRPN`, low 32-bit word only, flag b6 MAC_CNT), default **0** | TEMP | Optional error counters from the endpoint MAC. Off until N10g has run clean for a day. | Turn on in a later build after N10g passes; KEEP if it stays clean for a week. | EI Software NextGen Dev |
+| **M33 fault recorder** (`riop_fault_entry` + naked Hard/MemManage/Bus/Usage/Secure stubs in `semihost_hardfault.c`; SHCSR fault enables in `riop_fault_init`) | KEEP | Writes a 64 B magic-tagged 'N10F' record (count, type, CFSR, HFSR, BFAR, MMFAR, SFSR, SFAR, PC, LR, xPSR, EXC_RETURN, uptime) at OCRAM1 **0x204FDF40**, then `NVIC_SystemReset()`. Neither core's startup clears the window. The M7 copies count/CFSR/PC/BFAR into asm 177 v2. A crash now leaves evidence and reboots instead of hanging. The semihosting BKPT return path is unchanged. | Permanent. **Limit:** a pure bus *stall* never raises a fault, so it cannot be recorded. Pair with an M33 RTWDOG (not built yet) if one turns up. If OCRAM is not retained across `SYSRESETREQ` on this part, the record is lost, but `reset_cause` in asm 177 still shows the reset. | EI Software NextGen Dev |
+| Poller self-disable after 2 recorded faults | KEEP | Stops a poller-induced reboot loop. The record is cleared only by power-off. | Permanent. | EI Software NextGen Dev |
+| `RIOP_DIAG_M33_ENABLE` switch | TEMP | 0 = N10r/N10h (no poller), 1 = N10g. | Remove after N10g passes a full day. | EI Software NextGen Dev |
+
+**asm 177 v2 = 96 B**; the first 80 B are unchanged, so v1 readers still work. Changes: version = 2; flags b5 `FAULT_SEEN`, b6 `MAC_CNT`; `phy_link_mask` bit0 = ENETC0 link. New fields: off 80 `fault_count` u32, 84 `fault_cfsr` u32, 88 `fault_pc` u32, 92 `fault_bfar` u32. `nafe_bench/riop_diag177.py` decodes v2 (nafe_bench commit d3b58f7, local).
+
+Images (built, **not flashed**): **N10g** = fix (recorder + ENETC0_SI0-only poller), flash first. **N10h** = N10g with the poller off (recorder + asm 177 v2 only; branch fix/n10-boot-n10h) is the fallback if N10g does not answer.
