@@ -39,7 +39,7 @@ Architecture: the EIP application (asm 177, NAFE, LED, session counts) runs on t
 
 | Item | Status | Purpose / evidence | Removal criterion | Owner |
 |---|---|---|---|---|
-| ENET RX-stall recover (`RIOP_ENET_RX_RECOVER`, default **1**; timeout `RIOP_ENET_RX_RECOVER_SEC=5`, grace 15 s, cooldown 30 s) | TEMP | Runs on the M33 (NETC + lwIP owner), not the M7. If a switch port has seen RX and then no RX counter moves for N seconds, bounce the lwIP default netif (down/up + link down/up) and graceful-stop the switch-port MACs. The M7 only copies `enet_reinit_count` and flags from the OCRAM1 snapshot at 0x204FDF00. **Does not write NAFE or DCE config**, so a RAM-only SET_CH is left alone. Compiled out by setting `RIOP_ENET_RX_RECOVER` to 0. | Remove or harden after **two weeks with zero dropouts**, or replace with a handle-based NETC DMA-ring reinit once that path is proven safe. If recover runs and the board still stays silent, stop (do not tighten the timeout) and use the counters for root cause. | EI Software NextGen Dev |
+| ENET RX-stall recover (`RIOP_ENET_RX_RECOVER`, default **0** since fix/n10-boot (was 1 in N10); timeout `RIOP_ENET_RX_RECOVER_SEC=5`, grace 15 s, cooldown 30 s) | TEMP | Runs on the M33 (NETC + lwIP owner), not the M7. If a switch port has seen RX and then no RX counter moves for N seconds, bounce the lwIP default netif (down/up + link down/up) and graceful-stop the switch-port MACs. The M7 only copies `enet_reinit_count` and flags from the OCRAM1 snapshot at 0x204FDF00. **Does not write NAFE or DCE config**, so a RAM-only SET_CH is left alone. Compiled out by setting `RIOP_ENET_RX_RECOVER` to 0. | Remove or harden after **two weeks with zero dropouts**, or replace with a handle-based NETC DMA-ring reinit once that path is proven safe. If recover runs and the board still stays silent, stop (do not tighten the timeout) and use the counters for root cause. | EI Software NextGen Dev |
 
 This is deliberately not a full `goal_drvEthNetcShutdown` + re-init: that path frees the RX/TX rings and is not safe to call at runtime from the GOAL loop.
 
@@ -93,3 +93,22 @@ This is deliberately not a full `goal_drvEthNetcShutdown` + re-init: that path f
 | 76 | u32 | reserved |
 
 N10 image is built only. It is **not flashed** until Daniel holds the ISP straps and gives the go.
+
+---
+
+## N10 boot failure (2026-11-12) - fix/n10-boot
+
+N10 (7e6df68) flashed and verified at 13:40 ET 11/12 but never came up: no broadcast ListIdentity (bound to 192.168.1.33), no ping, no ARP, COM5 silent, after both a LabJack POR and a PowerTail cycle. Rolled back to N9 at 13:47 ET. Offline findings:
+
+- Flash content is not the problem: `swd/postdumpN10_failed_20261112_1346.bin` SHA256 5DCD2E2A...2244 equals the N10 full image byte for byte; FCB/FCFB identical to N9; one AHAB container, one image at +0xA000, 550760 B, ends 0x38091768, well inside the 0xA0000 window.
+- M7 image is statically clean: core1 261420 B in a 262144 B ITCM (724 B left); `.riop_diag_net` is NOLOAD and not in core1; `.noinit` (8 B) lands in DTCM after .bss; 5.6 KB between .bss end and the MSP stack limit; OCRAM1 0x204FDF00 is cacheable on the M7 and the reader invalidates before it reads; the SRC read is on the same AIPS (0x444x) as TRDC1, which the M7 already programs. The LED PWM adds no task or ISR.
+- Leading suspect is the new M33 NETC poller (`riop_diag_m33.c`), which N9 does not have. It starts in the first scheduler slot, while the prio-31 GOAL init task may still be partway through NETC bring-up. It reads ENETC0_SI0 (an ENETC GOAL never uses) and ENETC1_SI1 (a VSI GOAL never enables). Its recover path graceful-stops every switch MAC with no restart and bounces the netif outside the tcpip thread.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| `RIOP_DIAG_M33_ENABLE` switch (`riop_EIP_M33LEADER.c`) | TEMP | Bisect: 0 = N10r (M33 behaves as N9, M7 identical to N10), 1 = N10f. | Remove the switch once N10f (or a later fix) passes a full day on the bench. | EI Software NextGen Dev |
+| M33 poller start gate (netif up + link up + >=20 s, fallback 60 s) | KEEP | Ensures no NETC register access before GOAL has finished bringing up NETC and lwIP. | Permanent while the M33 poller exists. | EI Software NextGen Dev |
+| M33 SI list reduced to ENETC1 PSI0 | KEEP | Only the SI GOAL configures in switch mode (`goal_target_eth.c`). | Permanent unless the port map changes. | EI Software NextGen Dev |
+| `RIOP_ENET_RX_RECOVER` = 0 | TEMP (disabled) | Not safe to re-enable as written: there is no MAC restart and the netif bounce runs outside the tcpip thread. | Re-enable only after it restarts the MACs and posts the bounce through `tcpip_callback()`, and after Daniel's go. | EI Software NextGen Dev |
+
+Bisect images (built, **not flashed**): N10r = N10 minus the M33 poller; N10f = hardened poller; N10a = N9 + LED only (branch fix/n10-boot-ledonly). Flash N10r first.
