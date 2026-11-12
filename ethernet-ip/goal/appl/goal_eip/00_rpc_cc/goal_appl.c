@@ -28,6 +28,29 @@
 #include <goal_dd.h>
 
 
+#if RIOP
+/* N10w: GOAL main-loop progress for the M33 watchdog health task
+ * (riop_wdog_m33.c). Registered at the last init stage; never fails init. */
+extern void riop_wdog_goal_loop(void);
+extern void riop_wdog_note_goal_ready(void);
+static GOAL_STAGE_HANDLER_T riopWdogStage;
+
+static GOAL_STATUS_T riop_wdogStageCb(
+    void
+)
+{
+    if (GOAL_RES_OK(goal_mainLoopReg(riop_wdog_goal_loop))) {
+        riop_wdog_note_goal_ready();
+    }
+    else {
+        goal_logErr("riop wdog: loop hook not registered");
+        riop_wdog_note_goal_ready();
+    }
+    return GOAL_OK;
+}
+#endif
+
+
 /****************************************************************************/
 /** Application
  *
@@ -40,6 +63,10 @@ GOAL_STATUS_T appl_init(
 )
 {
     GOAL_STATUS_T res;                          /* result */
+
+#if RIOP
+    (void) goal_mainStageReg(GOAL_STAGE_GOAL, &riopWdogStage, GOAL_STAGE_INIT, riop_wdogStageCb);
+#endif
 
     /* initialize device detection module */
     res = goal_ddInit();

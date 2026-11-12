@@ -57,6 +57,37 @@ static void diag_init_boot(void)
 	s_img.reset_cause = SRC_GENERAL_REG->SRSR;
 }
 
+/* N10w: M33 watchdog record. The M33 writes it before releasing the M7
+ * and clears SRSR, so boot_srsr is this boot's reset cause. */
+static void diag_copy_wdog(void)
+{
+	riop_diag_wdog_t w;
+	volatile riop_diag_wdog_t *src = (volatile riop_diag_wdog_t *)RIOP_DIAG_WDOG_ADDR;
+
+	DCACHE_InvalidateByRange(RIOP_DIAG_WDOG_ADDR, sizeof(w));
+	w = *src;
+	if (w.magic != RIOP_DIAG_WDOG_MAGIC) {
+		return;
+	}
+	s_img.reset_cause |= w.boot_srsr;
+	s_img.wdog_reset_count = w.wdog_count;
+	s_img.wdog_last_reason = w.last_reason;
+	s_img.wdog_consec = w.consec;
+	s_img.wdog_state = w.state;
+	s_img.wdog_test_stage = w.test_stage;
+	s_img.wdog_last_pc = w.last_pc;
+	s_img.wdog_last_uptime_ms = w.last_uptime_ms;
+	if (w.state & RIOP_WDOG_S_EN) {
+		s_img.flags |= RIOP_DIAG_F_WDOG_EN;
+	}
+	if (w.state & RIOP_WDOG_S_WDOG_BOOT) {
+		s_img.flags |= RIOP_DIAG_F_WDOG_BOOT;
+	}
+	if (w.state & RIOP_WDOG_S_SAFE) {
+		s_img.flags |= RIOP_DIAG_F_SAFE_MODE;
+	}
+}
+
 static int diag_copy_m33(uint32_t now_ms)
 {
 	riop_diag_net_t net;
@@ -176,6 +207,7 @@ void riop_diag_poll(void)
 
 	(void)diag_copy_m33(now_ms);
 	diag_copy_fault();
+	diag_copy_wdog();
 
 #if RIOP_DIAG_HAS_NAFE
 	s_img.nafe_scan_count = nafe_tempGetScanCount();

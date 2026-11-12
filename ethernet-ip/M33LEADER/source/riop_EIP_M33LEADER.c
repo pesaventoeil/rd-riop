@@ -109,6 +109,11 @@ extern void riop_diag_m33_start(void);
 extern void riop_fault_init(void);
 #endif
 
+/* N10w KEEP: M33 RTWDOG1 health watchdog + boot-loop guard (riop_wdog_m33.c).
+ * RIOP_M33_WDOG (default 1) lives in appl/ethernet-ip/riop/riop_diag_net.h. */
+extern void riop_wdog_boot(void);
+extern void riop_wdog_start(void);
+
 int BOARD_InitHardware(void)
 {
     /* Init board hardware.*/
@@ -132,8 +137,11 @@ int BOARD_InitHardware(void)
 #if RIOP_FAULT_RECORDER
     riop_fault_init();
 #endif
+    /* Before the M7 is released and before the poller: decides safe mode. */
+    riop_wdog_boot();
 #if RIOP_DIAG_M33_ENABLE
     riop_diag_m33_start();
 #endif
+    riop_wdog_start();
     return 0;
 }

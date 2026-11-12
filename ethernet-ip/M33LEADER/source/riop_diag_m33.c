@@ -50,10 +50,14 @@
 #define RIOP_DIAG_START_MIN_S  20u
 #define RIOP_DIAG_FAULT_STOP   2u   /* poller stays off after this many recorded faults */
 
+extern int riop_wdog_safe_mode(void);
+
 static volatile riop_diag_net_t g_riop_diag_net
 	__attribute__((section(".noinit.$riop_diag_net"), used));
 
 static uint32_t s_seq;
+/* N10w: read by the watchdog health task (poller alive check). */
+volatile uint32_t g_riop_diag_poll_seq;
 static uint8_t  s_last_link;
 static uint16_t s_link_changes;
 
@@ -191,6 +195,7 @@ static void diag_poll_once(void)
 		s_seq++;
 	}
 	img.seq = s_seq;
+	g_riop_diag_poll_seq = s_seq;
 	img.magic = RIOP_DIAG_NET_MAGIC;
 	diag_publish(&img);
 }
@@ -221,6 +226,10 @@ void riop_diag_m33_start(void)
 	/* Clear the snapshot (not the fault record) so the M7 never copies a
 	 * stale image from before this boot. */
 	((volatile uint32_t *)RIOP_DIAG_NET_ADDR)[0] = 0u;
+	g_riop_diag_poll_seq = 0u;
+	if (riop_wdog_safe_mode() != 0) {
+		return; /* N10w boot-loop guard: safe mode keeps the poller off */
+	}
 	if (diag_fault_valid() && (diag_fault_rec()->count >= RIOP_DIAG_FAULT_STOP)) {
 		return; /* repeated faults: keep the poller off until power-off */
 	}

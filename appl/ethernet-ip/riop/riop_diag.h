@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-#define RIOP_DIAG_VERSION          2u
-#define RIOP_DIAG_LEN              96u  /* v2 (N10g): +16 B fault fields; first 80 B unchanged */
+#define RIOP_DIAG_VERSION          3u
+#define RIOP_DIAG_LEN              112u /* v3 (N10w): +16 B watchdog fields; first 96 B = v2 */
 
 /* Compile-time self-recovery (implemented on the M33, which owns NETC
  * and lwIP): if a switch port has seen RX and then no RX arrives for
@@ -45,6 +45,9 @@ extern "C" {
 #define RIOP_DIAG_F_MDIO_OK        (1u << 4)
 #define RIOP_DIAG_F_FAULT_SEEN     (1u << 5)  /* N10g: an M33 fault record is present */
 #define RIOP_DIAG_F_MAC_CNT        (1u << 6)  /* N10g: rx/tx_errors + dma_overflow come from the ENETC0 MAC */
+#define RIOP_DIAG_F_WDOG_EN        (1u << 7)  /* N10w: M33 RTWDOG1 armed */
+#define RIOP_DIAG_F_WDOG_BOOT      (1u << 8)  /* N10w: this boot was caused by the watchdog */
+#define RIOP_DIAG_F_SAFE_MODE      (1u << 9)  /* N10w: boot-loop guard tripped, diag poller off */
 
 typedef struct {
 	uint16_t version;            /* 0: RIOP_DIAG_VERSION */
@@ -74,6 +77,14 @@ typedef struct {
 	uint32_t fault_cfsr;         /* 84 */
 	uint32_t fault_pc;           /* 88 */
 	uint32_t fault_bfar;         /* 92 */
+	uint16_t wdog_reset_count;   /* 96: v3 WDOG1 resets since POR */
+	uint8_t  wdog_last_reason;   /* 98: RIOP_WDOG_R_* of the last WDOG reset */
+	uint8_t  wdog_consec;        /* 99: loop-guard count */
+	uint16_t wdog_state;         /* 100: RIOP_WDOG_S_* (this boot) */
+	uint8_t  wdog_test_stage;    /* 102: N10wt progress */
+	uint8_t  reserved2;          /* 103 */
+	uint32_t wdog_last_pc;       /* 104: PC at the watchdog IRQ (0 = IRQ did not run) */
+	uint32_t wdog_last_uptime_ms;/* 108: M33 uptime at the last breadcrumb before the reset */
 } riop_diag_t;
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
