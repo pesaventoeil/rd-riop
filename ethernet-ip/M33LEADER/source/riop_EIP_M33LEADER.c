@@ -101,6 +101,14 @@ int riop_appl_init(void)
 extern void riop_diag_m33_start(void);
 #endif
 
+/* N10g KEEP: M33 fault recorder (riop_diag_m33.c + semihost_hardfault.c). */
+#ifndef RIOP_FAULT_RECORDER
+#define RIOP_FAULT_RECORDER 1
+#endif
+#if RIOP_FAULT_RECORDER
+extern void riop_fault_init(void);
+#endif
+
 int BOARD_InitHardware(void)
 {
     /* Init board hardware.*/
@@ -121,6 +129,9 @@ int BOARD_InitHardware(void)
     dce_m33_gpioBitbangStart();
 #endif
 
+#if RIOP_FAULT_RECORDER
+    riop_fault_init();
+#endif
 #if RIOP_DIAG_M33_ENABLE
     riop_diag_m33_start();
 #endif

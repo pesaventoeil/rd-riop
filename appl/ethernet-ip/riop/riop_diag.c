@@ -95,9 +95,28 @@ static int diag_copy_m33(uint32_t now_ms)
 					       RIOP_DIAG_F_RECOVER_EN |
 					       RIOP_DIAG_F_PHY_LINK |
 					       RIOP_DIAG_F_RECOVERED |
-					       RIOP_DIAG_F_MDIO_OK));
+					       RIOP_DIAG_F_MDIO_OK |
+					       RIOP_DIAG_F_MAC_CNT));
 	s_last_net_seq = net.seq;
 	return 1;
+}
+
+/* N10g: last M33 fault record (survives the M33's NVIC_SystemReset). */
+static void diag_copy_fault(void)
+{
+	riop_diag_fault_t f;
+	volatile riop_diag_fault_t *src = (volatile riop_diag_fault_t *)RIOP_DIAG_FAULT_ADDR;
+
+	DCACHE_InvalidateByRange(RIOP_DIAG_FAULT_ADDR, sizeof(f));
+	f = *src;
+	if ((f.magic != RIOP_DIAG_FAULT_MAGIC) || (f.count == 0u) || (f.count >= 0x10000u)) {
+		return;
+	}
+	s_img.fault_count = f.count;
+	s_img.fault_cfsr = f.cfsr;
+	s_img.fault_pc = f.pc;
+	s_img.fault_bfar = f.bfar;
+	s_img.flags |= RIOP_DIAG_F_FAULT_SEEN;
 }
 
 void riop_diag_init(void)
@@ -156,6 +175,7 @@ void riop_diag_poll(void)
 #endif
 
 	(void)diag_copy_m33(now_ms);
+	diag_copy_fault();
 
 #if RIOP_DIAG_HAS_NAFE
 	s_img.nafe_scan_count = nafe_tempGetScanCount();

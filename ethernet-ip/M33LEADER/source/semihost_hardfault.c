@@ -68,8 +68,11 @@ void HardFault_Handler(void){
             "LDR    R3,=0xBEAB       \n"
             "CMP    R2,R3            \n"
             "BEQ    _semihost_return \n"
-        // Wasn't semihosting instruction so enter infinite loop
-            "B .                     \n"
+        // N10g: not semihosting -> record the fault and reset (riop_diag_m33.c)
+            "MOV    R1, LR           \n"
+            "MOVS   R2, #1           \n"
+            "LDR    R3,=riop_fault_entry \n"
+            "BX     R3               \n"
         // Was semihosting instruction, so adjust location to
         // return to by 1 instruction (2 bytes), then exit function
             "_semihost_return:       \n"
@@ -96,3 +99,29 @@ void HardFault_Handler(void){
 
 #endif
 
+/* N10g: dedicated fault vectors -> recorder (types: 2 MemManage, 3 Bus,
+ * 4 Usage, 5 Secure). Enabled in SHCSR by riop_fault_init(). */
+#define RIOP_FAULT_STUB(name, typ)                         \
+__attribute__((naked)) void name(void)                     \
+{                                                          \
+    __asm(".syntax unified\n"                              \
+          "MOVS   R0, #4           \n"                      \
+          "MOV    R1, LR           \n"                      \
+          "TST    R0, R1           \n"                      \
+          "BEQ    1f               \n"                      \
+          "MRS    R0, PSP          \n"                      \
+          "B      2f               \n"                      \
+          "1:                      \n"                      \
+          "MRS    R0, MSP          \n"                      \
+          "2:                      \n"                      \
+          "MOV    R1, LR           \n"                      \
+          "MOVS   R2, #" #typ "    \n"                      \
+          "LDR    R3,=riop_fault_entry \n"                  \
+          "BX     R3               \n"                      \
+          ".syntax divided\n");                            \
+}
+
+RIOP_FAULT_STUB(MemManage_Handler, 2)
+RIOP_FAULT_STUB(BusFault_Handler, 3)
+RIOP_FAULT_STUB(UsageFault_Handler, 4)
+RIOP_FAULT_STUB(SecureFault_Handler, 5)
