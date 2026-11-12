@@ -134,3 +134,10 @@ Secondary findings: OCRAM1 is **non-cacheable on the M33** (`CACHE_MODE_WRITE_TH
 **asm 177 v2 = 96 B**; the first 80 B are unchanged, so v1 readers still work. Changes: version = 2; flags b5 `FAULT_SEEN`, b6 `MAC_CNT`; `phy_link_mask` bit0 = ENETC0 link. New fields: off 80 `fault_count` u32, 84 `fault_cfsr` u32, 88 `fault_pc` u32, 92 `fault_bfar` u32. `nafe_bench/riop_diag177.py` decodes v2 (nafe_bench commit d3b58f7, local).
 
 Images (built, **not flashed**): **N10g** = fix (recorder + ENETC0_SI0-only poller), flash first. **N10h** = N10g with the poller off (recorder + asm 177 v2 only; branch fix/n10-boot-n10h) is the fallback if N10g does not answer.
+
+### N10g bench result: PASS (2026-11-12 14:38 ET, RIOP B2)
+
+- Broadcast ListIdentity bound to 192.168.1.33 was answered by 192.168.1.160.
+- asm 177 v2 at uptime 259 s: rx_frames 2136, tx_frames 940, flags PHY_LINK, ENETC0 link up, **fault_count 0**, nafe_scan_count 244, reset_cause 0x00010001.
+- ch0 4-wire PT100 SET_CH was rewritten and verified by readback. The day logger restarted (pid 42052, part6.csv).
+- Root cause confirmed: the N10/N10f poller read the uninitialised switch and ENETC1. N10g reads only ENETC0_SI0 and boots clean. N10g is now the RIOP B2 firmware. The `RIOP_DIAG_M33_ENABLE` switch stays TEMP until a full day passes; `RIOP_DIAG_M33_MAC_COUNTERS` stays 0 for now.
