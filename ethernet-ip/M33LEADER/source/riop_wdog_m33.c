@@ -9,10 +9,15 @@
  *
  * Conflicts handled:
  *  - The SDK SystemInit() of BOTH cores disables all five RTWDOGs when
- *    DISABLE_WDOG=1. The M33 one runs at reset, before we arm. The M7 one
- *    would run after we arm (the M33 releases the M7 later), so the M7 is
- *    built with -DDISABLE_WDOG=0 (M7FOLLOWER/CMakeLists.txt). The health
- *    task also re-arms RTWDOG1 if it ever finds EN cleared (state REARM).
+ *    DISABLE_WDOG=1 (the default). N10w built the M7 with -DDISABLE_WDOG=0
+ *    and armed RTWDOG1 pre-OS in BOARD_InitHardware; that image never
+ *    reached networking on the bench (2026-11-12). N10w2: the M7 is back
+ *    on the SDK default, so it disables RTWDOG1..5 at its reset exactly as
+ *    in N10g (RTWDOG3/4/5 are never left running), and RTWDOG1 is not
+ *    touched before the scheduler runs: riop_wdog_task calibrates and arms
+ *    it RIOP_WDOG_ARM_DELAY_MS after it starts, long after the M7 (released
+ *    asynchronously in goal_targetBoardMcInit, pre-OS) has run SystemInit.
+ *    The task still re-arms RTWDOG1 if it ever finds EN cleared (REARM).
  *  - Debugger: CS[DBG]=0, so the counter stops while the core is halted.
  *    Under ISP straps the ROM serial downloader runs instead of this image,
  *    so SWD flashing with LinkServer never sees an armed watchdog.
@@ -21,7 +26,11 @@
  *  - ERR051578 (NXP RT1180 rtwdog example): with CS[INT]=1 the first
  *    timeout only raises the IRQ; the SRC catches the backup reset one more
  *    TOVAL later. TOVAL is therefore half the reset time: run 2 s -> IRQ at
- *    2 s, reset at ~4 s; boot 15 s -> IRQ at 15 s, reset at ~30 s.
+ *    2 s, reset at ~4 s; boot 30 s -> IRQ at 30 s, reset at ~60 s. Even
+ *    without the erratum the boot reset (30 s after arming, ~33 s after
+ *    boot) is well past GOAL ready (~16 s on N10g).
+ *  - Calibration runs with the WDOG1 SRC reset masked, so a clock mux
+ *    surprise during the measurement can never reset the chip.
  *
  * Kicks: only from riop_wdog_task (tskIDLE_PRIORITY + 1, never an ISR),
  * and only when the GOAL main loop is progressing (it runs at FreeRTOS
@@ -36,8 +45,9 @@
  * breadcrumb to last_* and the M7 copies it into asm 177 v3.
  *
  * Boot-loop guard (TEMP tuning): RIOP_WDOG_LOOP_N consecutive watchdog
- * resets, each within RIOP_WDOG_LOOP_WINDOW_S of boot, start the next boot
- * in safe mode: diag poller off, watchdog still on, state/flag SAFE.
+ * resets (any RTWDOG1..5 SRSR bit), each within RIOP_WDOG_LOOP_WINDOW_S of
+ * boot, start the next boot in safe mode: diag poller off, watchdog still
+ * on but with a 300 s boot timeout, state/flag SAFE.
  */
 #include "riop_diag_net.h"
 
@@ -75,12 +85,19 @@ void riop_wdog_note_goal_ready(void)
 #if RIOP_M33_WDOG
 
 #ifndef RIOP_WDOG_BOOT_TOVAL_MS
-#define RIOP_WDOG_BOOT_TOVAL_MS   15000u  /* IRQ 15 s, reset ~30 s */
+#define RIOP_WDOG_BOOT_TOVAL_MS   30000u  /* IRQ 30 s after arming, reset ~60 s */
 #endif
 #ifndef RIOP_WDOG_RUN_TOVAL_MS
 #define RIOP_WDOG_RUN_TOVAL_MS    2000u   /* IRQ 2 s, reset ~4 s */
 #endif
 #define RIOP_WDOG_TASK_MS         250u
+#ifndef RIOP_WDOG_ARM_DELAY_MS
+#define RIOP_WDOG_ARM_DELAY_MS    3000u   /* task start -> calibrate + arm */
+#endif
+#define RIOP_WDOG_SAFE_TOVAL_MS   300000u /* safe-mode boot timeout */
+#define RIOP_WDOG_SRSR_ANY_WDOG   (SRC_GENERAL_SRSR_WDOG1_RST_B_MASK | SRC_GENERAL_SRSR_WDOG2_RST_B_MASK | \
+				   SRC_GENERAL_SRSR_WDOG3_RST_B_MASK | SRC_GENERAL_SRSR_WDOG4_RST_B_MASK | \
+				   SRC_GENERAL_SRSR_WDOG5_RST_B_MASK)
 #define RIOP_WDOG_GOAL_MAX_MS     1000u
 #define RIOP_WDOG_POLL_MAX_MS     1500u
 #define RIOP_WDOG_NETIF_MAX_MS    3000u
@@ -173,22 +190,29 @@ static void wdog_kick(void)
 	RTWDOG1->CNT = RIOP_WDOG_REFRESH_KEY; /* CMD32EN: one 32-bit write */
 }
 
-/* Measure the LPO/256 tick against the core clock (100 ms busy wait,
- * pre-OS). Guards against a clock mux surprise turning 30 s into 30 ms. */
+/* Measure the LPO/256 tick against the FreeRTOS tick (task context,
+ * ~200 ms, no busy wait). Called with the WDOG1 SRC reset masked. Guards
+ * against a clock mux surprise turning 30 s into 30 ms. */
 static uint32_t wdog_calibrate(void)
 {
 	uint32_t cs = RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_PRES_MASK | RTWDOG_CS_CLK(1u) |
 		      RTWDOG_CS_UPDATE_MASK | RTWDOG_CS_WAIT_MASK | RTWDOG_CS_EN_MASK;
-	uint32_t c0, c1;
+	uint32_t c0, c1, t0, t1;
 
 	if (wdog_write_cfg(0xFFFFu, cs) == 0) {
 		return 0u;
 	}
 	wdog_kick();
+	vTaskDelay(pdMS_TO_TICKS(20u)); /* let the refresh reach the slow counter */
+	t0 = wdog_ms();
 	c0 = RTWDOG1->CNT & 0xFFFFu;
-	SDK_DelayAtLeastUs(100000u, SystemCoreClock);
+	vTaskDelay(pdMS_TO_TICKS(200u));
 	c1 = RTWDOG1->CNT & 0xFFFFu;
-	return (c1 >= c0) ? ((c1 - c0) * 10u) : 0u;
+	t1 = wdog_ms();
+	if ((c1 < c0) || (t1 <= t0)) {
+		return 0u;
+	}
+	return ((c1 - c0) * 1000u) / (t1 - t0);
 }
 
 static void wdog_state_set(uint16_t bits)
@@ -272,9 +296,9 @@ void riop_wdog_boot(void)
 	uint32_t srsr = SRC_GENERAL_REG->SRSR;
 	int fresh = (w->magic != RIOP_DIAG_WDOG_MAGIC) ||
 		    ((srsr & (SRC_GENERAL_SRSR_POR_RST_MASK | SRC_GENERAL_SRSR_IPP_POR_B_MASK)) != 0u);
-	int wdog = (srsr & SRC_GENERAL_SRSR_WDOG1_RST_B_MASK) != 0u;
+	int wdog = (srsr & RIOP_WDOG_SRSR_ANY_WDOG) != 0u;
 	uint16_t state = 0u;
-	uint32_t i, hz;
+	uint32_t i;
 
 	/* SRSR is sticky; clear it so the next boot sees only its own cause.
 	 * This boot's raw value is kept in boot_srsr (asm 177 reset_cause). */
@@ -289,6 +313,13 @@ void riop_wdog_boot(void)
 		state |= RIOP_WDOG_S_FRESH;
 	}
 	w->boot_srsr = srsr;
+	w->srsr_hist |= srsr;
+	if (w->boot_seq < 0xFFFFu) {
+		w->boot_seq++;
+	}
+	w->arm_s = 0u;
+	w->srmask_boot = 0u;
+	w->clk_hz = 0u;
 
 	if (wdog) {
 		state |= RIOP_WDOG_S_WDOG_BOOT;
@@ -342,10 +373,22 @@ void riop_wdog_boot(void)
 	w->magic = RIOP_DIAG_WDOG_MAGIC;
 	__DSB();
 
-	/* Arm: WDOG1 unmasked as a system-reset source, LPO/256, no window,
-	 * IRQ before reset, counter stops while the core is halted (DBG=0). */
+	/* N10w2: nothing else pre-OS. RTWDOG1 is calibrated and armed by
+	 * riop_wdog_task (wdog_setup) after the scheduler runs. */
+}
+
+/* Task context, RIOP_WDOG_ARM_DELAY_MS after the task starts. Returns 1
+ * if RTWDOG1 is armed with the boot timeout and its reset unmasked. */
+static int wdog_setup(void)
+{
+	volatile riop_diag_wdog_t *w = wrec();
+	uint32_t hz, srmask;
+
 	CLOCK_EnableClock(kCLOCK_Wdog1);
-	SRC_GENERAL_REG->SRMASK &= ~SRC_GENERAL_SRMASK_WDOG1_MASK_MASK;
+	srmask = SRC_GENERAL_REG->SRMASK;
+	w->srmask_boot = srmask;
+	/* measure with the WDOG1 reset masked: a wrong clock cannot reset us */
+	SRC_GENERAL_REG->SRMASK = srmask | SRC_GENERAL_SRMASK_WDOG1_MASK_MASK;
 
 	hz = wdog_calibrate();
 	w->clk_hz = (uint16_t)((hz > 0xFFFFu) ? 0xFFFFu : hz);
@@ -359,20 +402,30 @@ void riop_wdog_boot(void)
 	if (s_tick_hz == 0u) {
 		(void)wdog_write_cfg(0xFFFFu, RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_UPDATE_MASK |
 				     RTWDOG_CS_CLK(1u));
+		SRC_GENERAL_REG->SRMASK = srmask; /* as found */
 		wdog_state_set(RIOP_WDOG_S_CLK_BAD);
-		return;
+		return 0;
 	}
 	s_cs_base = RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_PRES_MASK | RTWDOG_CS_CLK(1u) |
 		    RTWDOG_CS_UPDATE_MASK | RTWDOG_CS_WAIT_MASK | RTWDOG_CS_INT_MASK |
 		    RTWDOG_CS_EN_MASK;
 	NVIC_SetPriority(RTWDOG1_IRQn, 0u);
 	NVIC_ClearPendingIRQ(RTWDOG1_IRQn);
-	if (wdog_arm(RIOP_WDOG_BOOT_TOVAL_MS) != 0) {
-		NVIC_EnableIRQ(RTWDOG1_IRQn);
-		wdog_state_set(RIOP_WDOG_S_EN);
-	} else {
+	if (wdog_arm(s_safe ? RIOP_WDOG_SAFE_TOVAL_MS : RIOP_WDOG_BOOT_TOVAL_MS) == 0) {
+		(void)wdog_write_cfg(0xFFFFu, RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_UPDATE_MASK |
+				     RTWDOG_CS_CLK(1u));
+		SRC_GENERAL_REG->SRMASK = srmask;
+		s_tick_hz = 0u;
 		wdog_state_set(RIOP_WDOG_S_CLK_BAD);
+		return 0;
 	}
+	NVIC_ClearPendingIRQ(RTWDOG1_IRQn);
+	NVIC_EnableIRQ(RTWDOG1_IRQn);
+	/* WDOG1 -> SRC global system reset from here on */
+	SRC_GENERAL_REG->SRMASK = srmask & ~SRC_GENERAL_SRMASK_WDOG1_MASK_MASK;
+	w->arm_s = (uint16_t)(wdog_ms() / 1000u);
+	wdog_state_set(RIOP_WDOG_S_EN);
+	return 1;
 }
 
 static uint8_t wdog_netif_up(void)
@@ -424,6 +477,12 @@ static void riop_wdog_task(void *arg)
 
 	(void)arg;
 	s_task_alive = 1u;
+	vTaskDelay(pdMS_TO_TICKS(RIOP_WDOG_ARM_DELAY_MS));
+	(void)wdog_setup();
+	now = wdog_ms();
+	goal_seen = now;
+	poll_seen = now;
+	netif_seen = now;
 	for (;;) {
 		uint32_t h = 0u, c, s;
 		uint8_t up, healthy;
@@ -530,9 +589,6 @@ static void riop_wdog_task(void *arg)
 
 void riop_wdog_start(void)
 {
-	if ((wrec()->state & RIOP_WDOG_S_EN) == 0u) {
-		return;
-	}
 	(void)xTaskCreate(riop_wdog_task, "riop_wdog", 512, NULL, tskIDLE_PRIORITY + 1, NULL);
 }
 

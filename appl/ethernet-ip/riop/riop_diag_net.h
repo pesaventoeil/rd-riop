@@ -83,6 +83,7 @@ _Static_assert(sizeof(riop_diag_fault_t) == 64, "riop_diag_fault_t must be 64 by
 extern volatile uint32_t g_riop_diag_poll_seq;
 
 /* N10w: watchdog record, 80 B at window +0x80 (after the N10F record).
+ * N10w2: armed from the health task, not pre-OS (see riop_wdog_m33.c).
  * Written by the M33 at boot (summary of the previous boot) and every
  * 250 ms by the health task (breadcrumb); the RTWDOG1 IRQ adds PC/LR/task.
  * Survives the WDOG system reset like the fault record; re-initialised on
@@ -106,7 +107,7 @@ extern volatile uint32_t g_riop_diag_poll_seq;
 #define RIOP_WDOG_S_CLK_BAD     (1u << 3)  /* clock check failed: NOT armed */
 #define RIOP_WDOG_S_REARM       (1u << 4)  /* EN was found cleared and re-armed */
 #define RIOP_WDOG_S_TEST        (1u << 5)  /* N10wt stall-test build */
-#define RIOP_WDOG_S_WDOG_BOOT   (1u << 6)  /* this boot was caused by WDOG1 */
+#define RIOP_WDOG_S_WDOG_BOOT   (1u << 6)  /* this boot was caused by a watchdog (any RTWDOG1..5) */
 #define RIOP_WDOG_S_FRESH       (1u << 7)  /* record re-initialised (POR or not retained) */
 
 /* health flags (breadcrumb) */
@@ -125,7 +126,7 @@ extern volatile uint32_t g_riop_diag_poll_seq;
 typedef struct {
 	uint32_t magic;          /*  0 */
 	uint32_t boot_srsr;      /*  4: raw SRSR of this boot (cleared after reading) */
-	uint16_t wdog_count;     /*  8: WDOG1 resets since POR */
+	uint16_t wdog_count;     /*  8: watchdog resets (RTWDOG1..5) since POR */
 	uint8_t  consec;         /* 10: consecutive quick WDOG resets (loop guard) */
 	uint8_t  last_reason;    /* 11: RIOP_WDOG_R_* */
 	uint16_t state;          /* 12: RIOP_WDOG_S_* */
@@ -143,7 +144,10 @@ typedef struct {
 	uint32_t cur_pc;         /* 52 */
 	uint32_t cur_lr;         /* 56 */
 	char     cur_task[8];    /* 60 */
-	uint32_t reserved2[3];   /* 68 */
+	uint32_t srsr_hist;      /* 68: N10w2: OR of every boot's SRSR since POR */
+	uint16_t boot_seq;       /* 72: N10w2: boots since POR (1 = first) */
+	uint16_t arm_s;          /* 74: N10w2: uptime (s) when RTWDOG1 was armed, 0 = not armed */
+	uint32_t srmask_boot;    /* 76: N10w2: SRC SRMASK as found before arming */
 } riop_diag_wdog_t;
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)

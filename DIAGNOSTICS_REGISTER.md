@@ -144,7 +144,7 @@ Images (built, **not flashed**): **N10g** = fix (recorder + ENETC0_SI0-only poll
 
 ---
 
-## N10w: M33 hardware watchdog (2026-11-12, fix/n10-wdog, NOT flashed)
+## N10w: M33 hardware watchdog (2026-11-12, fix/n10-wdog; N10w/N10wt FAILED on the bench, superseded by N10w2, see below)
 
 Daniel's go (t420u). Built offline from N10g (f104aa2). Covers what the N10g fault recorder cannot: a stalled bus access, IRQs masked, or a starved scheduler. In those cases no fault is ever raised, so the board would hang. The watchdog makes it reset and leave a record.
 
@@ -176,9 +176,9 @@ Daniel's go (t420u). Built offline from N10g (f104aa2). Covers what the N10g fau
 | Item | Status | Purpose / evidence | Removal criterion | Owner |
 |---|---|---|---|---|
 | **M33 RTWDOG1 health watchdog** (`riop_wdog_m33.c`, switch `RIOP_M33_WDOG` default 1 in `riop_diag_net.h`), with GOAL loop hook, IRQ record and per-boot `reset_cause` | KEEP | Turns a silent hang (bus stall, masked IRQs, starved scheduler, dead GOAL loop) into a ~4 s reset with evidence in asm 177 v3. | Permanent. Revisit the 2 s / 15 s TOVALs only if bench step 3 shows this silicon does not have ERR051578. | EI Software NextGen Dev |
-| M7 built with `-DDISABLE_WDOG=0` | KEEP | Without it, the M7 SystemInit disables the M33-owned RTWDOG1. | Permanent while the M33 owns a watchdog. | EI Software NextGen Dev |
+| ~~M7 built with `-DDISABLE_WDOG=0`~~ | REMOVED in N10w2 | Prime suspect for the N10w no-boot (see N10w2). The M7 is back on the SDK default and disables RTWDOG1..5 at its reset, as in N10g. | n/a | EI Software NextGen Dev |
 | **Boot-loop guard tuning**: `RIOP_WDOG_LOOP_N` = 3 consecutive WDOG resets, each within `RIOP_WDOG_LOOP_WINDOW_S` = 600 s of boot, put the next boot in safe mode. In safe mode the diag poller is off and the watchdog stays on. In safe mode the run phase starts after GOAL ready or 25 s. `consec` clears after 600 s of clean running or on any non-WDOG reset. | TEMP | Stops a bad poller or init path from reset-looping forever. N and M are first guesses. | Re-tune or confirm N/M after the N10wt bench run and two weeks of field data. Then promote the guard to KEEP with final values, and remove the TEMP note. | EI Software NextGen Dev |
-| Boot TOVAL 15 s (reset ~30 s) | TEMP | Covers slow GOAL / M7 bring-up. | Measure real boot-to-run time from asm 177 (`wdog_state.RUN`, uptime) over 10 boots, then set to 3x the worst case and KEEP. | EI Software NextGen Dev |
+| Boot TOVAL 15 s (reset ~30 s); N10w2: 30 s after arming (reset ~60 s), safe mode 300 s | TEMP | Covers slow GOAL / M7 bring-up. | Measure real boot-to-run time from asm 177 (`wdog_state.RUN`, uptime) over 10 boots, then set to 3x the worst case and KEEP. | EI Software NextGen Dev |
 | **N10wt stall test** (`RIOP_WDOG_STALL_TEST=1`; separate image, never default) | TEMP | Proves the reset path, the IRQ record and the guard with no write at all. After each power-on, at uptime 60 s it runs:<br>(1) a BASEPRI critical-section spin (expect `RUN_ISR` + PC)<br>(2) a PRIMASK spin, the same as a bus stall to the watchdog (expect `RUN_NOISR`, PC 0)<br>(3) a BASEPRI spin again, which is the 3rd consecutive reset, so the next boot is SAFE<br>Then it stops. | Remove the switch once N10wt has passed on the bench and N10w has run a day. | EI Software NextGen Dev |
 
 **asm 177 v3 (112 B, first 96 B = v2).**
@@ -199,3 +199,34 @@ New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_b
 **Limits.**
 - If OCRAM1 is not retained across the WDOG system reset, `wdog_last_reason` reads 5 and the guard cannot count. `reset_cause` still shows WDOG1, and N10wt step 3 shows SAFE never appearing.
 - A stall *inside* the IRQ path (IRQ priority 0 blocked by PRIMASK or a stuck bus) gives `RUN_NOISR` with no PC. That is the expected signature of a bus stall.
+
+---
+
+## N10w2: fix for the N10w no-boot (2026-11-12, fix/n10-wdog, NOT flashed)
+
+**Bench result (Daniel's bench run, 15:22-15:57 ET).** N10wt (twice, ~9.5 min) and N10w (~6 min) never answered ICMP to .160. The monitor pings about once a second and logs every change, and it never logged a single `True` until the N10g rollback. N10g answers ping about 8 s after power-on. So the board never reached the netif even briefly: a fast reset loop or an early hang, not the 15 s / 30 s boot timeout firing late. `swd_flash_test.ps1` rolled back to N10g each time. No dead-state capture was taken: the capture step needs the DCE HMI bot warned first, and this build agent has no channel to it.
+
+**What N10w changed that runs before the netif** (diff f104aa2..fe28718), and how N10w2 handles each one:
+
+| N10w change | Runs | Risk | N10w2 |
+|---|---|---|---|
+| M7 built with `-DDISABLE_WDOG=0`. Checked in the ELFs: the N10w/N10wt M7 `SystemInit` has 62 instructions and no RTWDOG writes; N10g and N10w2 have 188, with all five RTWDOG bases and key `0xD928C520`. | M7 reset, right after the M33 releases it (async MCMGR start, pre-OS on the M33) | **Prime suspect.** Every NXP SystemInit for both cores disables all five RTWDOGs because they can be live out of reset. RTWDOG3/4/5 sit in WAKEUPMIX with the M7, and NXP's own CM7 rtwdog example gets a reset from RTWDOG3 without touching SRMASK. If releasing the M7 leaves any of them running, the chip resets within its default timeout, before the netif, forever. The N10w loop guard only counted WDOG1, so it never reached safe mode. | Flag removed. The M7 `SystemInit` is byte-identical in function to N10g's. |
+| `riop_wdog_boot()` armed RTWDOG1 pre-OS in `BOARD_InitHardware`: LPCG on, `SRMASK.WDOG1` unmasked **before** a 100 ms busy-wait calibration with EN=1, then IRQ prio 0 enabled. | M33 pre-OS, before `goal_targetBoardMcInit` | Secondary. A wrong clock during calibration could reset the chip. The arming also overlapped the async M7 start. | Pre-OS now only does record bookkeeping, the SRSR snapshot and the safe-mode decision. `riop_wdog_task` calibrates and arms 3 s after the scheduler starts, with `SRMASK.WDOG1` **masked** during calibration (unmasked only after a successful arm), using `vTaskDelay` rather than a busy-wait. |
+| Boot TOVAL 15 s | after arming | It could not explain "never pinged". Without ERR051578 it would fire just before GOAL ready (~16 s), though. | 30 s after arming (~33 s after boot). Safe mode: 300 s. |
+| Loop guard counted only `SRSR.WDOG1` | M33 pre-OS | A WDOG3/4/5 loop never reaches safe mode. | It counts any `SRSR.WDOG1..5` bit. The record also keeps `srsr_hist` (OR of every boot's SRSR since POR), `boot_seq`, `arm_s` and `srmask_boot` (bytes 68..79, in the former `reserved2`) for an SWD dump. |
+| `goal_appl.c` stage hook | GOAL init | Reviewed: `goal_mainStageReg` returns `GOAL_ERR_WRONG_STATE` if the stage has passed, and `goal_mainLoopReg` returns `GOAL_ERR_ACCESS` once alloc is denied. Both are handled (HOOK_MISSING path). It cannot hang init. | Unchanged. |
+| OCRAM record at 0x204FDF80 | | Reviewed: both linker scripts reserve the full 256 B `m_diag` window (M33: `m_cache_end` minus `m_diag_size` 0x100; M7: `m_diag_start` below `m_rpmsg`). Nothing else is placed there. | Unchanged. |
+| asm 177 v3 (112 B) | M7 GOAL/CIP setup | No assembly size limit found in GOAL. Ping failing points below EIP. | Unchanged (v3, 112 B). If N10w2 still fails, build a 96 B variant to rule this out. |
+
+**Images** (`N10_logs\fix_n10_boot_images.sha256`):
+- `N10w2`: default (`RIOP_WDOG_STALL_TEST=0`).
+- `N10wt2`: same tree with `RIOP_WDOG_STALL_TEST=1`, bench test only.
+- The first N10w2 build attempt was stale: the M7 CMake re-run failed because `ARMGCC_DIR` was unset, and the old core1 image was reused. It was renamed `build\N10w2_flash_INVALID_stale_m7_cmake_failed`, then rebuilt with `ARMGCC_DIR` set. In the rebuild the M7 recompiled `system_MIMXRT1189_cm7.c` and core1 grew 261316 -> 261636 B.
+- `make_full_img.py` builds the full SWD image from the N10g header page [0:0x1000], the unsparsed simg and 0xFF padding to 0xA0000. Checked: it reproduces the N10w full image byte for byte.
+- Side note: nxpimage's sparse output marks all-zero 1 KB blocks as don't-care, so they are flashed as 0xFF. This was already true for N10g. Inside the embedded M7 `.data` image it only hits the idle, timer and main stack arrays, so it is harmless.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| RTWDOG1 armed from `riop_wdog_task` (`RIOP_WDOG_ARM_DELAY_MS` 3000), with `SRMASK.WDOG1` masked during calibration | KEEP (part of the watchdog) | Keeps the watchdog away from the async M7 start and from any pre-OS path. | Permanent. | EI Software NextGen Dev |
+| Loop guard counting `SRSR.WDOG1..5`; record fields `srsr_hist` / `boot_seq` / `arm_s` / `srmask_boot` | KEEP (`srsr_hist`, `boot_seq`) / TEMP (`arm_s`, `srmask_boot`) | Turns a reset loop from any watchdog into SAFE mode, and leaves SWD-readable evidence. | Drop `arm_s` and `srmask_boot` after N10w2 has passed the bench and run a day. | EI Software NextGen Dev |
+| `RIOP_WDOG_ARM_DELAY_MS` 3000 | TEMP | Margin after scheduler start. | Confirm `arm_s` <= 5 s over 10 boots, then KEEP. | EI Software NextGen Dev |

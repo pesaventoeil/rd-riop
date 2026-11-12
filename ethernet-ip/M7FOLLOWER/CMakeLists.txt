@@ -304,7 +304,6 @@ mcux_add_configuration(
     "
     # C-Compiler flags
     CC " \
-    -DDISABLE_WDOG=0 \
     -D__STARTUP_CLEAR_BSS \
     -D__STDC_FORMAT_MACROS \
     -D__USE_SHMEM \
@@ -415,7 +414,6 @@ mcux_add_configuration(
     "
     # C-Compiler flags
     CC " \
-    -DDISABLE_WDOG=0 \
     -D__STARTUP_CLEAR_BSS \
     -D__STDC_FORMAT_MACROS \
     -D__USE_SHMEM \
