@@ -114,6 +114,8 @@ mcux_add_source(
 foreach(_nt nafe_enc rtd thermocouple temp_sched temp_profiles temp_eip nafe_temp_task)
     set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/${GOAL_APPL}/nafe_temp/${_nt}.c PROPERTIES COMPILE_OPTIONS "-Os")
 endforeach()
+# N10a: LED animator in digital_io.c built at -Os exactly as in N10 (bisect: LED + -Os only).
+set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../../common/m7/source/digital_io.c PROPERTIES COMPILE_OPTIONS "-Os")
 # goal sources
 mcux_add_source(
     BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
