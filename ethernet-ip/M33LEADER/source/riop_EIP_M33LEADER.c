@@ -90,6 +90,8 @@ int riop_appl_init(void)
     return 0;
 }
 
+extern void riop_diag_m33_start(void);
+
 int BOARD_InitHardware(void)
 {
     /* Init board hardware.*/
@@ -110,5 +112,6 @@ int BOARD_InitHardware(void)
     dce_m33_gpioBitbangStart();
 #endif
 
+    riop_diag_m33_start();
     return 0;
 }

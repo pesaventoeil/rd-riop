@@ -284,6 +284,15 @@ void nafe_tempGet174(uint8_t *buf, uint32_t len)
     taskEXIT_CRITICAL();
 }
 
+uint32_t nafe_tempGetScanCount(void)
+{
+    uint32_t n;
+    taskENTER_CRITICAL();
+    n = s_rt.scan_count;
+    taskEXIT_CRITICAL();
+    return n;
+}
+
 void nafe_tempGet176(uint8_t *buf, uint32_t len)
 {
 #if NAFE_LOG_STREAM

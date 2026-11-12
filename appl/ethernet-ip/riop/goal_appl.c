@@ -42,6 +42,7 @@ static void appl_dceFastInputPrepare(uint8_t *pFastData);
 static void appl_dcePollSelProcess(uint8_t *pSelData);
 #include "dce_task.h"
 #include "nafe_temp_task.h"
+#include "riop_diag.h"
 #endif
 /**-- ICC_EIP_GEN_INCLUDES_END --**/
 
@@ -136,6 +137,7 @@ static uint8_t nafeCfgOutputData[GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT] = {0x0};
 #if NAFE_LOG_STREAM
 static uint8_t nafeLogInputData[GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT] = {0x0};
 #endif
+static uint8_t riopDiagInputData[GOAL_APP_ASM_SIZE_DIAG_INPUT] = {0x0};
 extern int riop_appl_init(void);
 #endif
 /**-- ICC_EIP_GEN_LOCALVARS_END --**/
@@ -332,6 +334,13 @@ GOAL_STATUS_T appl_setup(
         goal_logErr("failed to create NAFE log Input Assembly 176");
     }
 #endif
+    /* N10: read-only Ethernet/uptime diagnostics 177. Failure never blocks 170-176. */
+    if (GOAL_RES_ERR(goal_eipCreateAssemblyObject(
+            pHdlEip,
+            GOAL_APP_ASM_ID_DIAG_INPUT,
+            GOAL_APP_ASM_SIZE_DIAG_INPUT))) {
+        goal_logErr("failed to create diagnostics Input Assembly 177");
+    }
 
 
     /* define allowed connections */
@@ -409,18 +418,21 @@ static GOAL_STATUS_T main_eipIoConnectionEvent(
         case GOAL_EIP_CONNECTION_EVENT_OPENED:
             /**-- ICC_EIP_GEN_EVENT_OPENED_START --**/
             /* user code block */
+            riop_diag_note_session_opened();
             /**-- ICC_EIP_GEN_EVNET_OPENED_END --**/
 
             break;
         case GOAL_EIP_CONNECTION_EVENT_CLOSED:
             /**-- ICC_EIP_GEN_EVENT_CLOSED_START --**/
             /* user code block */
+            riop_diag_note_cip();
             /**-- ICC_EIP_GEN_EVENT_CLOSED_END --**/
 
             break;
         case GOAL_EIP_CONNECTION_EVENT_TIMEOUT:
             /**-- ICC_EIP_GEN_EVENT_TIMEOUT_START --**/
             /* user code block */
+            riop_diag_note_cip();
             /**-- ICC_EIP_GEN_EVENT_TIMEOUT_END --**/
 
             break;
@@ -650,6 +662,15 @@ static GOAL_STATUS_T main_eipBeforeAssemblyDataSend(
             );
             break;
 #endif
+        case GOAL_APP_ASM_ID_DIAG_INPUT:
+            riop_diag_get(&riopDiagInputData[0], GOAL_APP_ASM_SIZE_DIAG_INPUT);
+            res = goal_eipAssemblyObjectWrite(
+                pHdlEip,
+                GOAL_APP_ASM_ID_DIAG_INPUT,
+                &riopDiagInputData[0],
+                GOAL_APP_ASM_SIZE_DIAG_INPUT
+            );
+            break;
 #endif
         /**-- ICC_EIP_GEN_BEFORE_ASSEMBLYDATA_SEND_SWITCH_END --**/
 

@@ -75,6 +75,8 @@ m_data_end               = m_data_start + m_data_size - 1;
 m_heap_start             = m_ocram2_start;
 m_heap_end               = m_heap_start +  m_heap_size - 1;
 
+m_diag_size              = 0x100;
+m_diag_start             = m_ocram1_start + m_ocram1_size - m_shmem_size - m_diag_size;
 m_rpmsg_sh_mem_start     = m_ocram1_start + m_ocram1_size - m_shmem_size;
 m_rpmsg_sh_mem_end       = m_rpmsg_sh_mem_start + m_shmem_size - 1;
 
@@ -98,6 +100,7 @@ MEMORY
   m_heap           (RW)  : ORIGIN = m_heap_start,             LENGTH = m_heap_end - m_heap_start + 1
   m_qacode         (RX)  : ORIGIN = m_qacode_start,           LENGTH = m_qacode_end - m_qacode_start + 1
   m_qadata         (RW)  : ORIGIN = m_qadata_start,           LENGTH = m_qadata_end - m_qadata_start + 1
+  m_diag           (RW)  : ORIGIN = m_diag_start,             LENGTH = m_diag_size
   m_rpmsg          (RW)  : ORIGIN = m_rpmsg_sh_mem_start,     LENGTH = m_rpmsg_sh_mem_end - m_rpmsg_sh_mem_start + 1
 }
 
@@ -275,6 +278,12 @@ SECTIONS
     . = ALIGN(4);
     __bss_end__ = .;
   } > m_data
+
+  .riop_diag_net (NOLOAD) :
+  {
+    KEEP(*(.noinit.$riop_diag_net))
+    . = ALIGN(4);
+  } > m_diag
 
   .rpmsg :
   {

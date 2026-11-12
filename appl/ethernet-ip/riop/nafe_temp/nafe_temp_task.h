@@ -7,4 +7,5 @@ void nafe_tempTaskInit(void);
 void nafe_tempGet174(uint8_t *buf, uint32_t len);
 void nafe_tempPost175(const uint8_t *buf, uint32_t len);
 void nafe_tempGet176(uint8_t *buf, uint32_t len); /* N9 asm 176 scan log */
+uint32_t nafe_tempGetScanCount(void); /* N10: copy of s_rt.scan_count for asm 177 */
 #endif

@@ -40,6 +40,7 @@ mcux_add_source(
     BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
     SOURCES
     source/riop_EIP_M33LEADER.c
+    source/riop_diag_m33.c
     source/semihost_hardfault.c
     ../../common/m33/flash/flexspi_flash_cfg.c
     ../../common/m33/flash/flexspi_nor_flash_ops.c
@@ -55,6 +56,13 @@ mcux_add_include(
     ../../common/m33/flash
     ../../common/m33/phy
 )
+
+# Only riop_diag_m33.c may see appl/ethernet-ip/riop. That directory also
+# contains the M7 goal_config.h; putting it on the global include path
+# shadows the M33 CC goal_config and leaves goal_log undefined.
+set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/source/riop_diag_m33.c
+    PROPERTIES INCLUDE_DIRECTORIES
+    "${CMAKE_CURRENT_LIST_DIR}/../../appl/ethernet-ip/riop;${SdkRootDirPath}/drivers/netc;${SdkRootDirPath}/drivers/netc/netc_hw;${SdkRootDirPath}/drivers/netc/socs/imxrt1180")
 
 # goal sources
 mcux_add_source(

@@ -114,6 +114,14 @@ mcux_add_source(
 foreach(_nt nafe_enc rtd thermocouple temp_sched temp_profiles temp_eip nafe_temp_task)
     set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/${GOAL_APPL}/nafe_temp/${_nt}.c PROPERTIES COMPILE_OPTIONS "-Os")
 endforeach()
+mcux_add_source(
+    BASE_PATH ${CMAKE_CURRENT_LIST_DIR}
+    SOURCES
+    ${GOAL_APPL}/riop_diag.c
+)
+set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/${GOAL_APPL}/riop_diag.c PROPERTIES COMPILE_OPTIONS "-Os")
+# LED animator + diag poll live in digital_io.c; -Os recoups the 244 B ITCM overflow from adding asm 177.
+set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../../common/m7/source/digital_io.c PROPERTIES COMPILE_OPTIONS "-Os")
 # goal sources
 mcux_add_source(
     BASE_PATH ${CMAKE_CURRENT_LIST_DIR}

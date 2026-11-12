@@ -55,6 +55,8 @@
 #define GOAL_APP_ASM_SIZE_NAFE_CFG_OUTPUT TEMP_EIP_CFG_LEN /**< asm 175: 32 B */
 #define GOAL_APP_ASM_ID_NAFE_LOG_INPUT   176  /**< N9: NAFE lossless scan log (RIOP -> PC), explicit, read-only, DEBUG_NAFE */
 #define GOAL_APP_ASM_SIZE_NAFE_LOG_INPUT TEMP_EIP_LOG_LEN /**< asm 176: 16 B header + 4 x 96 B records */
+#define GOAL_APP_ASM_ID_DIAG_INPUT        177  /**< N10: Ethernet/uptime diagnostics (RIOP -> PC), explicit, read-only */
+#define GOAL_APP_ASM_SIZE_DIAG_INPUT      80u  /**< asm 177: packed riop_diag_t */
 #define GOAL_APP_ASM_SIZE_DCE_MIRROR_OUTPUT 16  /**< seq/op/address/len/flags/values[2] */
 
 #endif /* GOAL_APP_EIP_H */
