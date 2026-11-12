@@ -90,7 +90,16 @@ int riop_appl_init(void)
     return 0;
 }
 
+/* fix/n10-boot bisect switch. 0 = do not start the N10 M33 NETC poller
+ * (N9 behaviour on the M33; the M7 asm 177 then reports net fields as 0).
+ * 1 = start it. See DIAGNOSTICS_REGISTER.md "N10 boot failure". */
+#ifndef RIOP_DIAG_M33_ENABLE
+#define RIOP_DIAG_M33_ENABLE 0
+#endif
+
+#if RIOP_DIAG_M33_ENABLE
 extern void riop_diag_m33_start(void);
+#endif
 
 int BOARD_InitHardware(void)
 {
@@ -112,6 +121,8 @@ int BOARD_InitHardware(void)
     dce_m33_gpioBitbangStart();
 #endif
 
+#if RIOP_DIAG_M33_ENABLE
     riop_diag_m33_start();
+#endif
     return 0;
 }
