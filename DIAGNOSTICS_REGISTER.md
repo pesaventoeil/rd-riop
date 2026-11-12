@@ -141,3 +141,61 @@ Images (built, **not flashed**): **N10g** = fix (recorder + ENETC0_SI0-only poll
 - asm 177 v2 at uptime 259 s: rx_frames 2136, tx_frames 940, flags PHY_LINK, ENETC0 link up, **fault_count 0**, nafe_scan_count 244, reset_cause 0x00010001.
 - ch0 4-wire PT100 SET_CH was rewritten and verified by readback. The day logger restarted (pid 42052, part6.csv).
 - Root cause confirmed: the N10/N10f poller read the uninitialised switch and ENETC1. N10g reads only ENETC0_SI0 and boots clean. N10g is now the RIOP B2 firmware. The `RIOP_DIAG_M33_ENABLE` switch stays TEMP until a full day passes; `RIOP_DIAG_M33_MAC_COUNTERS` stays 0 for now.
+
+---
+
+## N10w: M33 hardware watchdog (2026-11-12, fix/n10-wdog, NOT flashed)
+
+Daniel's go (t420u). Built offline from N10g (f104aa2). Covers what the N10g fault recorder cannot: a stalled bus access, IRQs masked, or a starved scheduler. In those cases no fault is ever raised, so the board would hang. The watchdog makes it reset and leave a record.
+
+**How it works.**
+- **Instance.** `RTWDOG1` is owned by the M33. NXP's RT1180 SDK pairs RTWDOG1 with the CM33 and RTWDOG3 with the CM7.
+- **Reset type.** A timeout is a SRC global *system* reset: `SRMASK.WDOG1_MASK` is cleared, and `LP_HANDSHAKE` is not touched. Both cores, NETC and the TCMs restart. The ROM boots the M33, which reloads and releases the M7 exactly as after power-on, so the M7 needs no separate recovery path.
+- **Clock and timeouts.** LPO / 256 (expected 128 Hz). The rate is measured against the core clock at boot. If it is out of range, the watchdog is left disarmed (`CLK_BAD`) instead of risking a reset loop.
+- **ERR051578.** Per NXP's RT1180 rtwdog example, the first timeout only raises the IRQ, and the reset comes one TOVAL later. So:
+  - Run phase: TOVAL 2 s gives the IRQ at 2 s and the reset at about 4 s.
+  - Boot phase: TOVAL 15 s gives the IRQ at 15 s and the reset at about 30 s.
+  - If this silicon does *not* have the erratum, the reset comes at the IRQ time (2 s / 15 s). Bench step 3 shows which.
+- **Settings.** No window. `DBG=0`: the counter stops while the core is halted. `WAIT=1`, `STOP=0`. `UPDATE=1` stays set, so it can still be reconfigured.
+- **Kicks.** Only from `riop_wdog` (`tskIDLE_PRIORITY+1`). Never from an ISR. A kick needs all three:
+  - **GOAL main loop advancing.** A GOAL loop hook is registered at `GOAL_STAGE_GOAL` in `00_rpc_cc/goal_appl.c`. The GOAL main task runs at FreeRTOS priority 0 and yields, so any starvation stops it first.
+  - **Diag poller publishing**, if it started.
+  - **lwIP default netif up.** It is set up with the link forced up, so pulling the cable does not reset the board.
+- **Boot phase.** No kicks until GOAL init is done, the hook has run and the netif is up. Then the task switches to the 4 s run timeout.
+- **IRQ.** Priority 0, so it still runs inside FreeRTOS critical sections. In the run phase, once the IRQ fires the task stops kicking and the reset is certain. In the boot phase the IRQ only records.
+- **Record.** `riop_diag_wdog_t`, 80 B, magic `'N10W'`, at OCRAM1 **0x204FDF80** (diag window +0x80, after the `N10F` fault record).
+  - Every 250 ms: uptime + health flags breadcrumb.
+  - The IRQ adds the interrupted PC, LR and the first 8 characters of the task name.
+  - On the next boot the M33 moves these into `last_*`, sets `last_reason`, and bumps `wdog_count` and `consec`.
+  - It is re-initialised on POR, or if it was not retained.
+- **SRSR.** The M33 now snapshots `SRSR` into `boot_srsr` and clears it (W1C) before releasing the M7. `reset_cause` in asm 177 is therefore **this boot's** cause; before, it was cumulative since POR.
+- **M7 SystemInit.** It would disable all RTWDOGs after the M33 armed RTWDOG1, so the M7 is now built with `-DDISABLE_WDOG=0`. The M33 SystemInit still disables everything at reset. The health task also re-arms RTWDOG1 if it ever finds `EN` cleared (state `REARM`).
+- **SWD / ISP.** Under ISP straps the ROM serial downloader runs instead of this image, so LinkServer flashing never meets an armed watchdog. An SWD halt of the running image pauses the counter (`DBG=0`).
+- **M7 size cost.** `.text` 245348 â†’ 245156 B (âˆ’192 B, because the M7 SystemInit no longer carries the wdog-disable code). `.bss` +32 B (two 16 B asm 177 buffers). M33 image `.text` +2912 B (528296 â†’ 531208, includes the embedded M7 image).
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| **M33 RTWDOG1 health watchdog** (`riop_wdog_m33.c`, switch `RIOP_M33_WDOG` default 1 in `riop_diag_net.h`), with GOAL loop hook, IRQ record and per-boot `reset_cause` | KEEP | Turns a silent hang (bus stall, masked IRQs, starved scheduler, dead GOAL loop) into a ~4 s reset with evidence in asm 177 v3. | Permanent. Revisit the 2 s / 15 s TOVALs only if bench step 3 shows this silicon does not have ERR051578. | EI Software NextGen Dev |
+| M7 built with `-DDISABLE_WDOG=0` | KEEP | Without it, the M7 SystemInit disables the M33-owned RTWDOG1. | Permanent while the M33 owns a watchdog. | EI Software NextGen Dev |
+| **Boot-loop guard tuning**: `RIOP_WDOG_LOOP_N` = 3 consecutive WDOG resets, each within `RIOP_WDOG_LOOP_WINDOW_S` = 600 s of boot, put the next boot in safe mode. In safe mode the diag poller is off and the watchdog stays on. In safe mode the run phase starts after GOAL ready or 25 s. `consec` clears after 600 s of clean running or on any non-WDOG reset. | TEMP | Stops a bad poller or init path from reset-looping forever. N and M are first guesses. | Re-tune or confirm N/M after the N10wt bench run and two weeks of field data. Then promote the guard to KEEP with final values, and remove the TEMP note. | EI Software NextGen Dev |
+| Boot TOVAL 15 s (reset ~30 s) | TEMP | Covers slow GOAL / M7 bring-up. | Measure real boot-to-run time from asm 177 (`wdog_state.RUN`, uptime) over 10 boots, then set to 3x the worst case and KEEP. | EI Software NextGen Dev |
+| **N10wt stall test** (`RIOP_WDOG_STALL_TEST=1`; separate image, never default) | TEMP | Proves the reset path, the IRQ record and the guard with no write at all. After each power-on, at uptime 60 s it runs:<br>(1) a BASEPRI critical-section spin (expect `RUN_ISR` + PC)<br>(2) a PRIMASK spin, the same as a bus stall to the watchdog (expect `RUN_NOISR`, PC 0)<br>(3) a BASEPRI spin again, which is the 3rd consecutive reset, so the next boot is SAFE<br>Then it stops. | Remove the switch once N10wt has passed on the bench and N10w has run a day. | EI Software NextGen Dev |
+
+**asm 177 v3 (112 B, first 96 B = v2).**
+
+| Offset | Type | Field |
+|---|---|---|
+| 96 | u16 | wdog_reset_count (since POR) |
+| 98 | u8 | wdog_last_reason: 0 none, 1 RUN_ISR, 2 RUN_NOISR, 3 BOOT_ISR, 4 BOOT_NOISR, 5 UNKNOWN (record not retained) |
+| 99 | u8 | wdog_consec (loop guard) |
+| 100 | u16 | wdog_state: b0 EN, b1 RUN, b2 SAFE, b3 CLK_BAD, b4 REARM, b5 TEST, b6 WDOG_BOOT, b7 FRESH |
+| 102 | u8 | wdog_test_stage |
+| 103 | u8 | reserved |
+| 104 | u32 | wdog_last_pc (0 = IRQ did not run) |
+| 108 | u32 | wdog_last_uptime_ms |
+
+New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_bench/riop_diag177.py` (local commit 1e74294).
+
+**Limits.**
+- If OCRAM1 is not retained across the WDOG system reset, `wdog_last_reason` reads 5 and the guard cannot count. `reset_cause` still shows WDOG1, and N10wt step 3 shows SAFE never appearing.
+- A stall *inside* the IRQ path (IRQ priority 0 blocked by PRIMASK or a stuck bus) gives `RUN_NOISR` with no PC. That is the expected signature of a bus stall.
