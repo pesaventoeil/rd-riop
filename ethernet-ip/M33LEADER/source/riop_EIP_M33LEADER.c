@@ -94,7 +94,7 @@ int riop_appl_init(void)
  * (N9 behaviour on the M33; the M7 asm 177 then reports net fields as 0).
  * 1 = start it. See DIAGNOSTICS_REGISTER.md "N10 boot failure". */
 #ifndef RIOP_DIAG_M33_ENABLE
-#define RIOP_DIAG_M33_ENABLE 0
+#define RIOP_DIAG_M33_ENABLE 1
 #endif
 
 #if RIOP_DIAG_M33_ENABLE

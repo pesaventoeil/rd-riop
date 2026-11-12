@@ -38,17 +38,24 @@
 
 #define RIOP_DIAG_POLL_MS   200u
 #define RIOP_DIAG_NPORTS    4u
-#define RIOP_DIAG_NSIS      3u
+/* fix/n10-boot: only ENETC1 PSI0, the SI GOAL actually brings up in switch
+ * mode (goal_target_eth.c). ENETC0_SI0 (unused ENETC) and ENETC1_SI1 (VSI
+ * never enabled) were polled in N10 and are suspected of a bus fault. */
+#define RIOP_DIAG_NSIS      1u
+/* Do not touch NETC until GOAL has the netif up and link up, and never
+ * before this many seconds of uptime. */
+#define RIOP_DIAG_START_MIN_S  20u
+#define RIOP_DIAG_START_MAX_S  60u
 
 static NETC_ETH_LINK_Type *const k_ports[RIOP_DIAG_NPORTS] = {
 	SW0_ETH_MAC_PORT0, SW0_ETH_MAC_PORT1, SW0_ETH_MAC_PORT2, SW0_ETH_MAC_PORT3
 };
 
 static ENETC_SI_Type *const k_sis[RIOP_DIAG_NSIS] = {
-	ENETC0_SI0, ENETC1_SI0, ENETC1_SI1
+	ENETC1_SI0
 };
 
-#if defined(SW0_PORT0)
+#if defined(SW0_PORT0) && RIOP_ENET_RX_RECOVER
 static NETC_PORT_Type *const k_sw_ports[RIOP_DIAG_NPORTS] = {
 	SW0_PORT0, SW0_PORT1, SW0_PORT2, SW0_PORT3
 };
@@ -269,6 +276,27 @@ static void diag_m33_task(void *arg)
 	s_last_reinit_s = 0u;
 	s_seq = 0u;
 	s_reinit_count = 0u;
+	/* fix/n10-boot: wait for GOAL to finish NETC/lwIP bring-up before the
+	 * first NETC register access. N10 polled from the first scheduler
+	 * slot, while the GOAL init task (prio 31) could still be blocked
+	 * mid-init. */
+	for (;;) {
+		uint32_t up_s = diag_now_ms() / 1000u;
+		int ready = 0;
+#if RIOP_DIAG_HAS_NETIF
+		{
+			struct netif *nif = netif_default;
+			ready = (nif != NULL) && netif_is_up(nif) && netif_is_link_up(nif);
+		}
+#endif
+		if (up_s >= RIOP_DIAG_START_MAX_S) {
+			break;
+		}
+		if (ready && (up_s >= RIOP_DIAG_START_MIN_S)) {
+			break;
+		}
+		vTaskDelay(pdMS_TO_TICKS(1000u));
+	}
 	for (;;) {
 		diag_poll_once();
 		vTaskDelay(pdMS_TO_TICKS(RIOP_DIAG_POLL_MS));
@@ -278,6 +306,6 @@ static void diag_m33_task(void *arg)
 void riop_diag_m33_start(void)
 {
 	/* Created from BOARD_InitHardware before the scheduler starts. */
-	(void)xTaskCreate(diag_m33_task, "riop_diag", 512, NULL,
+	(void)xTaskCreate(diag_m33_task, "riop_diag", 768, NULL,
 			  tskIDLE_PRIORITY + 1, NULL);
 }

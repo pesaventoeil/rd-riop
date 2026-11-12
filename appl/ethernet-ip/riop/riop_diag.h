@@ -17,9 +17,15 @@ extern "C" {
  * and lwIP): if a switch port has seen RX and then no RX arrives for
  * RIOP_ENET_RX_RECOVER_SEC, bounce the lwIP netif and graceful-stop
  * the switch-port MACs. Does not touch NAFE / SET_CH / EMDIO. Set to
- * 0 to compile the path out. */
+ * 0 to compile the path out.
+ *
+ * fix/n10-boot: default 0. NETC_PortEthMacGracefulStop() has no restart
+ * call here, so one trigger leaves every switch MAC stopped for good, and
+ * netif_set_down/up are called from a non-tcpip task (lwIP is not thread
+ * safe). Do not set to 1 until it re-enables the MACs and posts the netif
+ * bounce through tcpip_callback(). */
 #ifndef RIOP_ENET_RX_RECOVER
-#define RIOP_ENET_RX_RECOVER       1
+#define RIOP_ENET_RX_RECOVER       0
 #endif
 #ifndef RIOP_ENET_RX_RECOVER_SEC
 #define RIOP_ENET_RX_RECOVER_SEC    5u
