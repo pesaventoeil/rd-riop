@@ -72,7 +72,8 @@ typedef struct {
 	uint32_t last_cip_tick_ms;   /* 64 */
 	uint32_t nafe_scan_count;    /* 68 */
 	uint32_t enet_reinit_count;  /* 72 */
-	uint32_t reserved1;          /* 76 */
+	uint16_t wdog_clk_hz;        /* 76: v3 (N10w3): measured RTWDOG1 tick Hz (expect ~128) */
+	uint16_t wdog_cs_found;      /* 78: v3 (N10w3): RTWDOG1 CS before the M33's first write */
 	uint32_t fault_count;        /* 80: v2 M33 fault record count (0 = none) */
 	uint32_t fault_cfsr;         /* 84 */
 	uint32_t fault_pc;           /* 88 */
@@ -82,7 +83,7 @@ typedef struct {
 	uint8_t  wdog_consec;        /* 99: loop-guard count */
 	uint16_t wdog_state;         /* 100: RIOP_WDOG_S_* (this boot) */
 	uint8_t  wdog_test_stage;    /* 102: N10wt progress */
-	uint8_t  reserved2;          /* 103 */
+	uint8_t  wdog_cal_err;       /* 103: v3 (N10w3): RIOP_WDOG_CAL_* (0 = armed, 0xFF = not run) */
 	uint32_t wdog_last_pc;       /* 104: PC at the watchdog IRQ (0 = IRQ did not run) */
 	uint32_t wdog_last_uptime_ms;/* 108: M33 uptime at the last breadcrumb before the reset */
 } riop_diag_t;

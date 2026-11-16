@@ -110,6 +110,16 @@ extern volatile uint32_t g_riop_diag_poll_seq;
 #define RIOP_WDOG_S_WDOG_BOOT   (1u << 6)  /* this boot was caused by a watchdog (any RTWDOG1..5) */
 #define RIOP_WDOG_S_FRESH       (1u << 7)  /* record re-initialised (POR or not retained) */
 
+/* cal_err: calibration / arm step code (N10w3) */
+#define RIOP_WDOG_CAL_OK        0u     /* calibrated and armed */
+#define RIOP_WDOG_CAL_ULK_TMO   1u     /* CS[ULK] never set after the unlock write */
+#define RIOP_WDOG_CAL_RCS_TMO   2u     /* CS[RCS] never set after the CS write */
+#define RIOP_WDOG_CAL_STUCK     3u     /* CNT did not advance: 32 kHz clock dead */
+#define RIOP_WDOG_CAL_WRAP      4u     /* CNT wrapped / tick did not advance */
+#define RIOP_WDOG_CAL_RANGE     5u     /* measured Hz outside 16..2000 */
+#define RIOP_WDOG_CAL_ARM_FAIL  6u     /* calibrated, but the arming write failed */
+#define RIOP_WDOG_CAL_NOT_RUN   0xFFu  /* setup has not run yet (first ~3.5 s) */
+
 /* health flags (breadcrumb) */
 #define RIOP_WDOG_H_GOAL_OK      (1u << 0)
 #define RIOP_WDOG_H_POLL_OK      (1u << 1)
@@ -131,9 +141,9 @@ typedef struct {
 	uint8_t  last_reason;    /* 11: RIOP_WDOG_R_* */
 	uint16_t state;          /* 12: RIOP_WDOG_S_* */
 	uint8_t  test_stage;     /* 14: N10wt progress (0..3) */
-	uint8_t  reserved0;      /* 15 */
+	uint8_t  cal_err;        /* 15: N10w3: RIOP_WDOG_CAL_* step code (0 = armed OK) */
 	uint16_t clk_hz;         /* 16: measured RTWDOG tick (expect ~128) */
-	uint16_t reserved1;      /* 18 */
+	uint16_t cs_found;       /* 18: N10w3: RTWDOG1 CS before the first write */
 	uint32_t last_uptime_ms; /* 20: previous boot, last breadcrumb */
 	uint32_t last_health;    /* 24 */
 	uint32_t last_pc;        /* 28: IRQ-captured PC (0 = IRQ did not run) */

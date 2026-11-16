@@ -77,6 +77,9 @@ static void diag_copy_wdog(void)
 	s_img.wdog_test_stage = w.test_stage;
 	s_img.wdog_last_pc = w.last_pc;
 	s_img.wdog_last_uptime_ms = w.last_uptime_ms;
+	s_img.wdog_clk_hz = w.clk_hz;
+	s_img.wdog_cs_found = w.cs_found;
+	s_img.wdog_cal_err = w.cal_err;
 	if (w.state & RIOP_WDOG_S_EN) {
 		s_img.flags |= RIOP_DIAG_F_WDOG_EN;
 	}

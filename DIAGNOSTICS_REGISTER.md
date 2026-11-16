@@ -190,11 +190,13 @@ Daniel's go (t420u). Built offline from N10g (f104aa2). Covers what the N10g fau
 | 99 | u8 | wdog_consec (loop guard) |
 | 100 | u16 | wdog_state: b0 EN, b1 RUN, b2 SAFE, b3 CLK_BAD, b4 REARM, b5 TEST, b6 WDOG_BOOT, b7 FRESH |
 | 102 | u8 | wdog_test_stage |
-| 103 | u8 | reserved |
+| 103 | u8 | wdog_cal_err (N10w3+; 0 before): 0 OK/armed, 1 ULK_TMO, 2 RCS_TMO, 3 STUCK (32 kHz not counting), 4 WRAP, 5 RANGE, 6 ARM_FAIL, 0xFF setup not run yet |
 | 104 | u32 | wdog_last_pc (0 = IRQ did not run) |
 | 108 | u32 | wdog_last_uptime_ms |
 
-New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_bench/riop_diag177.py` (local commit 1e74294).
+N10w3+ also use the old v1 `reserved` u32 at offset 76 (always 0 before): 76 u16 `wdog_clk_hz` (measured RTWDOG1 tick, expect ~128), 78 u16 `wdog_cs_found` (RTWDOG1 CS as the M33 found it, before its first write). Same version (3) and size (112 B); all three read 0 on N10w/N10w2.
+
+New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_bench/riop_diag177.py` (v3 1e74294; N10w3 fields in the N10w3 decoder commit).
 
 **Limits.**
 - If OCRAM1 is not retained across the WDOG system reset, `wdog_last_reason` reads 5 and the guard cannot count. `reset_cause` still shows WDOG1, and N10wt step 3 shows SAFE never appearing.
@@ -230,3 +232,48 @@ New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_b
 | RTWDOG1 armed from `riop_wdog_task` (`RIOP_WDOG_ARM_DELAY_MS` 3000), with `SRMASK.WDOG1` masked during calibration | KEEP (part of the watchdog) | Keeps the watchdog away from the async M7 start and from any pre-OS path. | Permanent. | EI Software NextGen Dev |
 | Loop guard counting `SRSR.WDOG1..5`; record fields `srsr_hist` / `boot_seq` / `arm_s` / `srmask_boot` | KEEP (`srsr_hist`, `boot_seq`) / TEMP (`arm_s`, `srmask_boot`) | Turns a reset loop from any watchdog into SAFE mode, and leaves SWD-readable evidence. | Drop `arm_s` and `srmask_boot` after N10w2 has passed the bench and run a day. | EI Software NextGen Dev |
 | `RIOP_WDOG_ARM_DELAY_MS` 3000 | TEMP | Margin after scheduler start. | Confirm `arm_s` <= 5 s over 10 boots, then KEEP. | EI Software NextGen Dev |
+
+---
+
+## N10w3: why N10w2 never armed (CLK_BAD) and the fix (2026-11-16, fix/n10-wdog, NOT flashed)
+
+**N10w2 bench result (Daniel, flashed 09:32 ET 11/16, flash+verify True).** Boots fine: asm 177 v3 112 B, fault_count 0, ENETC0 up, reset_count 0, reason none. But `wdog_state` = 0x0088 (CLK_BAD, FRESH) and `WDOG_EN` clear: setup refused to arm. (The 09:24 ET attempt did not flash; the board kept N10g. `swd_flash_test.ps1` now reports `flashed=False` for that case.)
+
+**Root cause: the unlock key, not the clock.**
+- The SDK `SystemInit` on both cores (`DISABLE_WDOG=1`) disables RTWDOG1..5. It checks `CS[CMD32EN]`, which is 0 out of reset, so it unlocks with the 16-bit pair `0xC520`, `0xD928` and writes CS without setting CMD32EN (`system_MIMXRT1189_cm33.c` lines 79-89). CMD32EN stays 0.
+- `wdog_write_cfg()` in N10w/N10w2 always wrote the 32-bit key `0xD928C520`. RT1180 RM rev 9, WDOG 74.3.2.3: the 32-bit unlock works only if CMD32EN = 1; with CMD32EN = 0 only the 16-bit or 8-bit writes unlock, and "an improper unlock sequence causes WDOG to reset".
+- So `CS[ULK]` never set. `wdog_write_cfg()` timed out after 200000 polls, `wdog_calibrate()` returned 0 without measuring anything, and `wdog_setup()` set CLK_BAD. Its fail-path disarm used the same key, so it failed too, harmlessly. `SRMASK.WDOG1` was masked during calibration, so the WDOG1 reset request from the improper unlock went nowhere. That matches reset_count 0.
+- **Probably also the N10w no-boot.** N10w did the same 32-bit unlock pre-OS in `BOARD_InitHardware`, but it cleared `SRMASK.WDOG1` *before* calibrating (fe28718 line 348, then 350). An improper unlock would then be a global system reset on every boot, before the netif. That fits "never answered ping". Not proven by a dump; the `-DDISABLE_WDOG=0` M7 is the other candidate.
+
+**Clock (answer to "which clock").** RM rev 9 table 1084 (CS[CLK] options, chip-specific): 00 reserved, **01 = 32 kHz clock**, 10 reserved, 11 = 24 MHz RC. CCM table 133: WDOGn `lpo_clk` = OSC_32K, `ext_clk` = OSC_RC_24M. PRES = 1 divides by 256 (74.3.5). N10w2's CLK = 01 with PRES gives 32768 / 256 = **128 Hz**, so the clock choice, the prescaler and the 96..160 Hz window were right. Bus clock and 1 MHz are not selectable for RTWDOG on RT1180 (1 MHz is an EWM option). With the 24 MHz RC source the longest TOVAL is 0.7 s, too short for this design.
+
+**Fix (N10w3).**
+- `wdog_unlock()` and `wdog_kick()` follow `fsl_rtwdog` `RTWDOG_Unlock` / `RTWDOG_Refresh`: the 32-bit key when `CS[CMD32EN]` = 1, else the 16-bit pair (refresh pair with IRQs off). Checked in the ELF: `wdog_unlock` tests bit 13 and writes `0xC520`, `0xD928` or `0xD928C520` to `0x442D0004`.
+- `wdog_write_cfg()` returns which step failed. Calibration window 200 -> 500 ms (~64 ticks, +-2 %). A counter that does not move is reported as STUCK (32 kHz clock dead), not as a bad rate.
+- Evidence from hardware goes to the record (cal_err at 15, cs_found at 18, clk_hz at 16) and on to asm 177 (76 `wdog_clk_hz`, 78 `wdog_cs_found`, 103 `wdog_cal_err`). Same version and size.
+- Unchanged from N10w2: arm 3 s after the task starts, WDOG1 reset masked during calibration, boot TOVAL 30 s, run TOVAL 2 s, safe 300 s, loop guard.
+
+**Images** (`N10_logs\fix_n10_boot_images.sha256`), built 2026-11-16 09:41-09:42 ET with `ARMGCC_DIR` set. The M7 recompiled `riop_diag.c` and `goal_appl.c` (core1 261636 -> 261628 B), and core1 is embedded in both M33 images (embed check OK):
+- `N10w3`: default (`RIOP_WDOG_STALL_TEST=0`).
+- `N10wt3`: same tree with `RIOP_WDOG_STALL_TEST=1`, bench test only.
+- Tree check: a rebuild of N10w3 differs from it only in the AHAB image hash (32 B) and the `__TIME__` banner (2 B).
+
+**Expected asm 177 (N10w3, after a power-on):**
+- Until setup runs (3.5 s after the scheduler starts): `wdog_state` 0x0080 (FRESH), `wdog_cal_err` 0xFF.
+- After setup: `flags` include `WDOG_EN` (0x0084 with PHY_LINK). `wdog_state` is 0x0081 (EN, FRESH), then 0x0083 (EN, RUN, FRESH) once GOAL is ready and the netif is up (~16-20 s). `wdog_cal_err` 0, `wdog_clk_hz` 126..130.
+- `wdog_cs_found` should show CMD32EN = 0 and EN = 0, about 0x0520 (RCS, UPDATE, CLK = 32 kHz). If it shows CMD32EN = 1, the root cause above is wrong.
+- `wdog_reset_count`, `wdog_last_reason`, `wdog_consec`, `wdog_test_stage`, `wdog_last_pc` and `wdog_last_uptime_ms` all 0.
+- If instead `wdog_cal_err` = 3 (STUCK, `wdog_clk_hz` 0), OSC_32K is not running on RIOP B2 (32.768 kHz crystal or BBSM). The watchdog stays disarmed and the board runs normally.
+
+**Expected asm 177 (N10wt3, POR then hands-free):** boot 1 as N10w3, but `wdog_state` 0x00A3 (with TEST). At uptime 60 s the stall test starts and the reset lands ~4 s later (ERR051578):
+- Boot 2: `reset_count` 1, reason 1 RUN_ISR, consec 1, stage 1, `last_pc` != 0, `last_uptime_ms` ~60000, state 0x0063.
+- Boot 3: count 2, reason 2 RUN_NOISR, consec 2, stage 2, `last_pc` 0, state 0x0063.
+- Boot 4: count 3, reason 1, consec 3, stage 3, state 0x0067 (SAFE), `flags` 0x0384 (WDOG_EN, WDOG_BOOT, SAFE_MODE, PHY_LINK). No further resets.
+- `reset_cause` includes WDOG1 (bit 1) on boots 2-4. Every boot shows `clk_hz` ~128, `cal_err` 0. Reaching SAFE takes about 4 min from power-on.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| CMD32EN-aware unlock/refresh (`wdog_unlock`, `wdog_kick`) | KEEP (part of the watchdog) | Without it RTWDOG1 can never be reconfigured after SystemInit. | Permanent. | EI Software NextGen Dev |
+| asm 177 `wdog_clk_hz` (76), `wdog_cs_found` (78), `wdog_cal_err` (103) and record `cal_err` / `cs_found` | KEEP `wdog_cal_err` / TEMP `wdog_clk_hz`, `wdog_cs_found` | Hardware evidence for the clock and the CMD32EN state. | Drop `wdog_cs_found` (and `clk_hz` from asm 177, keep it in the record) after N10w3 has armed on the bench over 10 power-ons with `clk_hz` 120..136. | EI Software NextGen Dev |
+| Calibration window 500 ms | TEMP | +-2 % rate check. | Keep unless boot timing needs the 300 ms back. | EI Software NextGen Dev |
+

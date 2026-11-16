@@ -31,6 +31,22 @@
  *    boot) is well past GOAL ready (~16 s on N10g).
  *  - Calibration runs with the WDOG1 SRC reset masked, so a clock mux
  *    surprise during the measurement can never reset the chip.
+ *  - N10w3 (root cause of N10w2 CLK_BAD): the SDK SystemInit disables
+ *    RTWDOG1 with the 16-bit unlock pair (0xC520, 0xD928) because CS[CMD32EN]
+ *    is 0 out of reset, and leaves CMD32EN = 0. N10w2 always wrote the
+ *    32-bit key 0xD928C520, which the RTWDOG ignores while CMD32EN = 0
+ *    (RT1180 RM rev 9, WDOG CS[CMD32EN]: "only a 16-bit or 8-bit write is
+ *    supported"), so CS[ULK] never set, wdog_write_cfg() timed out,
+ *    calibrate returned 0 and setup refused to arm (CLK_BAD). Unlock and
+ *    refresh now follow fsl_rtwdog RTWDOG_Unlock/Refresh: 32-bit key only
+ *    when CS[CMD32EN] = 1, else the 16-bit pair.
+ *  - Clock (RM rev 9 table 1084 "CS[CLK] options"): 01 = 32 kHz clock
+ *    (lpo_clk = OSC_32K, CCM table 133), 11 = 24 MHz RC, 00/10 reserved.
+ *    CLK=01 + PRES (/256) = 128 Hz nominal, so the N10w2 clock choice and
+ *    the 96..160 Hz window were right; only the unlock was wrong.
+ *  - Evidence (N10w3): clk_hz, the CS value found before the first write
+ *    and a calibration step code go to the record and on to asm 177
+ *    (wdog_clk_hz @76, wdog_cs_found @78, wdog_cal_err @103).
  *
  * Kicks: only from riop_wdog_task (tskIDLE_PRIORITY + 1, never an ISR),
  * and only when the GOAL main loop is progressing (it runs at FreeRTOS
@@ -121,8 +137,13 @@ void riop_wdog_note_goal_ready(void)
 #endif
 
 #define RIOP_WDOG_NOMINAL_HZ      128u    /* 32.768 kHz LPO / 256 */
-#define RIOP_WDOG_UNLOCK_KEY      0xD928C520u
-#define RIOP_WDOG_REFRESH_KEY     0xB480A602u
+#define RIOP_WDOG_UNLOCK_KEY      0xD928C520u   /* CMD32EN = 1 */
+#define RIOP_WDOG_REFRESH_KEY     0xB480A602u   /* CMD32EN = 1 */
+#define RIOP_WDOG_UNLOCK_LO       0xC520u       /* CMD32EN = 0: 16-bit pair */
+#define RIOP_WDOG_UNLOCK_HI       0xD928u
+#define RIOP_WDOG_REFRESH_LO      0xA602u
+#define RIOP_WDOG_REFRESH_HI      0xB480u
+#define RIOP_WDOG_CAL_MS          500u          /* ~64 ticks at 128 Hz: +-2 % */
 #define RIOP_WDOG_SPIN_MAX        200000u
 
 static uint32_t s_tick_hz;
@@ -156,62 +177,94 @@ static uint32_t ms_to_ticks(uint32_t ms)
 	return t;
 }
 
+/* Unlock as the SDK does (fsl_rtwdog RTWDOG_Unlock): the 32-bit key only
+ * works once CS[CMD32EN] = 1; out of reset and after SystemInit it is 0
+ * and only the 16-bit pair unlocks. */
+static void wdog_unlock(void)
+{
+	if ((RTWDOG1->CS & RTWDOG_CS_CMD32EN_MASK) != 0u) {
+		RTWDOG1->CNT = RIOP_WDOG_UNLOCK_KEY;
+	} else {
+		RTWDOG1->CNT = RIOP_WDOG_UNLOCK_LO;
+		RTWDOG1->CNT = RIOP_WDOG_UNLOCK_HI;
+	}
+}
+
 /* Unlock + TOVAL + CS within one IRQ-off burst, then wait for RCS.
- * Returns 0 if the unlock or reconfiguration did not complete. */
-static int wdog_write_cfg(uint32_t toval, uint32_t cs)
+ * Returns RIOP_WDOG_CAL_OK, or ULK_TMO / RCS_TMO naming the step that did
+ * not complete. */
+static uint8_t wdog_write_cfg(uint32_t toval, uint32_t cs)
 {
 	uint32_t pm = DisableGlobalIRQ();
 	uint32_t n;
-	int ok = 0;
+	uint8_t rc = RIOP_WDOG_CAL_ULK_TMO;
 
-	RTWDOG1->CNT = RIOP_WDOG_UNLOCK_KEY;
+	wdog_unlock();
 	for (n = 0u; n < RIOP_WDOG_SPIN_MAX; n++) {
 		if ((RTWDOG1->CS & RTWDOG_CS_ULK_MASK) != 0u) {
 			break;
 		}
 	}
 	if (n < RIOP_WDOG_SPIN_MAX) {
+		rc = RIOP_WDOG_CAL_RCS_TMO;
 		RTWDOG1->WIN = 0u;
 		RTWDOG1->TOVAL = toval;
 		RTWDOG1->CS = cs;
 		for (n = 0u; n < RIOP_WDOG_SPIN_MAX; n++) {
 			if ((RTWDOG1->CS & RTWDOG_CS_RCS_MASK) != 0u) {
-				ok = 1;
+				rc = RIOP_WDOG_CAL_OK;
 				break;
 			}
 		}
 	}
 	EnableGlobalIRQ(pm);
-	return ok;
+	return rc;
 }
 
 static void wdog_kick(void)
 {
-	RTWDOG1->CNT = RIOP_WDOG_REFRESH_KEY; /* CMD32EN: one 32-bit write */
+	if ((RTWDOG1->CS & RTWDOG_CS_CMD32EN_MASK) != 0u) {
+		RTWDOG1->CNT = RIOP_WDOG_REFRESH_KEY; /* one 32-bit write */
+	} else {
+		uint32_t pm = DisableGlobalIRQ();     /* pair must be back to back */
+		RTWDOG1->CNT = RIOP_WDOG_REFRESH_LO;
+		RTWDOG1->CNT = RIOP_WDOG_REFRESH_HI;
+		EnableGlobalIRQ(pm);
+	}
 }
 
-/* Measure the LPO/256 tick against the FreeRTOS tick (task context,
- * ~200 ms, no busy wait). Called with the WDOG1 SRC reset masked. Guards
- * against a clock mux surprise turning 30 s into 30 ms. */
-static uint32_t wdog_calibrate(void)
+/* Measure the CLK=01 (OSC_32K) / 256 tick against the FreeRTOS tick (task
+ * context, RIOP_WDOG_CAL_MS, no busy wait). Called with the WDOG1 SRC reset
+ * masked. Guards against a clock mux surprise turning 30 s into 30 ms.
+ * *err gets the RIOP_WDOG_CAL_* step code; returns the measured Hz. */
+static uint32_t wdog_calibrate(uint8_t *err)
 {
 	uint32_t cs = RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_PRES_MASK | RTWDOG_CS_CLK(1u) |
 		      RTWDOG_CS_UPDATE_MASK | RTWDOG_CS_WAIT_MASK | RTWDOG_CS_EN_MASK;
 	uint32_t c0, c1, t0, t1;
+	uint8_t rc;
 
-	if (wdog_write_cfg(0xFFFFu, cs) == 0) {
+	rc = wdog_write_cfg(0xFFFFu, cs);
+	if (rc != RIOP_WDOG_CAL_OK) {
+		*err = rc;
 		return 0u;
 	}
 	wdog_kick();
 	vTaskDelay(pdMS_TO_TICKS(20u)); /* let the refresh reach the slow counter */
 	t0 = wdog_ms();
 	c0 = RTWDOG1->CNT & 0xFFFFu;
-	vTaskDelay(pdMS_TO_TICKS(200u));
+	vTaskDelay(pdMS_TO_TICKS(RIOP_WDOG_CAL_MS));
 	c1 = RTWDOG1->CNT & 0xFFFFu;
 	t1 = wdog_ms();
-	if ((c1 < c0) || (t1 <= t0)) {
+	if (c1 == c0) {
+		*err = RIOP_WDOG_CAL_STUCK;     /* 32 kHz clock not running */
 		return 0u;
 	}
+	if ((c1 < c0) || (t1 <= t0)) {
+		*err = RIOP_WDOG_CAL_WRAP;
+		return 0u;
+	}
+	*err = RIOP_WDOG_CAL_OK;
 	return ((c1 - c0) * 1000u) / (t1 - t0);
 }
 
@@ -223,7 +276,7 @@ static void wdog_state_set(uint16_t bits)
 static int wdog_arm(uint32_t toval_ms)
 {
 	s_toval = ms_to_ticks(toval_ms);
-	if (wdog_write_cfg(s_toval, s_cs_base) == 0) {
+	if (wdog_write_cfg(s_toval, s_cs_base) != RIOP_WDOG_CAL_OK) {
 		return 0;
 	}
 	wdog_kick();
@@ -320,6 +373,8 @@ void riop_wdog_boot(void)
 	w->arm_s = 0u;
 	w->srmask_boot = 0u;
 	w->clk_hz = 0u;
+	w->cal_err = RIOP_WDOG_CAL_NOT_RUN;
+	w->cs_found = 0u;
 
 	if (wdog) {
 		state |= RIOP_WDOG_S_WDOG_BOOT;
@@ -383,26 +438,32 @@ static int wdog_setup(void)
 {
 	volatile riop_diag_wdog_t *w = wrec();
 	uint32_t hz, srmask;
+	uint8_t err = RIOP_WDOG_CAL_OK;
 
 	CLOCK_EnableClock(kCLOCK_Wdog1);
+	w->cs_found = (uint16_t)(RTWDOG1->CS & 0xFFFFu); /* evidence: CMD32EN/CLK/EN as left by SystemInit */
 	srmask = SRC_GENERAL_REG->SRMASK;
 	w->srmask_boot = srmask;
 	/* measure with the WDOG1 reset masked: a wrong clock cannot reset us */
 	SRC_GENERAL_REG->SRMASK = srmask | SRC_GENERAL_SRMASK_WDOG1_MASK_MASK;
 
-	hz = wdog_calibrate();
+	hz = wdog_calibrate(&err);
 	w->clk_hz = (uint16_t)((hz > 0xFFFFu) ? 0xFFFFu : hz);
-	if ((hz >= 96u) && (hz <= 160u)) {
+	if (err != RIOP_WDOG_CAL_OK) {
+		s_tick_hz = 0u;
+	} else if ((hz >= 96u) && (hz <= 160u)) {
 		s_tick_hz = RIOP_WDOG_NOMINAL_HZ;
 	} else if ((hz >= 16u) && (hz <= 2000u)) {
 		s_tick_hz = hz;     /* unexpected but usable: use the measured rate */
 	} else {
 		s_tick_hz = 0u;     /* refuse to arm rather than reset-loop */
+		err = RIOP_WDOG_CAL_RANGE;
 	}
 	if (s_tick_hz == 0u) {
 		(void)wdog_write_cfg(0xFFFFu, RTWDOG_CS_CMD32EN_MASK | RTWDOG_CS_UPDATE_MASK |
 				     RTWDOG_CS_CLK(1u));
 		SRC_GENERAL_REG->SRMASK = srmask; /* as found */
+		w->cal_err = err;
 		wdog_state_set(RIOP_WDOG_S_CLK_BAD);
 		return 0;
 	}
@@ -416,6 +477,7 @@ static int wdog_setup(void)
 				     RTWDOG_CS_CLK(1u));
 		SRC_GENERAL_REG->SRMASK = srmask;
 		s_tick_hz = 0u;
+		w->cal_err = RIOP_WDOG_CAL_ARM_FAIL;
 		wdog_state_set(RIOP_WDOG_S_CLK_BAD);
 		return 0;
 	}
@@ -424,6 +486,7 @@ static int wdog_setup(void)
 	/* WDOG1 -> SRC global system reset from here on */
 	SRC_GENERAL_REG->SRMASK = srmask & ~SRC_GENERAL_SRMASK_WDOG1_MASK_MASK;
 	w->arm_s = (uint16_t)(wdog_ms() / 1000u);
+	w->cal_err = RIOP_WDOG_CAL_OK;
 	wdog_state_set(RIOP_WDOG_S_EN);
 	return 1;
 }
@@ -558,7 +621,7 @@ static void riop_wdog_task(void *arg)
 
 		if ((s_tick_hz != 0u) && ((RTWDOG1->CS & RTWDOG_CS_EN_MASK) == 0u) && !s_isr_fired) {
 			/* someone disabled it (e.g. an M7 image built with DISABLE_WDOG=1) */
-			if (wdog_write_cfg(s_toval, s_cs_base) != 0) {
+			if (wdog_write_cfg(s_toval, s_cs_base) == RIOP_WDOG_CAL_OK) {
 				wdog_state_set(RIOP_WDOG_S_REARM);
 			}
 		}
