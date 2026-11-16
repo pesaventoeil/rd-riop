@@ -109,6 +109,8 @@ extern volatile uint32_t g_riop_diag_poll_seq;
 #define RIOP_WDOG_S_TEST        (1u << 5)  /* N10wt stall-test build */
 #define RIOP_WDOG_S_WDOG_BOOT   (1u << 6)  /* this boot was caused by a watchdog (any RTWDOG1..5) */
 #define RIOP_WDOG_S_FRESH       (1u << 7)  /* record re-initialised (POR or not retained) */
+#define RIOP_WDOG_S_RET_OK      (1u << 8)  /* N10w5: SRC GPR10..19 retention block written and read back OK */
+#define RIOP_WDOG_S_RET_BAD     (1u << 9)  /* N10w5: a GPR retention write did not read back */
 
 /* cal_err: calibration / arm step code (N10w3) */
 #define RIOP_WDOG_CAL_OK        0u     /* calibrated and armed */

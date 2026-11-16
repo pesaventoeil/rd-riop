@@ -318,3 +318,72 @@ New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_b
 | FCB `flashStateCtx` = 0x07008200 in every full image (header page) | KEEP | Without it no warm/system reset (watchdog, fault recorder, lockup) can reboot the board. | Permanent; move it into the FCB source of the production bootable image. | EI Software NextGen Dev |
 | `make_full_img.py --fcb-state` patch | TEMP | Bench-header workaround until the FCB source is fixed. | Remove once the generated header already carries 0x07008200. | EI Software NextGen Dev |
 
+---
+
+## N10wt5 / N10w5: the watchdog record moves from OCRAM to SRC GPRs (2026-11-16, NOT flashed)
+
+**Bench (Daniel, N10wt4).**
+- The FCB fix works. The warm WDOG1 reset at 10:12 ET rebooted into the app, with reset_cause 0x2.
+- But the record at OCRAM1 0x204FDF80 was not retained. After each reset: `wdog_last_reason` 5 (UNKNOWN), test_stage 0, last_pc 0, last_uptime 0, and `wdog_reset_count` stayed at 1 over at least two resets (uptime 12 -> 18 -> 44 s).
+- So the stall test repeated on every boot and the SAFE guard never tripped.
+- The board is now on N10w4: POR, state 0x0083, cal_err 0, link up.
+
+**Root cause: the hardware wipes OCRAM on every system reset.**
+- RM rev 9, 15.4.1.28 BLK_CTRL_S_AON `ECC_MEM_INIT` (0x120) says: "ECC memory hardware initialization complete flags. **The initialization happens at system reset.**" Its bit 16 is OCRAM1_INIT_DONE and bit 24 is OCRAM2_INIT_DONE.
+- OCRAM1 (0x20480000-0x204FFFFF, which holds m_diag 0x204FDF00) is therefore re-initialized by hardware on the WDOG1 system reset. This is not a POR-only event.
+- `riop_wdog_boot()` then finds magic != 'WDOG', treats the boot as FRESH and zeroes the record. With the WDOG bit set in SRSR the result is count 1, consec 1, reason UNKNOWN and stage 0. That is exactly the bench signature.
+- Candidates ruled out:
+  - The linker is fine. `.riop_diag_net` is NOLOAD in m_diag on both cores and is not in .bss or the startup zero/copy tables.
+  - It is not cache or alias. The M33 writes uncached through its own alias, and the M7 invalidates before it reads.
+  - It is not a magic or validation mismatch. The magic is written last at boot and was present at runtime.
+  - It is not the ROM. ROM RAM use is OCRAM1 0x30480000-0x30491FFF only, well below 0x204FDF80/0x304FDF80.
+- The same applies to the N10g fault record at 0x204FDF40 (`NVIC_SystemReset` is a system reset). It cannot survive its own reset either, so it needs the same treatment in a later build.
+
+**Retention location: SRC_GENERAL GPR10..GPR19.**
+- RM 27.6.1.10 says SRC GPR0..GPR19 (offset 0x54 + 4a) are "**Reset by POR only, not by global system reset.**" GPR0/1/2/3/9 belong to the ROM, so GPR10..19 are free.
+- This survival is already proven on this board. The ROM's FLASH_STATUS_CTX in GPR2 is what made the N10wt4 warm reboot work.
+- The M33 accesses the GPRs through `SRC_GENERAL_REG->GPR[]` at the NS alias 0x44460000, the same alias as the SRSR read/clear that already works (checked in the N10w5 disassembly).
+- Layout (`riop_wdog_m33.c`, `RIOP_RET_GPR0` 10):
+
+| GPR | Content |
+|---|---|
+| 10 | magic 0x57524554 ('WRET') |
+| 11 | wdog_count[15:0] \| consec[23:16] \| test_stage[31:24] |
+| 12 | cur_health (breadcrumb) |
+| 13 | cur_uptime_ms (breadcrumb, every 250 ms and at the stall) |
+| 14 / 15 | cur_pc / cur_lr (written by the RTWDOG1 IRQ) |
+| 16 | srsr_hist |
+| 17 | ~GPR11 (check word) |
+| 18 | cur_task[0..3] (ISR) |
+| 19 | boot_seq |
+
+- At boot, a POR (SRSR POR_RST/IPP_POR_B) or an invalid block (magic or check word wrong) means FRESH: GPR10..19 are re-initialized. Otherwise the retained fields are loaded into the OCRAM record before the existing last_*/consec/SAFE logic runs. That logic is unchanged.
+- The OCRAM record stays as this boot's view for the M7 and asm 177. The asm 177 layout is unchanged.
+- Count/consec/stage/srsr_hist/boot_seq writes are read back. New `wdog_state` bits: **b8 RET_OK** (every readback matched) and **b9 RET_BAD** (a GPR write did not read back, for example a TrustZone/AUTHEN block). If RET_BAD is ever seen, the next step is the secure alias 0x54460000.
+- Limits:
+  - last_task keeps only 4 characters.
+  - last_* comes from the breadcrumb of the boot that hit the watchdog. A later non-watchdog warm reset loses last_* but keeps count and consec.
+- The FCB flashStateCtx 0x07008200 is kept in both images (bytes 0x5D5 = 0x82, 0x5D7 = 0x07 verified).
+- Decoder: `nafe_bench\riop_diag177.py` now names b8/b9 (nafe_bench commit 8436d8d).
+
+**Images** (built 10:22-10:23 ET; M7 recompiled, core1 261628 B, embed OK; hashes are also in `N10_logs\fix_n10_boot_images.sha256`):
+
+| Image | Full SWD image (`swd\riop_EIP_<N>_full_A0000_at_0x38000000.bin`, 655360 B) | simg |
+|---|---|---|
+| N10w5 (run) | C71B6DA5D921E647E55EDB08B3C9D4129CA6AAD2A7E19B7E7352AF6FD6E4D779 | DAFEBE9A3032A446728D81E5359F703E93560B787D4688E77B73C3C45A37A05F |
+| N10wt5 (RIOP_WDOG_STALL_TEST=1, bench only) | 4BBD6DE5E8E0634F01A467ADE056AD1D13FCB57127DFB222D0DB6F6C5A333C1A | 6B536EEC1A27526A51B31E77E4A9C648682581BC5774E021179AD6422BC6DB06 |
+
+**Expected asm 177.**
+- N10w5 after a POR: `wdog_state` **0x0183** (EN, RUN, FRESH, RET_OK), count 0, reason 0, cal_err 0.
+- N10wt5 after a POR, hands-free (same sequence as the N10w3 section, plus b8 RET_OK):
+  - Boot 1: state 0x01A3, count 0, stage 0. The stall hits at about 60 s.
+  - Boot 2: state 0x0163 (EN, RUN, TEST, WDOG_BOOT, RET_OK), count 1, consec 1, stage 1, reason 1 (RUN_ISR, BASEPRI stall), last_uptime about 60000, last_pc in the stall loop.
+  - Boot 3: count 2, consec 2, stage 2, reason 2 (RUN_NOISR, PRIMASK stall), last_pc 0.
+  - Boot 4: count 3, reason 1 (stage-3 BASEPRI stall from boot 3), consec 3, stage 3, **SAFE**: state 0x0167, flags 0x0384 (WDOG_EN, WDOG_BOOT, SAFE_MODE, PHY_LINK). No further resets.
+- If the count still sticks at 1 with RET_OK set, GPR10..19 are being cleared by something other than POR. If RET_BAD is set, it is an access issue.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| SRC GPR10..19 watchdog retention (`ret_*` in riop_wdog_m33.c) | KEEP (part of the watchdog) | OCRAM is wiped on every system reset (ECC_MEM_INIT). Without this the loop guard can never count. | Permanent. Reserve GPR10..19 for RIOP in the memory map. | EI Software NextGen Dev |
+| `wdog_state` RET_OK / RET_BAD bits | TEMP | Bench proof that the GPRs are writable and retained. | Drop RET_OK after N10wt5 reaches SAFE on the bench; keep RET_BAD. | EI Software NextGen Dev |
+| N10g fault record at 0x204FDF40 | OPEN | Same OCRAM wipe, so it cannot survive `NVIC_SystemReset`. | Move its key fields to spare GPRs (or none, if GPR space is needed) in a later build. | EI Software NextGen Dev |

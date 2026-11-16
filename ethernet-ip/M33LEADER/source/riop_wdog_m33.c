@@ -44,6 +44,17 @@
  *    (lpo_clk = OSC_32K, CCM table 133), 11 = 24 MHz RC, 00/10 reserved.
  *    CLK=01 + PRES (/256) = 128 Hz nominal, so the N10w2 clock choice and
  *    the 96..160 Hz window were right; only the unlock was wrong.
+ *  - N10w5 (root cause of N10wt4 "record not retained"): OCRAM1/OCRAM2
+ *    are hardware-initialised on every *system* reset (RM rev 9
+ *    BLK_CTRL_S_AON ECC_MEM_INIT: "The initialization happens at system
+ *    reset"), so the OCRAM record cannot survive the WDOG1 reset it is
+ *    meant to describe. The cross-reset part of the record now lives in
+ *    SRC_GENERAL GPR10..GPR19, which are reset by POR only (RM 27.6.1.10;
+ *    GPR0..3/9 belong to the ROM, and the N10wt4 warm boot itself proves
+ *    the ROM's GPR2 flash context survived the WDOG1 reset). The OCRAM
+ *    record stays as this boot's view for the M7 / asm 177; at boot it is
+ *    rebuilt from the GPRs, and every breadcrumb / count write is mirrored
+ *    to them. Each GPR write is read back (state RET_OK / RET_BAD).
  *  - Evidence (N10w3): clk_hz, the CS value found before the first write
  *    and a calibration step code go to the record and on to asm 177
  *    (wdog_clk_hz @76, wdog_cs_found @78, wdog_cal_err @103).
@@ -158,6 +169,84 @@ static volatile uint8_t s_task_alive;   /* scheduler running: pcTaskGetName() is
 static volatile riop_diag_wdog_t *wrec(void)
 {
 	return (volatile riop_diag_wdog_t *)RIOP_DIAG_WDOG_ADDR;
+}
+
+/* --- N10w5: POR-only retention in SRC_GENERAL GPR10..19 ---------------
+ * GPR10 magic, GPR11 count|consec<<16|stage<<24, GPR12 cur_health,
+ * GPR13 cur_uptime_ms, GPR14 cur_pc, GPR15 cur_lr, GPR16 srsr_hist,
+ * GPR17 ~GPR11 (check), GPR18 cur_task[0..3], GPR19 boot_seq. */
+#define RIOP_RET_GPR0          10u
+#define RIOP_RET_MAGIC         0x57524554u /* 'WRET' */
+#define RET(n)                 (SRC_GENERAL_REG->GPR[RIOP_RET_GPR0 + (n)])
+static uint8_t s_ret_bad;
+
+static void ret_put(uint32_t n, uint32_t v)
+{
+	RET(n) = v;
+	if (RET(n) != v) {
+		s_ret_bad = 1u;
+	}
+}
+
+static void ret_counts(volatile riop_diag_wdog_t *w)
+{
+	uint32_t c = (uint32_t)w->wdog_count | ((uint32_t)w->consec << 16) | ((uint32_t)w->test_stage << 24);
+
+	ret_put(1u, c);
+	ret_put(6u, w->srsr_hist);
+	ret_put(7u, ~c);
+	ret_put(9u, w->boot_seq);
+}
+
+static void ret_crumb(volatile riop_diag_wdog_t *w)
+{
+	RET(2u) = w->cur_health;
+	RET(3u) = w->cur_uptime_ms;
+}
+
+static void ret_isr(volatile riop_diag_wdog_t *w)
+{
+	RET(2u) = w->cur_health;
+	RET(4u) = w->cur_pc;
+	RET(5u) = w->cur_lr;
+	RET(8u) = (uint32_t)(uint8_t)w->cur_task[0] | ((uint32_t)(uint8_t)w->cur_task[1] << 8) |
+		  ((uint32_t)(uint8_t)w->cur_task[2] << 16) | ((uint32_t)(uint8_t)w->cur_task[3] << 24);
+}
+
+/* Rebuild the retained part of the OCRAM record from the GPRs. Returns 1
+ * if the GPR block is valid (magic + check word). */
+static int ret_load(volatile riop_diag_wdog_t *w)
+{
+	uint32_t c = RET(1u), t = RET(8u);
+	uint32_t i;
+
+	if ((RET(0u) != RIOP_RET_MAGIC) || (RET(7u) != ~c)) {
+		return 0;
+	}
+	w->wdog_count = (uint16_t)(c & 0xFFFFu);
+	w->consec = (uint8_t)((c >> 16) & 0xFFu);
+	w->test_stage = (uint8_t)(c >> 24);
+	w->cur_health = RET(2u);
+	w->cur_uptime_ms = RET(3u);
+	w->cur_pc = RET(4u);
+	w->cur_lr = RET(5u);
+	w->srsr_hist = RET(6u);
+	w->boot_seq = (uint16_t)(RET(9u) & 0xFFFFu);
+	for (i = 0u; i < sizeof(w->cur_task); i++) {
+		w->cur_task[i] = (i < 4u) ? (char)((t >> (8u * i)) & 0xFFu) : '\0';
+	}
+	return 1;
+}
+
+static void ret_init(void)
+{
+	uint32_t i;
+
+	for (i = 1u; i < 10u; i++) {
+		ret_put(i, 0u);
+	}
+	ret_put(7u, 0xFFFFFFFFu); /* ~0 for the zero count word */
+	ret_put(0u, RIOP_RET_MAGIC);
 }
 
 static uint32_t wdog_ms(void)
@@ -313,6 +402,7 @@ void riop_wdog_isr(uint32_t *frame)
 		}
 	}
 	w->cur_health |= RIOP_WDOG_H_ISR;
+	ret_isr(w);
 	__DSB();
 	RTWDOG1->CS |= RTWDOG_CS_FLG_MASK;
 	__DSB();
@@ -347,8 +437,10 @@ void riop_wdog_boot(void)
 {
 	volatile riop_diag_wdog_t *w = wrec();
 	uint32_t srsr = SRC_GENERAL_REG->SRSR;
-	int fresh = (w->magic != RIOP_DIAG_WDOG_MAGIC) ||
-		    ((srsr & (SRC_GENERAL_SRSR_POR_RST_MASK | SRC_GENERAL_SRSR_IPP_POR_B_MASK)) != 0u);
+	int por = ((srsr & (SRC_GENERAL_SRSR_POR_RST_MASK | SRC_GENERAL_SRSR_IPP_POR_B_MASK)) != 0u);
+	/* N10w5: OCRAM1 is re-initialised by hardware on every system reset,
+	 * so the retained fields come from SRC GPR10..19 (POR-only reset). */
+	int fresh = por || (ret_load(w) == 0);
 	int wdog = (srsr & RIOP_WDOG_SRSR_ANY_WDOG) != 0u;
 	uint16_t state = 0u;
 	uint32_t i;
@@ -364,6 +456,7 @@ void riop_wdog_boot(void)
 			p[i] = 0u;
 		}
 		state |= RIOP_WDOG_S_FRESH;
+		ret_init();
 	}
 	w->boot_srsr = srsr;
 	w->srsr_hist |= srsr;
@@ -402,7 +495,7 @@ void riop_wdog_boot(void)
 				w->consec = 1u;
 			}
 		} else {
-			w->last_reason = RIOP_WDOG_R_UNKNOWN; /* OCRAM not retained */
+			w->last_reason = RIOP_WDOG_R_UNKNOWN; /* GPR block not retained/valid */
 			w->consec = 1u;
 		}
 	} else {
@@ -423,6 +516,10 @@ void riop_wdog_boot(void)
 	for (i = 0u; i < sizeof(w->cur_task); i++) {
 		w->cur_task[i] = '\0';
 	}
+	ret_counts(w);
+	ret_crumb(w);
+	ret_isr(w);
+	state |= s_ret_bad ? RIOP_WDOG_S_RET_BAD : RIOP_WDOG_S_RET_OK;
 	w->state = state;
 	__DSB();
 	w->magic = RIOP_DIAG_WDOG_MAGIC;
@@ -512,6 +609,8 @@ static void wdog_stall_test(volatile riop_diag_wdog_t *w, uint32_t now)
 	stage = (uint8_t)(w->test_stage + 1u);
 	w->test_stage = stage;
 	w->cur_uptime_ms = now;
+	ret_counts(w);
+	ret_crumb(w);
 	__DSB();
 	if (stage == 2u) {
 		/* PRIMASK: no IRQ can run, as in a stalled bus access.
@@ -638,9 +737,11 @@ static void riop_wdog_task(void *arg)
 		}
 		w->cur_uptime_ms = now;
 		w->cur_health = h;
+		ret_crumb(w);
 
 		if (s_run && (w->consec != 0u) && ((now / 1000u) >= RIOP_WDOG_LOOP_WINDOW_S)) {
 			w->consec = 0u; /* ran clean for the window: the next WDOG reset starts a new count */
+			ret_counts(w);
 		}
 #if RIOP_WDOG_STALL_TEST
 		if (s_run) {
