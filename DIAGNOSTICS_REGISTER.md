@@ -277,3 +277,44 @@ New `flags` bits: b7 `WDOG_EN`, b8 `WDOG_BOOT`, b9 `SAFE_MODE`. Decoder: `nafe_b
 | asm 177 `wdog_clk_hz` (76), `wdog_cs_found` (78), `wdog_cal_err` (103) and record `cal_err` / `cs_found` | KEEP `wdog_cal_err` / TEMP `wdog_clk_hz`, `wdog_cs_found` | Hardware evidence for the clock and the CMD32EN state. | Drop `wdog_cs_found` (and `clk_hz` from asm 177, keep it in the record) after N10w3 has armed on the bench over 10 power-ons with `clk_hz` 120..136. | EI Software NextGen Dev |
 | Calibration window 500 ms | TEMP | +-2 % rate check. | Keep unless boot timing needs the 300 ms back. | EI Software NextGen Dev |
 
+---
+
+## N10wt4 / N10w4: the watchdog reset fires, but the ROM cannot reboot from the octal flash (2026-11-16, NOT flashed)
+
+**Bench (Daniel).**
+- N10w3 passed: armed, `wdog_state` 0x0083, no resets.
+- N10wt3 was flashed at 09:51 ET (flash+verify True). Boot 1 at 35 s looked right: flags 0x0084, state 0x00A3, clk 126 Hz, cal_err 0, cs_found 0x0520. That confirms the N10w3 analysis: CMD32EN was 0.
+- After the deliberate stall at 60 s the board went dark. No ListIdentity answer from 09:53 to 09:56 ET.
+
+**Dead-state capture** (`G32_dce_mirror\N10wt3_logs\deadstate_20261116_100010.txt`, 10:00 ET).
+- Method: `LinkServer probe LSAXAQJQ runscript deadstate_attach_noreset.scp`, attaching to M33 AP3 with no reset, no runBootLoader and no poke. Then one halt.
+- Pre-halt DHCSR 0x03100000: running, S_RESET_ST=1 (a reset happened since the last debug read), S_RETIRE_ST=1, not halted, not locked up, not sleeping.
+- VTOR **0x10000000 (boot ROM)**. CFSR, HFSR and DFSR are all 0. ICSR 0x00400000. NVIC ISER1, ISPR1 and IABR1 are all 0, so no app vectors are set up.
+- After the halt: **PC 0x10015D20, LR 0x1001BFEB, SP = MSP 0x30489F20**, PSP 0, xPSR 0x89000000.
+- These match the ROM **serial downloader** idle loop. Every earlier flash log halted in serial-downloader mode shows SP 0x30489F1C..54 and PC/R15 in 0x100157E4..0x1001BFEA (e.g. `verify_N10w2_20261116_0931.log` R15 0x1001BFEA).
+- SRC, RTWDOG1..5 and OCRAM1 reads (0x5446xxxx, 0x542Dxxxx, 0x5249xxxx, 0x204FDFxx) all returned **AP ack fault** in this ROM state, so SRSR, SRMASK and the WDOG record could not be read. The M7 AP gave WAIT, so the M7 is not running.
+
+**Root cause: flash state after a warm reset, not the watchdog.**
+- The RIOP FCB (header page, image offset 0x400, copied from N10g by `make_full_img.py`) puts the Macronix flash into **OPI DDR**. Evidence: deviceModeCfgEnable 1, deviceModeType 2 (SPI->XPI), sflashPadType 8, LUT0 `EE 11` octal DDR read, readSampleClkSrc 3 (DQS).
+- Its `flashStateCtx` (FCB +0x1D4) is **0x00000000**.
+- RM rev 9 table 65 / §12.4.7: the ROM copies `flashStateCtx` into SRC GPR2 (FLASH_STATUS_CTX). GPR0..3 and GPR9 are reset by POR only, not by a system reset. With the default fuse `XSPI_NOR_RESET_TYPE` = 0, the ROM takes the flash reset sequence from that context.
+- With 0, the ROM assumes the flash is in SPI mode and sends no reset. After the WDOG1 system reset the flash is still in OPI DDR, because the flash only resets on power loss and RIOP uses no flash RESET pin. The ROM then reads the FCB with 1-bit `0x03`, gets garbage, fails the NOR boot and falls back to the serial downloader. That is exactly the captured state.
+- On a LabJack power cycle (POR) the flash powers up in SPI mode, so every bench boot so far has worked.
+- So the WDOG1 reset did fire and did reset the system, as S_RESET_ST and the ROM-resident core show (SRSR itself was unreadable). ERR051578 (IRQ at TOVAL, reset at 2xTOVAL) and the SRMASK routing are not the problem; the reset happened within the window. The record could not be read, so the IRQ-then-reset timing is not measured.
+- Any non-POR system reset hits the same wall: watchdog, `NVIC_SystemReset` from the N10g fault recorder, a CM33 lockup, or a JTAG/SW reset. This probably also explains why N10f (which faulted) "never answered".
+
+**Fix: FCB only, no code change.**
+- `flashStateCtx` = **0x07008200**: POR mode 0x00 (extended SPI), current mode 0x82 (OPI DDR), restore sequence 0x07 (Macronix `0x6699` / `0x9966` in OPI).
+- This is the documented value for MX25UM-series octal flash (NXP i.MX RT ROM SW-reset feature; the same value as the RT595-EVK FCB). On a warm boot the ROM now resets the flash back to SPI before reading the FCB. POR boots do not change: the flash is already in SPI and the context is only used after the ROM has loaded it.
+- `make_full_img.py --simg-from <N> --fcb-state 0x07008200` patches only image bytes 0x5D4..0x5D7. With no options it still reproduces N10w3 byte for byte (checked). Copy: `nafe_bench\fwtools\make_full_img.py`.
+- `N10wt4` = N10wt3 simg + fixed FCB. `N10w4` = N10w3 simg + fixed FCB. Each differs from its parent in exactly 2 bytes (0x5D5 = 0x82, 0x5D7 = 0x07). The firmware code is unchanged (commit 7d2a450).
+- **All future images (and the N10g rollback) should carry this FCB**, or any field watchdog or fault reset strands the board until a power cycle. Fix it where the FCB originates too (the board's flexspi_nor_config / bootable-image FCB), not only in the bench header.
+- Not taken (forbidden or needs hardware): the fuse `XSPI_NOR_RESET_TYPE` 3 or 1 with a reset pin.
+
+**Expected N10wt4 bench result** (power-on, hands-free): as in the N10w3 section. Boots 2-4 must come back by themselves about 4 s after each stall plus the boot time, ending in SAFE (`wdog_state` 0x0067, flags 0x0384, stage 3) about 4 min after power-on. If boot 2 stays dark again, the next suspect is the ROM restore sequence (try 0x06 / `66 99`), then an SRMASK/SRC scope issue.
+
+| Item | Status | Purpose / evidence | Removal criterion | Owner |
+|---|---|---|---|---|
+| FCB `flashStateCtx` = 0x07008200 in every full image (header page) | KEEP | Without it no warm/system reset (watchdog, fault recorder, lockup) can reboot the board. | Permanent; move it into the FCB source of the production bootable image. | EI Software NextGen Dev |
+| `make_full_img.py --fcb-state` patch | TEMP | Bench-header workaround until the FCB source is fixed. | Remove once the generated header already carries 0x07008200. | EI Software NextGen Dev |
+
